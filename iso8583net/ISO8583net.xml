@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ISO8583Net</name>
+    </assembly>
+    <members>
+        <member name="T:ISO8583Net.ISO8583Utils">
+            <summary>
+            Data conversion methods used from iso8583 library for fast data type conversion
+            </summary>
+        </member>
+    </members>
+</doc>
