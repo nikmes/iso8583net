@@ -1,0 +1,15 @@
+### YamlMime:XRefMap
+sorted: true
+references:
+- uid: ISO8583Net
+  name: ISO8583Net
+  href: api/ISO8583Net.html
+  commentId: N:ISO8583Net
+  fullName: ISO8583Net
+  nameWithType: ISO8583Net
+- uid: ISO8583Net.ISO8583Utils
+  name: ISO8583Utils
+  href: api/ISO8583Net.ISO8583Utils.html
+  commentId: T:ISO8583Net.ISO8583Utils
+  fullName: ISO8583Net.ISO8583Utils
+  nameWithType: ISO8583Utils
