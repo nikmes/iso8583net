@@ -4,6 +4,3 @@ dotnet: 2.1.502
 solution: iso8583net.sln
 script:    # the following commands are just examples, use whatever your build process requires
   - dotnet restore
-  - ./build.sh
-  - ./test.sh
-  - grep "Test Results" build.log
