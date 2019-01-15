@@ -1,6 +1,6 @@
 {
   "homepages": [],
-  "source_base_path": "C:/Users/nikmes/Source/Repos/ISO8583Net/iso8583net",
+  "source_base_path": "C:/users/nikmes/source/repos/iso8583net/iso8583net",
   "xrefmap": "xrefmap.yml",
   "files": [
     {
@@ -9,7 +9,7 @@
       "output": {
         ".html": {
           "relative_path": "api/ISO8583Net.ISO8583Utils.html",
-          "hash": "D0emgNKdtebF6o3seYjr+A=="
+          "hash": "dl6X/2R5SjItXljC3gCeNw=="
         }
       },
       "is_incremental": true,
