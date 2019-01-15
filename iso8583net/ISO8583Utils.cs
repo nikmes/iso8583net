@@ -7,5 +7,7 @@ namespace ISO8583Net
     /// </summary>
     public class ISO8583Utils
     {
+	    ///<value>This is an integer</value>
+	    public int thisIsAnInteger{get; set;}
     }
 }
