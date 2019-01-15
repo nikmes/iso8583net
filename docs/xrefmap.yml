@@ -13,3 +13,16 @@ references:
   commentId: T:ISO8583Net.ISO8583Utils
   fullName: ISO8583Net.ISO8583Utils
   nameWithType: ISO8583Utils
+- uid: ISO8583Net.ISO8583Utils.thisIsAnInteger
+  name: thisIsAnInteger
+  href: api/ISO8583Net.ISO8583Utils.html#ISO8583Net_ISO8583Utils_thisIsAnInteger
+  commentId: P:ISO8583Net.ISO8583Utils.thisIsAnInteger
+  fullName: ISO8583Net.ISO8583Utils.thisIsAnInteger
+  nameWithType: ISO8583Utils.thisIsAnInteger
+- uid: ISO8583Net.ISO8583Utils.thisIsAnInteger*
+  name: thisIsAnInteger
+  href: api/ISO8583Net.ISO8583Utils.html#ISO8583Net_ISO8583Utils_thisIsAnInteger_
+  commentId: Overload:ISO8583Net.ISO8583Utils.thisIsAnInteger
+  isSpec: "True"
+  fullName: ISO8583Net.ISO8583Utils.thisIsAnInteger
+  nameWithType: ISO8583Utils.thisIsAnInteger
