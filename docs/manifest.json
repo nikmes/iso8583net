@@ -12,19 +12,195 @@
           "hash": "W0QsS5DLVTaG59eBskz48Q=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
-      "log_codes": [
-        "InvalidFileLink"
-      ],
+      "type": "Conceptual",
+      "source_relative_path": "site/about/about.md",
+      "output": {
+        ".html": {
+          "relative_path": "site/about/about.html",
+          "hash": "X/GkP+UGDFDKUsTTpvBidQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "site/api/ISO8583Net.ISOFieldCoding.yml",
+      "output": {
+        ".html": {
+          "relative_path": "site/api/ISO8583Net.ISOFieldCoding.html",
+          "hash": "t7RvZkc2evH0eiivHAQ0zg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "site/api/ISO8583Net.ISOFieldContent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "site/api/ISO8583Net.ISOFieldContent.html",
+          "hash": "97CYuxAUV8BO4HuJJ7Xn5w=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "site/api/ISO8583Net.ISOFieldLengthFormat.yml",
+      "output": {
+        ".html": {
+          "relative_path": "site/api/ISO8583Net.ISOFieldLengthFormat.html",
+          "hash": "nRvshO3EpbM3hxNhckUOpQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "site/api/ISO8583Net.ISOFieldPadding.yml",
+      "output": {
+        ".html": {
+          "relative_path": "site/api/ISO8583Net.ISOFieldPadding.html",
+          "hash": "tIjFE492kTIlFJpDfADWIg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "site/api/ISO8583Net.ISOFieldParticipation.yml",
+      "output": {
+        ".html": {
+          "relative_path": "site/api/ISO8583Net.ISOFieldParticipation.html",
+          "hash": "lKVJIlfon1OLI6FfK1IxYQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "site/api/ISO8583Net.ISOUtils.yml",
+      "output": {
+        ".html": {
+          "relative_path": "site/api/ISO8583Net.ISOUtils.html",
+          "hash": "b9Q7uhEEkb8TKBTbgRzLQw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "site/api/ISO8583Net.yml",
+      "output": {
+        ".html": {
+          "relative_path": "site/api/ISO8583Net.html",
+          "hash": "aZ8x/SjQw5hUiMsNjGsMUA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "site/api/index.md",
+      "output": {
+        ".html": {
+          "relative_path": "site/api/index.html",
+          "hash": "WP+UC5+uhkWMNANFDfh85A=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "site/api/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "site/api/toc.html",
+          "hash": "nfayL6zve9iTRG8frY3gHQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "site/articles/intro.md",
+      "output": {
+        ".html": {
+          "relative_path": "site/articles/intro.html",
+          "hash": "vlbatXpRguFYjxKjJCf6UA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "site/articles/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "site/articles/toc.html",
+          "hash": "t7iiFrmuYmrKWisdq+lN6Q=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "site/images/iso8583.jpg",
+      "output": {
+        "resource": {
+          "relative_path": "site/images/iso8583.jpg"
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "site/quickstart/quickstart.md",
+      "output": {
+        ".html": {
+          "relative_path": "site/quickstart/quickstart.html",
+          "hash": "pfB3zupCRxHSK9FK4PDsQA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "site/quickstart/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "site/quickstart/toc.html",
+          "hash": "nMHHuYCOPkEfovQVQ0T0OQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
       "type": "Toc",
       "source_relative_path": "toc.yml",
       "output": {
         ".html": {
           "relative_path": "toc.html",
-          "hash": "hFd7WYkSvkFyoEMjq78FKQ=="
+          "hash": "9AvwR3c+doVg8k3Xw8P4Eg=="
         }
       },
       "is_incremental": false,
@@ -34,25 +210,35 @@
   "incremental_info": [
     {
       "status": {
-        "can_incremental": true,
+        "can_incremental": false,
+        "details": "Disable incremental build by force rebuild option.",
         "incrementalPhase": "build"
       },
       "processors": {
+        "ResourceDocumentProcessor": {
+          "can_incremental": false,
+          "details": "Processor ResourceDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
+          "incrementalPhase": "build"
+        },
         "TocDocumentProcessor": {
           "can_incremental": false,
           "details": "Processor TocDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
           "incrementalPhase": "build"
         },
         "ConceptualDocumentProcessor": {
-          "can_incremental": true,
+          "can_incremental": false,
+          "incrementalPhase": "build"
+        },
+        "ManagedReferenceDocumentProcessor": {
+          "can_incremental": false,
           "incrementalPhase": "build"
         }
       }
     },
     {
       "status": {
-        "can_incremental": true,
-        "details": "Can support incremental post processing.",
+        "can_incremental": false,
+        "details": "Cannot support incremental post processing, the reason is: it's disabled.",
         "incrementalPhase": "postProcessing"
       },
       "processors": {}
