@@ -6,21 +6,21 @@
     <members>
         <member name="T:ISO8583Net.ISOFieldParticipation">
             <summary>
-            Depicts wether an iso field is mandatory, optional or conditional
+            Indicates an ISO field participation in a message type.
             </summary>
         </member>
         <member name="F:ISO8583Net.ISOFieldParticipation.MAN">
-            <summary>Mandatory field in a given message type</summary>
+            <summary>Mandatory, the field mast exist in the message type</summary>
         </member>
         <member name="F:ISO8583Net.ISOFieldParticipation.OPT">
-            <summary>Optional field in a given message type</summary>
+            <summary>Optional, the field may exist in the message type</summary>
         </member>
         <member name="F:ISO8583Net.ISOFieldParticipation.CON">
-            <summary>Conditional field in a given message type</summary>
+            <summary>Conditional, the field mast exists in the message type if some conditions are met</summary>
         </member>
         <member name="T:ISO8583Net.ISOFieldLengthFormat">
             <summary>
-            Depicts the length format used for the iso field. ISO Fields can have a fixed length format or a variable length format. When
+            Indicates the length format used for the iso field. ISO Fields can have a fixed length format or a variable length format. When
             a variable length format is used, it means that some length indicator which indicates the length of the iso field preceeds the 
             field data.
             </summary>
@@ -91,19 +91,12 @@
         <member name="F:ISO8583Net.ISOFieldContent.NS">
             <summary>Data consist only of numeric digits and special characters</summary>
         </member>
-        <member name="F:ISO8583Net.ISOFieldContent.X">
-            <summary>Data consist only of alphabetic characters</summary>
-        </member>
-        <member name="F:ISO8583Net.ISOFieldContent.ZPOS">
-            <summary>Data consist only of alphabetic characters</summary>
-        </member>
         <member name="F:ISO8583Net.ISOFieldContent.TRACK2">
             <summary>Data consist only of valid TRACK2 characters</summary>
         </member>
         <member name="T:ISO8583Net.ISOUtils">
             <summary>
-            The ISO8583Utils Class.
-            Contains all methods for performing fast conversion between different data types.
+            The ISO8583Utils Class Contains all methods for performing fast conversion between different data types.
             </summary>
             <remarks>
             This class can perform the below convertsions:

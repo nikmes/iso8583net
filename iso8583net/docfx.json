@@ -9,7 +9,7 @@
           "src": "C:\\Users\\nikmes\\Source\\Repos\\iso8583net\\iso8583net"
         }
       ],
-      "dest": "..\\site\\api",
+      "dest": "site\\api",
       "disableGitFeatures": false,
       "disableDefaultFilter": false
     }
@@ -18,27 +18,27 @@
     "content": [
       {
         "files": [
-          "../site/api/**.yml",
-          "../site/api/index.md"
+          "site/api/**.yml",
+          "site/api/index.md"
         ]
       },
       {
         "files": [
-          "../site/articles/**.md",
-          "../site/articles/**/toc.yml",
+          "site/articles/**.md",
+          "site/articles/**/toc.yml",
           "toc.yml",
           "*.md"
         ]
       },
       {
         "files": [
-          "../site/about/about.md"
+          "site/about/about.md"
         ]
       },
       {
         "files": [
-          "../site/quickstart/**.md",
-          "../site/quickstart/**/toc.yml",
+          "site/quickstart/**.md",
+          "site/quickstart/**/toc.yml",
           "toc.yml",
           "*.md"
         ]
@@ -47,14 +47,14 @@
     "resource": [
       {
         "files": [
-          "../site/images/**"
+          "site/images/**"
         ]
       }
     ],
     "overwrite": [
       {
         "files": [
-          "../apidoc/**.md"
+          "apidoc/**.md"
         ],
         "exclude": [
           "obj/**",
