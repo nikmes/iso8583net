@@ -1,99 +1,30 @@
 {
   "homepages": [],
-  "source_base_path": "C:/users/nikmes/source/repos/iso8583net/iso8583net",
+  "source_base_path": "C:/Users/nikmes/Source/Repos/ISO8583Net/iso8583net",
   "xrefmap": "xrefmap.yml",
   "files": [
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/ISO8583Net.ISO8583Utils.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/ISO8583Net.ISO8583Utils.html",
-          "hash": "dl6X/2R5SjItXljC3gCeNw=="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/ISO8583Net.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/ISO8583Net.html",
-          "hash": "/AeEEznz3ApvOJGdybjrUQ=="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "Conceptual",
-      "source_relative_path": "api/index.md",
-      "output": {
-        ".html": {
-          "relative_path": "api/index.html",
-          "hash": "ll6VXGwXfJOZ8kIdU8lkqg=="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "Toc",
-      "source_relative_path": "api/toc.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/toc.html",
-          "hash": "CGuyKw1Ng9nh/lfA67XNyg=="
-        }
-      },
-      "is_incremental": false,
-      "version": ""
-    },
-    {
-      "type": "Conceptual",
-      "source_relative_path": "articles/intro.md",
-      "output": {
-        ".html": {
-          "relative_path": "articles/intro.html",
-          "hash": "vLRzfEG5J2XUFuYaLiYf7Q=="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "Toc",
-      "source_relative_path": "articles/toc.yml",
-      "output": {
-        ".html": {
-          "relative_path": "articles/toc.html",
-          "hash": "t7iiFrmuYmrKWisdq+lN6Q=="
-        }
-      },
-      "is_incremental": false,
-      "version": ""
-    },
     {
       "type": "Conceptual",
       "source_relative_path": "index.md",
       "output": {
         ".html": {
           "relative_path": "index.html",
-          "hash": "6nvJV6xruHMpaSrupA4Utw=="
+          "hash": "W0QsS5DLVTaG59eBskz48Q=="
         }
       },
       "is_incremental": true,
       "version": ""
     },
     {
+      "log_codes": [
+        "InvalidFileLink"
+      ],
       "type": "Toc",
       "source_relative_path": "toc.yml",
       "output": {
         ".html": {
           "relative_path": "toc.html",
-          "hash": "k+/dkjFuwAVS32HduMpmBw=="
+          "hash": "hFd7WYkSvkFyoEMjq78FKQ=="
         }
       },
       "is_incremental": false,
@@ -113,10 +44,6 @@
           "incrementalPhase": "build"
         },
         "ConceptualDocumentProcessor": {
-          "can_incremental": true,
-          "incrementalPhase": "build"
-        },
-        "ManagedReferenceDocumentProcessor": {
           "can_incremental": true,
           "incrementalPhase": "build"
         }

@@ -1,5 +1,8 @@
+- name: ISO8583SDK Documentation
+  href: site/api/
+- name: Quick Start
+  href: site/quickstart/
 - name: Articles
-  href: articles/
-- name: Api Documentation
-  href: api/
-  homepage: api/index.md
+  href: site/articles/
+- name: About
+  href: site/about/about.md
