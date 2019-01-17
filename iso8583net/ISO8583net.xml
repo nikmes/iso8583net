@@ -9,5 +9,8 @@
             Data conversion methods used from iso8583 library for fast data type conversion
             </summary>
         </member>
+        <member name="P:ISO8583Net.ISO8583Utils.thisIsAnInteger">
+            <value>This is an integer</value>
+        </member>
     </members>
 </doc>
