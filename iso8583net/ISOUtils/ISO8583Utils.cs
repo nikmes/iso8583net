@@ -89,8 +89,12 @@ namespace ISO8583Net
         /// <summary>Static array for fast lookup to convert from bytes to hex</summary>
         private static readonly uint[] _lookup32 = CreateLookup32();
 
-        // helpfull array extensions
-
+        /// <summary>
+        /// Extents array functionality by allowing to get a new array (sub array) from an array
+        /// </summary>
+        /// <param name="data">The array from where subarray will be created</param>  
+        /// <param name="index">Starting position for the sub array</param>  
+        /// <param name="length">LEngth of sub arrat starting from postion index</param>  
         public static T[] SubArray<T>(this T[] data, int index, int length)
         {
             T[] result = new T[length];
