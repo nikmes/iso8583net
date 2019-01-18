@@ -11,12 +11,11 @@ namespace ISO8583Net
     /// <remarks>
     /// This class can perform the below convertsions:
     /// </remarks>
-
     public static class ISOUtils
     {
-        // static arrays for fast conversions
-
-        private static readonly int[] _os_toascii = new int[256] {
+        /// <summary>Static array for fast lookup to convert from ebcdic to ascii</summary>
+        private static readonly int[] _os_toascii = new int[256] 
+        {
 	    /*00*/ 0x00, 0x01, 0x02, 0x03, 0x85, 0x09, 0x86, 0x7f,
                0x87, 0x8d, 0x8e, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, /*................*/
 	    /*10*/ 0x10, 0x11, 0x12, 0x13, 0x8f, 0x0a, 0x08, 0x97,
@@ -50,7 +49,9 @@ namespace ISO8583Net
 	    /*f0*/ 0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37,
                0x38, 0x39, 0xb3, 0x7b, 0xdc, 0x7d, 0xda, 0x7e  /*0123456789.{.}.~*/};
 
-        private static readonly int[] _os_toebcdic = new int[256] {
+        /// <summary>Static array for fast lookup to convert from ascii to ebcdic</summary>
+        private static readonly int[] _os_toebcdic = new int[256] 
+        {
 	    /*00*/ 0x00, 0x01, 0x02, 0x03, 0x37, 0x2d, 0x2e, 0x2f,
                0x16, 0x05, 0x15, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f,  /*................*/
 	    /*10*/ 0x10, 0x11, 0x12, 0x13, 0x3c, 0x3d, 0x32, 0x26,
@@ -85,9 +86,8 @@ namespace ISO8583Net
                0x70, 0xc0, 0xde, 0xdb, 0xdc, 0x8d, 0x8e, 0xdf   /*................*/
         };
 
+        /// <summary>Static array for fast lookup to convert from bytes to hex</summary>
         private static readonly uint[] _lookup32 = CreateLookup32();
-
-
 
         // helpfull array extensions
 
@@ -110,8 +110,6 @@ namespace ISO8583Net
 
             return tmp.ToArray();
         }
-
-
 
         // static array initialization methods
 
@@ -213,10 +211,10 @@ namespace ISO8583Net
                 index = index + 4;
             }
         }
-
         /// <summary>
         /// Adds two integers and returns the result.
         /// </summary>
+        /// <param name="value">The integer to be convert to bytes</param>  
         public static int bytes2int(byte[] packedBytes, ref int index, int numHexDigits)
         {
             int pos = 8 * ((numHexDigits / 2) - 1);
@@ -234,22 +232,30 @@ namespace ISO8583Net
 
             return result;
         }
-
+        /// <summary>
+        /// Adds two integers and returns the result.
+        /// </summary>
+        /// <param name="value">The integer to be convert to bytes</param>  
         public static void int2Bcd(int value, byte[] packedBytes, ref int index, int numBytes)
         {
 
         }
-
+        /// <summary>
+        /// Adds two integers and returns the result.
+        /// </summary>
+        /// <param name="value">The integer to be convert to bytes</param>  
         public static void int2ascii(int value, byte[] packedBytes, ref int index, int numBytes)
         {
 
         }
-
+        /// <summary>
+        /// Adds two integers and returns the result.
+        /// </summary>
+        /// <param name="value">The integer to be convert to bytes</param>  
         public static void int2ebcdic(int value, byte[] packedBytes, ref int index, int numBytes)
         {
 
         }
-
         /// <summary>
         /// Adds two integers and returns the result.
         /// </summary>
@@ -292,10 +298,10 @@ namespace ISO8583Net
                 }
             }
         }
-
         /// <summary>
         /// Adds two integers and returns the result.
         /// </summary>
+        /// <param name="value">The integer to be convert to bytes</param>  
         public static string bcd2ascii(byte[] packedBytes, ref int index, ISOFieldPadding padding, int valueLength)
         {
             char[] value = null;
@@ -348,7 +354,10 @@ namespace ISO8583Net
             }
             return new string(value);
         }
-
+        /// <summary>
+        /// Adds two integers and returns the result.
+        /// </summary>
+        /// <param name="value">The integer to be convert to bytes</param>  
         public static void ascii2bytes(string strASCIIString, byte[] packedBytes, ref int index)
         {
             int len = strASCIIString.Length;
@@ -359,7 +368,10 @@ namespace ISO8583Net
             }
             index += len;
         }
-
+        /// <summary>
+        /// Adds two integers and returns the result.
+        /// </summary>
+        /// <param name="value">The integer to be convert to bytes</param>  
         public static string bytes2ascii(byte[] packedBytes, ref int index, int numBytes)
         {
             char[] ascii = new char[numBytes];
@@ -373,9 +385,10 @@ namespace ISO8583Net
 
             return new string(ascii);
         }
-
-        // Hex string to byte array
-
+        /// <summary>
+        /// Adds two integers and returns the result.
+        /// </summary>
+        /// <param name="value">The integer to be convert to bytes</param>  
         public static void hex2bytes(string value, byte[] packedBytes, ref int index)
         {
             int binlength = value.Length / 2;
@@ -395,7 +408,10 @@ namespace ISO8583Net
 
             index += binlength;
         }
-
+        /// <summary>
+        /// Adds two integers and returns the result.
+        /// </summary>
+        /// <param name="value">The integer to be convert to bytes</param>  
         public static byte[] hex2bytes(string str)
         {
             var HexNibble = _HexNibble;
@@ -412,7 +428,10 @@ namespace ISO8583Net
 
             return result;
         }
-
+        /// <summary>
+        /// Adds two integers and returns the result.
+        /// </summary>
+        /// <param name="value">The integer to be convert to bytes</param>  
         public static string bytes2hex(byte[] packedBytes, ref int index, int numBytes)
         {
             var lookup32 = _lookup32;
@@ -432,7 +451,10 @@ namespace ISO8583Net
 
             return new string(result);
         }
-
+        /// <summary>
+        /// Adds two integers and returns the result.
+        /// </summary>
+        /// <param name="value">The integer to be convert to bytes</param>  
         public static string bytes2hex(byte[] bytes)
         {
             var lookup32 = _lookup32;
@@ -450,9 +472,10 @@ namespace ISO8583Net
 
             return new string(result);
         }
-
-        // Ascii to EBCDIC 
-
+        /// <summary>
+        /// Adds two integers and returns the result.
+        /// </summary>
+        /// <param name="value">The integer to be convert to bytes</param>  
         public static void ascii2ebcdic(string src, byte[] packedBytes, ref int index)
         {
             var os_toebcdic = _os_toebcdic;
@@ -466,9 +489,10 @@ namespace ISO8583Net
 
             index += srcLength;
         }
-
-        // EBCDIC to ASCII
-
+        /// <summary>
+        /// Adds two integers and returns the result.
+        /// </summary>
+        /// <param name="value">The integer to be convert to bytes</param>  
         public static string ebcdic2ascii(byte[] packedBytes, ref int index, int numBytes)
         {
             var os_toascii = _os_toascii;
@@ -484,9 +508,10 @@ namespace ISO8583Net
 
             return new string(ascii);
         }
-
-        // Validations
-
+        /// <summary>
+        /// Adds two integers and returns the result.
+        /// </summary>
+        /// <param name="value">The integer to be convert to bytes</param>  
         public static bool checkIsOnlyDigits(string value)
         {
             /* checks that all characters in a string correspond to a numerical digit
@@ -521,7 +546,10 @@ namespace ISO8583Net
 
             return isOnlyDigits;
         }
-
+        /// <summary>
+        /// Adds two integers and returns the result.
+        /// </summary>
+        /// <param name="value">The integer to be convert to bytes</param>  
         public static bool checkIsHexDigits(string value)
         {
             /* checks that all characters in a string correspond to a numerical digit
@@ -565,15 +593,19 @@ namespace ISO8583Net
 
             return isHexDigits;
         }
-
+        /// <summary>
+        /// Adds two integers and returns the result.
+        /// </summary>
+        /// <param name="value">The integer to be convert to bytes</param>  
         public static bool isASCII(string value)
         {
             // ASCII encoding replaces non-ascii with question marks, so we use UTF8 to see if multi-byte sequences are there
             return Encoding.UTF8.GetByteCount(value) == value.Length;
         }
-
-        // pretty print
-
+        /// <summary>
+        /// Adds two integers and returns the result.
+        /// </summary>
+        /// <param name="value">The integer to be convert to bytes</param>  
         public static string PrintHEX(byte[] iPtr, int iNumBytes)
         {
             uint kDL_OUTPUT_HEX_COLS = 16;
