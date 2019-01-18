@@ -102,6 +102,15 @@
             This class can perform the below convertsions:
             </remarks>
         </member>
+        <member name="F:ISO8583Net.ISOUtils._os_toascii">
+            <summary>Static array for fast lookup to convert from ebcdic to ascii</summary>
+        </member>
+        <member name="F:ISO8583Net.ISOUtils._os_toebcdic">
+            <summary>Static array for fast lookup to convert from ascii to ebcdic</summary>
+        </member>
+        <member name="F:ISO8583Net.ISOUtils._lookup32">
+            <summary>Static array for fast lookup to convert from bytes to hex</summary>
+        </member>
         <member name="M:ISO8583Net.ISOUtils.int2Bytes(System.Int32,System.Byte[],System.Int32@,System.Int32)">
             <summary>
             Adds two integers and returns the result.
@@ -112,6 +121,25 @@
             <summary>
             Adds two integers and returns the result.
             </summary>
+            <param name="value">The integer to be convert to bytes</param>  
+        </member>
+        <member name="M:ISO8583Net.ISOUtils.int2Bcd(System.Int32,System.Byte[],System.Int32@,System.Int32)">
+            <summary>
+            Adds two integers and returns the result.
+            </summary>
+            <param name="value">The integer to be convert to bytes</param>  
+        </member>
+        <member name="M:ISO8583Net.ISOUtils.int2ascii(System.Int32,System.Byte[],System.Int32@,System.Int32)">
+            <summary>
+            Adds two integers and returns the result.
+            </summary>
+            <param name="value">The integer to be convert to bytes</param>  
+        </member>
+        <member name="M:ISO8583Net.ISOUtils.int2ebcdic(System.Int32,System.Byte[],System.Int32@,System.Int32)">
+            <summary>
+            Adds two integers and returns the result.
+            </summary>
+            <param name="value">The integer to be convert to bytes</param>  
         </member>
         <member name="M:ISO8583Net.ISOUtils.ascii2bcd(System.String,System.Byte[],System.Int32@,ISO8583Net.ISOFieldPadding)">
             <summary>
@@ -122,6 +150,79 @@
             <summary>
             Adds two integers and returns the result.
             </summary>
+            <param name="value">The integer to be convert to bytes</param>  
+        </member>
+        <member name="M:ISO8583Net.ISOUtils.ascii2bytes(System.String,System.Byte[],System.Int32@)">
+            <summary>
+            Adds two integers and returns the result.
+            </summary>
+            <param name="value">The integer to be convert to bytes</param>  
+        </member>
+        <member name="M:ISO8583Net.ISOUtils.bytes2ascii(System.Byte[],System.Int32@,System.Int32)">
+            <summary>
+            Adds two integers and returns the result.
+            </summary>
+            <param name="value">The integer to be convert to bytes</param>  
+        </member>
+        <member name="M:ISO8583Net.ISOUtils.hex2bytes(System.String,System.Byte[],System.Int32@)">
+            <summary>
+            Adds two integers and returns the result.
+            </summary>
+            <param name="value">The integer to be convert to bytes</param>  
+        </member>
+        <member name="M:ISO8583Net.ISOUtils.hex2bytes(System.String)">
+            <summary>
+            Adds two integers and returns the result.
+            </summary>
+            <param name="value">The integer to be convert to bytes</param>  
+        </member>
+        <member name="M:ISO8583Net.ISOUtils.bytes2hex(System.Byte[],System.Int32@,System.Int32)">
+            <summary>
+            Adds two integers and returns the result.
+            </summary>
+            <param name="value">The integer to be convert to bytes</param>  
+        </member>
+        <member name="M:ISO8583Net.ISOUtils.bytes2hex(System.Byte[])">
+            <summary>
+            Adds two integers and returns the result.
+            </summary>
+            <param name="value">The integer to be convert to bytes</param>  
+        </member>
+        <member name="M:ISO8583Net.ISOUtils.ascii2ebcdic(System.String,System.Byte[],System.Int32@)">
+            <summary>
+            Adds two integers and returns the result.
+            </summary>
+            <param name="value">The integer to be convert to bytes</param>  
+        </member>
+        <member name="M:ISO8583Net.ISOUtils.ebcdic2ascii(System.Byte[],System.Int32@,System.Int32)">
+            <summary>
+            Adds two integers and returns the result.
+            </summary>
+            <param name="value">The integer to be convert to bytes</param>  
+        </member>
+        <member name="M:ISO8583Net.ISOUtils.checkIsOnlyDigits(System.String)">
+            <summary>
+            Adds two integers and returns the result.
+            </summary>
+            <param name="value">The integer to be convert to bytes</param>  
+        </member>
+        <member name="M:ISO8583Net.ISOUtils.checkIsHexDigits(System.String)">
+            <summary>
+            Adds two integers and returns the result.
+            </summary>
+            <param name="value">The integer to be convert to bytes</param>  
+        </member>
+        <member name="M:ISO8583Net.ISOUtils.isASCII(System.String)">
+            <summary>
+            Adds two integers and returns the result.
+            </summary>
+            <param name="value">The integer to be convert to bytes</param>  
+        </member>
+        <member name="M:ISO8583Net.ISOUtils.PrintHEX(System.Byte[],System.Int32)">
+            <summary>
+            Adds two integers and returns the result.
+            </summary>
+            <param name="value">The integer to be convert to bytes</param>  
         </member>
     </members>
 </doc>
