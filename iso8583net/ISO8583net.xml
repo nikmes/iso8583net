@@ -4,229 +4,236 @@
         <name>ISO8583Net</name>
     </assembly>
     <members>
-        <member name="T:ISO8583Net.ISOFieldParticipation">
+        <member name="T:ISO8583Net.Types.ISOFieldParticipation">
             <summary>
             Indicates an ISO field participation in a message type.
             </summary>
         </member>
-        <member name="F:ISO8583Net.ISOFieldParticipation.MAN">
+        <member name="F:ISO8583Net.Types.ISOFieldParticipation.MAN">
             <summary>Mandatory, the field mast exist in the message type</summary>
         </member>
-        <member name="F:ISO8583Net.ISOFieldParticipation.OPT">
+        <member name="F:ISO8583Net.Types.ISOFieldParticipation.OPT">
             <summary>Optional, the field may exist in the message type</summary>
         </member>
-        <member name="F:ISO8583Net.ISOFieldParticipation.CON">
+        <member name="F:ISO8583Net.Types.ISOFieldParticipation.CON">
             <summary>Conditional, the field mast exists in the message type if some conditions are met</summary>
         </member>
-        <member name="T:ISO8583Net.ISOFieldLengthFormat">
+        <member name="T:ISO8583Net.Types.ISOFieldLengthFormat">
             <summary>
             Indicates the length format used for the iso field. ISO Fields can have a fixed length format or a variable length format. When
             a variable length format is used, it means that some length indicator which indicates the length of the iso field preceeds the 
             field data.
             </summary>
         </member>
-        <member name="F:ISO8583Net.ISOFieldLengthFormat.FIXED">
+        <member name="F:ISO8583Net.Types.ISOFieldLengthFormat.FIXED">
             <summary>The field is of fixed length type. There is no length indicator</summary>
         </member>
-        <member name="F:ISO8583Net.ISOFieldLengthFormat.VAR">
+        <member name="F:ISO8583Net.Types.ISOFieldLengthFormat.VAR">
             <summary>The field is of varialble length type. There is a length indicator before the data</summary>
         </member>
-        <member name="T:ISO8583Net.ISOFieldCoding">
+        <member name="T:ISO8583Net.Types.ISOFieldCoding">
             <summary>Defines the encoding of the ISO field value</summary>
         </member>
-        <member name="F:ISO8583Net.ISOFieldCoding.ASCII">
+        <member name="F:ISO8583Net.Types.ISOFieldCoding.ASCII">
             <summary>ISO field value is encoded in ASCII</summary>       
         </member>
-        <member name="F:ISO8583Net.ISOFieldCoding.BCD">
+        <member name="F:ISO8583Net.Types.ISOFieldCoding.BCD">
             <summary>ISO field value is encoded in BCD</summary>        
         </member>
-        <member name="F:ISO8583Net.ISOFieldCoding.BCDU">
+        <member name="F:ISO8583Net.Types.ISOFieldCoding.BCDU">
             <summary>ISO field value is encoded in BCDU (BCD Unpacked)</summary>        
         </member>
-        <member name="F:ISO8583Net.ISOFieldCoding.EBCDIC">
+        <member name="F:ISO8583Net.Types.ISOFieldCoding.EBCDIC">
             <summary>ISO field value is encoded in EBCDIC</summary>        
         </member>
-        <member name="F:ISO8583Net.ISOFieldCoding.BIN">
+        <member name="F:ISO8583Net.Types.ISOFieldCoding.BIN">
             <summary>ISO field value is encoded in BIN (Binary)</summary>        
         </member>
-        <member name="F:ISO8583Net.ISOFieldCoding.Z">
+        <member name="F:ISO8583Net.Types.ISOFieldCoding.Z">
             <summary>ISO field value is encoded in Z (Track2 Encoding)</summary>       
         </member>
-        <member name="T:ISO8583Net.ISOFieldPadding">
+        <member name="T:ISO8583Net.Types.ISOFieldPadding">
             <summary>Defines the padding of the ISO field value</summary>
         </member>
-        <member name="F:ISO8583Net.ISOFieldPadding.LEFT">
+        <member name="F:ISO8583Net.Types.ISOFieldPadding.LEFT">
             <summary>Field is using left padding</summary>
         </member>
-        <member name="F:ISO8583Net.ISOFieldPadding.RIGHT">
+        <member name="F:ISO8583Net.Types.ISOFieldPadding.RIGHT">
             <summary>Field is using right padding</summary>
         </member>
-        <member name="F:ISO8583Net.ISOFieldPadding.NONE">
+        <member name="F:ISO8583Net.Types.ISOFieldPadding.NONE">
             <summary>Field is using no padding</summary>
         </member>
-        <member name="T:ISO8583Net.ISOFieldContent">
+        <member name="T:ISO8583Net.Types.ISOFieldContent">
             <summary>Defines the data content type</summary>
         </member>
-        <member name="F:ISO8583Net.ISOFieldContent.A">
+        <member name="F:ISO8583Net.Types.ISOFieldContent.A">
             <summary>Data consist only of alphabetic characters</summary>
         </member>
-        <member name="F:ISO8583Net.ISOFieldContent.AN">
+        <member name="F:ISO8583Net.Types.ISOFieldContent.AN">
             <summary>Data consist only of alphabetic and numeric characters</summary>
         </member>
-        <member name="F:ISO8583Net.ISOFieldContent.ANP">
+        <member name="F:ISO8583Net.Types.ISOFieldContent.ANP">
             <summary>Data consist only of alphabetic characters</summary>
         </member>
-        <member name="F:ISO8583Net.ISOFieldContent.ANS">
+        <member name="F:ISO8583Net.Types.ISOFieldContent.ANS">
             <summary>Data consist only of alphabetic, numeric and special characters</summary>
         </member>
-        <member name="F:ISO8583Net.ISOFieldContent.AS">
+        <member name="F:ISO8583Net.Types.ISOFieldContent.AS">
             <summary>Data consist only of alphabetic and special characters</summary>
         </member>
-        <member name="F:ISO8583Net.ISOFieldContent.HD">
+        <member name="F:ISO8583Net.Types.ISOFieldContent.HD">
             <summary>Data consist only of hexadecimal digits</summary>
         </member>
-        <member name="F:ISO8583Net.ISOFieldContent.N">
+        <member name="F:ISO8583Net.Types.ISOFieldContent.N">
             <summary>Data consist only of numeric digits</summary>
         </member>
-        <member name="F:ISO8583Net.ISOFieldContent.NS">
+        <member name="F:ISO8583Net.Types.ISOFieldContent.NS">
             <summary>Data consist only of numeric digits and special characters</summary>
         </member>
-        <member name="F:ISO8583Net.ISOFieldContent.TRACK2">
+        <member name="F:ISO8583Net.Types.ISOFieldContent.TRACK2">
             <summary>Data consist only of valid TRACK2 characters</summary>
         </member>
-        <member name="T:ISO8583Net.ISOUtils">
+        <member name="T:ISO8583Net.Utils.ISOUtils">
             <summary>
-            The ISO8583Utils Class Contains all methods for performing fast conversion between different data types.
+            The ISO8583Utils Class Contains all methods for performing fast conversion between different data types
             </summary>
             <remarks>
             This class can perform the below convertsions:
             </remarks>
         </member>
-        <member name="F:ISO8583Net.ISOUtils._os_toascii">
+        <member name="F:ISO8583Net.Utils.ISOUtils._os_toascii">
             <summary>Static array for fast lookup to convert from ebcdic to ascii</summary>
         </member>
-        <member name="F:ISO8583Net.ISOUtils._os_toebcdic">
+        <member name="F:ISO8583Net.Utils.ISOUtils._os_toebcdic">
             <summary>Static array for fast lookup to convert from ascii to ebcdic</summary>
         </member>
-        <member name="F:ISO8583Net.ISOUtils._lookup32">
+        <member name="F:ISO8583Net.Utils.ISOUtils._lookup32">
             <summary>Static array for fast lookup to convert from bytes to hex</summary>
         </member>
-        <member name="M:ISO8583Net.ISOUtils.SubArray``1(``0[],System.Int32,System.Int32)">
+        <member name="M:ISO8583Net.Utils.ISOUtils.SubArray``1(``0[],System.Int32,System.Int32)">
             <summary>
             Extents array functionality by allowing to get a new array (sub array) from an array
             </summary>
             <param name="data">The array from where subarray will be created</param>  
             <param name="index">Starting position for the sub array</param>  
-            <param name="length">LEngth of sub arrat starting from postion index</param>  
+            <param name="length">Length of sub arrayt starting from postion index</param>  
         </member>
-        <member name="M:ISO8583Net.ISOUtils.int2Bytes(System.Int32,System.Byte[],System.Int32@,System.Int32)">
+        <member name="M:ISO8583Net.Utils.ISOUtils.BufferConcat(System.Byte[],System.Byte[])">
+            <summary>
+            Extents array functionality by allowing to concatenate two arrays
+            </summary>
+            <param name="inData1">The first arrays to be concatanated with the next array</param>  
+            <param name="inData2">The arrays to be concatanate to the previous array</param>  
+        </member>
+        <member name="M:ISO8583Net.Utils.ISOUtils.int2Bytes(System.Int32,System.Byte[],System.Int32@,System.Int32)">
             <summary>
             Adds two integers and returns the result.
             </summary>
             <param name="value">The integer to be convert to bytes</param>  
         </member>
-        <member name="M:ISO8583Net.ISOUtils.bytes2int(System.Byte[],System.Int32@,System.Int32)">
+        <member name="M:ISO8583Net.Utils.ISOUtils.bytes2int(System.Byte[],System.Int32@,System.Int32)">
             <summary>
             Adds two integers and returns the result.
             </summary>
             <param name="value">The integer to be convert to bytes</param>  
         </member>
-        <member name="M:ISO8583Net.ISOUtils.int2Bcd(System.Int32,System.Byte[],System.Int32@,System.Int32)">
+        <member name="M:ISO8583Net.Utils.ISOUtils.int2Bcd(System.Int32,System.Byte[],System.Int32@,System.Int32)">
             <summary>
             Adds two integers and returns the result.
             </summary>
             <param name="value">The integer to be convert to bytes</param>  
         </member>
-        <member name="M:ISO8583Net.ISOUtils.int2ascii(System.Int32,System.Byte[],System.Int32@,System.Int32)">
+        <member name="M:ISO8583Net.Utils.ISOUtils.int2ascii(System.Int32,System.Byte[],System.Int32@,System.Int32)">
             <summary>
             Adds two integers and returns the result.
             </summary>
             <param name="value">The integer to be convert to bytes</param>  
         </member>
-        <member name="M:ISO8583Net.ISOUtils.int2ebcdic(System.Int32,System.Byte[],System.Int32@,System.Int32)">
+        <member name="M:ISO8583Net.Utils.ISOUtils.int2ebcdic(System.Int32,System.Byte[],System.Int32@,System.Int32)">
             <summary>
             Adds two integers and returns the result.
             </summary>
             <param name="value">The integer to be convert to bytes</param>  
         </member>
-        <member name="M:ISO8583Net.ISOUtils.ascii2bcd(System.String,System.Byte[],System.Int32@,ISO8583Net.ISOFieldPadding)">
+        <member name="M:ISO8583Net.Utils.ISOUtils.ascii2bcd(System.String,System.Byte[],System.Int32@,ISO8583Net.Types.ISOFieldPadding)">
             <summary>
             Adds two integers and returns the result.
             </summary>
         </member>
-        <member name="M:ISO8583Net.ISOUtils.bcd2ascii(System.Byte[],System.Int32@,ISO8583Net.ISOFieldPadding,System.Int32)">
-            <summary>
-            Adds two integers and returns the result.
-            </summary>
-            <param name="value">The integer to be convert to bytes</param>  
-        </member>
-        <member name="M:ISO8583Net.ISOUtils.ascii2bytes(System.String,System.Byte[],System.Int32@)">
+        <member name="M:ISO8583Net.Utils.ISOUtils.bcd2ascii(System.Byte[],System.Int32@,ISO8583Net.Types.ISOFieldPadding,System.Int32)">
             <summary>
             Adds two integers and returns the result.
             </summary>
             <param name="value">The integer to be convert to bytes</param>  
         </member>
-        <member name="M:ISO8583Net.ISOUtils.bytes2ascii(System.Byte[],System.Int32@,System.Int32)">
+        <member name="M:ISO8583Net.Utils.ISOUtils.ascii2bytes(System.String,System.Byte[],System.Int32@)">
             <summary>
             Adds two integers and returns the result.
             </summary>
             <param name="value">The integer to be convert to bytes</param>  
         </member>
-        <member name="M:ISO8583Net.ISOUtils.hex2bytes(System.String,System.Byte[],System.Int32@)">
+        <member name="M:ISO8583Net.Utils.ISOUtils.bytes2ascii(System.Byte[],System.Int32@,System.Int32)">
             <summary>
             Adds two integers and returns the result.
             </summary>
             <param name="value">The integer to be convert to bytes</param>  
         </member>
-        <member name="M:ISO8583Net.ISOUtils.hex2bytes(System.String)">
+        <member name="M:ISO8583Net.Utils.ISOUtils.hex2bytes(System.String,System.Byte[],System.Int32@)">
             <summary>
             Adds two integers and returns the result.
             </summary>
             <param name="value">The integer to be convert to bytes</param>  
         </member>
-        <member name="M:ISO8583Net.ISOUtils.bytes2hex(System.Byte[],System.Int32@,System.Int32)">
+        <member name="M:ISO8583Net.Utils.ISOUtils.hex2bytes(System.String)">
             <summary>
             Adds two integers and returns the result.
             </summary>
             <param name="value">The integer to be convert to bytes</param>  
         </member>
-        <member name="M:ISO8583Net.ISOUtils.bytes2hex(System.Byte[])">
+        <member name="M:ISO8583Net.Utils.ISOUtils.bytes2hex(System.Byte[],System.Int32@,System.Int32)">
             <summary>
             Adds two integers and returns the result.
             </summary>
             <param name="value">The integer to be convert to bytes</param>  
         </member>
-        <member name="M:ISO8583Net.ISOUtils.ascii2ebcdic(System.String,System.Byte[],System.Int32@)">
+        <member name="M:ISO8583Net.Utils.ISOUtils.bytes2hex(System.Byte[])">
             <summary>
             Adds two integers and returns the result.
             </summary>
             <param name="value">The integer to be convert to bytes</param>  
         </member>
-        <member name="M:ISO8583Net.ISOUtils.ebcdic2ascii(System.Byte[],System.Int32@,System.Int32)">
+        <member name="M:ISO8583Net.Utils.ISOUtils.ascii2ebcdic(System.String,System.Byte[],System.Int32@)">
             <summary>
             Adds two integers and returns the result.
             </summary>
             <param name="value">The integer to be convert to bytes</param>  
         </member>
-        <member name="M:ISO8583Net.ISOUtils.checkIsOnlyDigits(System.String)">
+        <member name="M:ISO8583Net.Utils.ISOUtils.ebcdic2ascii(System.Byte[],System.Int32@,System.Int32)">
             <summary>
             Adds two integers and returns the result.
             </summary>
             <param name="value">The integer to be convert to bytes</param>  
         </member>
-        <member name="M:ISO8583Net.ISOUtils.checkIsHexDigits(System.String)">
+        <member name="M:ISO8583Net.Utils.ISOUtils.checkIsOnlyDigits(System.String)">
             <summary>
             Adds two integers and returns the result.
             </summary>
             <param name="value">The integer to be convert to bytes</param>  
         </member>
-        <member name="M:ISO8583Net.ISOUtils.isASCII(System.String)">
+        <member name="M:ISO8583Net.Utils.ISOUtils.checkIsHexDigits(System.String)">
             <summary>
             Adds two integers and returns the result.
             </summary>
             <param name="value">The integer to be convert to bytes</param>  
         </member>
-        <member name="M:ISO8583Net.ISOUtils.PrintHEX(System.Byte[],System.Int32)">
+        <member name="M:ISO8583Net.Utils.ISOUtils.isASCII(System.String)">
+            <summary>
+            Adds two integers and returns the result.
+            </summary>
+            <param name="value">The integer to be convert to bytes</param>  
+        </member>
+        <member name="M:ISO8583Net.Utils.ISOUtils.PrintHEX(System.Byte[],System.Int32)">
             <summary>
             Adds two integers and returns the result.
             </summary>

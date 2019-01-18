@@ -1,531 +1,537 @@
 ### YamlMime:XRefMap
 sorted: true
 references:
-- uid: ISO8583Net
-  name: ISO8583Net
-  href: site/api/ISO8583Net.html
-  commentId: N:ISO8583Net
-  fullName: ISO8583Net
-  nameWithType: ISO8583Net
-- uid: ISO8583Net.ISOFieldCoding
+- uid: ISO8583Net.Types
+  name: ISO8583Net.Types
+  href: site/api/ISO8583Net.Types.html
+  commentId: N:ISO8583Net.Types
+  fullName: ISO8583Net.Types
+  nameWithType: ISO8583Net.Types
+- uid: ISO8583Net.Types.ISOFieldCoding
   name: ISOFieldCoding
-  href: site/api/ISO8583Net.ISOFieldCoding.html
-  commentId: T:ISO8583Net.ISOFieldCoding
-  fullName: ISO8583Net.ISOFieldCoding
+  href: site/api/ISO8583Net.Types.ISOFieldCoding.html
+  commentId: T:ISO8583Net.Types.ISOFieldCoding
+  fullName: ISO8583Net.Types.ISOFieldCoding
   nameWithType: ISOFieldCoding
-- uid: ISO8583Net.ISOFieldCoding.ASCII
+- uid: ISO8583Net.Types.ISOFieldCoding.ASCII
   name: ASCII
-  href: site/api/ISO8583Net.ISOFieldCoding.html#ISO8583Net_ISOFieldCoding_ASCII
-  commentId: F:ISO8583Net.ISOFieldCoding.ASCII
-  fullName: ISO8583Net.ISOFieldCoding.ASCII
+  href: site/api/ISO8583Net.Types.ISOFieldCoding.html#ISO8583Net_Types_ISOFieldCoding_ASCII
+  commentId: F:ISO8583Net.Types.ISOFieldCoding.ASCII
+  fullName: ISO8583Net.Types.ISOFieldCoding.ASCII
   nameWithType: ISOFieldCoding.ASCII
-- uid: ISO8583Net.ISOFieldCoding.BCD
+- uid: ISO8583Net.Types.ISOFieldCoding.BCD
   name: BCD
-  href: site/api/ISO8583Net.ISOFieldCoding.html#ISO8583Net_ISOFieldCoding_BCD
-  commentId: F:ISO8583Net.ISOFieldCoding.BCD
-  fullName: ISO8583Net.ISOFieldCoding.BCD
+  href: site/api/ISO8583Net.Types.ISOFieldCoding.html#ISO8583Net_Types_ISOFieldCoding_BCD
+  commentId: F:ISO8583Net.Types.ISOFieldCoding.BCD
+  fullName: ISO8583Net.Types.ISOFieldCoding.BCD
   nameWithType: ISOFieldCoding.BCD
-- uid: ISO8583Net.ISOFieldCoding.BCDU
+- uid: ISO8583Net.Types.ISOFieldCoding.BCDU
   name: BCDU
-  href: site/api/ISO8583Net.ISOFieldCoding.html#ISO8583Net_ISOFieldCoding_BCDU
-  commentId: F:ISO8583Net.ISOFieldCoding.BCDU
-  fullName: ISO8583Net.ISOFieldCoding.BCDU
+  href: site/api/ISO8583Net.Types.ISOFieldCoding.html#ISO8583Net_Types_ISOFieldCoding_BCDU
+  commentId: F:ISO8583Net.Types.ISOFieldCoding.BCDU
+  fullName: ISO8583Net.Types.ISOFieldCoding.BCDU
   nameWithType: ISOFieldCoding.BCDU
-- uid: ISO8583Net.ISOFieldCoding.BIN
+- uid: ISO8583Net.Types.ISOFieldCoding.BIN
   name: BIN
-  href: site/api/ISO8583Net.ISOFieldCoding.html#ISO8583Net_ISOFieldCoding_BIN
-  commentId: F:ISO8583Net.ISOFieldCoding.BIN
-  fullName: ISO8583Net.ISOFieldCoding.BIN
+  href: site/api/ISO8583Net.Types.ISOFieldCoding.html#ISO8583Net_Types_ISOFieldCoding_BIN
+  commentId: F:ISO8583Net.Types.ISOFieldCoding.BIN
+  fullName: ISO8583Net.Types.ISOFieldCoding.BIN
   nameWithType: ISOFieldCoding.BIN
-- uid: ISO8583Net.ISOFieldCoding.EBCDIC
+- uid: ISO8583Net.Types.ISOFieldCoding.EBCDIC
   name: EBCDIC
-  href: site/api/ISO8583Net.ISOFieldCoding.html#ISO8583Net_ISOFieldCoding_EBCDIC
-  commentId: F:ISO8583Net.ISOFieldCoding.EBCDIC
-  fullName: ISO8583Net.ISOFieldCoding.EBCDIC
+  href: site/api/ISO8583Net.Types.ISOFieldCoding.html#ISO8583Net_Types_ISOFieldCoding_EBCDIC
+  commentId: F:ISO8583Net.Types.ISOFieldCoding.EBCDIC
+  fullName: ISO8583Net.Types.ISOFieldCoding.EBCDIC
   nameWithType: ISOFieldCoding.EBCDIC
-- uid: ISO8583Net.ISOFieldCoding.Z
+- uid: ISO8583Net.Types.ISOFieldCoding.Z
   name: Z
-  href: site/api/ISO8583Net.ISOFieldCoding.html#ISO8583Net_ISOFieldCoding_Z
-  commentId: F:ISO8583Net.ISOFieldCoding.Z
-  fullName: ISO8583Net.ISOFieldCoding.Z
+  href: site/api/ISO8583Net.Types.ISOFieldCoding.html#ISO8583Net_Types_ISOFieldCoding_Z
+  commentId: F:ISO8583Net.Types.ISOFieldCoding.Z
+  fullName: ISO8583Net.Types.ISOFieldCoding.Z
   nameWithType: ISOFieldCoding.Z
-- uid: ISO8583Net.ISOFieldContent
+- uid: ISO8583Net.Types.ISOFieldContent
   name: ISOFieldContent
-  href: site/api/ISO8583Net.ISOFieldContent.html
-  commentId: T:ISO8583Net.ISOFieldContent
-  fullName: ISO8583Net.ISOFieldContent
+  href: site/api/ISO8583Net.Types.ISOFieldContent.html
+  commentId: T:ISO8583Net.Types.ISOFieldContent
+  fullName: ISO8583Net.Types.ISOFieldContent
   nameWithType: ISOFieldContent
-- uid: ISO8583Net.ISOFieldContent.A
+- uid: ISO8583Net.Types.ISOFieldContent.A
   name: A
-  href: site/api/ISO8583Net.ISOFieldContent.html#ISO8583Net_ISOFieldContent_A
-  commentId: F:ISO8583Net.ISOFieldContent.A
-  fullName: ISO8583Net.ISOFieldContent.A
+  href: site/api/ISO8583Net.Types.ISOFieldContent.html#ISO8583Net_Types_ISOFieldContent_A
+  commentId: F:ISO8583Net.Types.ISOFieldContent.A
+  fullName: ISO8583Net.Types.ISOFieldContent.A
   nameWithType: ISOFieldContent.A
-- uid: ISO8583Net.ISOFieldContent.AN
+- uid: ISO8583Net.Types.ISOFieldContent.AN
   name: AN
-  href: site/api/ISO8583Net.ISOFieldContent.html#ISO8583Net_ISOFieldContent_AN
-  commentId: F:ISO8583Net.ISOFieldContent.AN
-  fullName: ISO8583Net.ISOFieldContent.AN
+  href: site/api/ISO8583Net.Types.ISOFieldContent.html#ISO8583Net_Types_ISOFieldContent_AN
+  commentId: F:ISO8583Net.Types.ISOFieldContent.AN
+  fullName: ISO8583Net.Types.ISOFieldContent.AN
   nameWithType: ISOFieldContent.AN
-- uid: ISO8583Net.ISOFieldContent.ANP
+- uid: ISO8583Net.Types.ISOFieldContent.ANP
   name: ANP
-  href: site/api/ISO8583Net.ISOFieldContent.html#ISO8583Net_ISOFieldContent_ANP
-  commentId: F:ISO8583Net.ISOFieldContent.ANP
-  fullName: ISO8583Net.ISOFieldContent.ANP
+  href: site/api/ISO8583Net.Types.ISOFieldContent.html#ISO8583Net_Types_ISOFieldContent_ANP
+  commentId: F:ISO8583Net.Types.ISOFieldContent.ANP
+  fullName: ISO8583Net.Types.ISOFieldContent.ANP
   nameWithType: ISOFieldContent.ANP
-- uid: ISO8583Net.ISOFieldContent.ANS
+- uid: ISO8583Net.Types.ISOFieldContent.ANS
   name: ANS
-  href: site/api/ISO8583Net.ISOFieldContent.html#ISO8583Net_ISOFieldContent_ANS
-  commentId: F:ISO8583Net.ISOFieldContent.ANS
-  fullName: ISO8583Net.ISOFieldContent.ANS
+  href: site/api/ISO8583Net.Types.ISOFieldContent.html#ISO8583Net_Types_ISOFieldContent_ANS
+  commentId: F:ISO8583Net.Types.ISOFieldContent.ANS
+  fullName: ISO8583Net.Types.ISOFieldContent.ANS
   nameWithType: ISOFieldContent.ANS
-- uid: ISO8583Net.ISOFieldContent.AS
+- uid: ISO8583Net.Types.ISOFieldContent.AS
   name: AS
-  href: site/api/ISO8583Net.ISOFieldContent.html#ISO8583Net_ISOFieldContent_AS
-  commentId: F:ISO8583Net.ISOFieldContent.AS
-  fullName: ISO8583Net.ISOFieldContent.AS
+  href: site/api/ISO8583Net.Types.ISOFieldContent.html#ISO8583Net_Types_ISOFieldContent_AS
+  commentId: F:ISO8583Net.Types.ISOFieldContent.AS
+  fullName: ISO8583Net.Types.ISOFieldContent.AS
   nameWithType: ISOFieldContent.AS
-- uid: ISO8583Net.ISOFieldContent.HD
+- uid: ISO8583Net.Types.ISOFieldContent.HD
   name: HD
-  href: site/api/ISO8583Net.ISOFieldContent.html#ISO8583Net_ISOFieldContent_HD
-  commentId: F:ISO8583Net.ISOFieldContent.HD
-  fullName: ISO8583Net.ISOFieldContent.HD
+  href: site/api/ISO8583Net.Types.ISOFieldContent.html#ISO8583Net_Types_ISOFieldContent_HD
+  commentId: F:ISO8583Net.Types.ISOFieldContent.HD
+  fullName: ISO8583Net.Types.ISOFieldContent.HD
   nameWithType: ISOFieldContent.HD
-- uid: ISO8583Net.ISOFieldContent.N
+- uid: ISO8583Net.Types.ISOFieldContent.N
   name: N
-  href: site/api/ISO8583Net.ISOFieldContent.html#ISO8583Net_ISOFieldContent_N
-  commentId: F:ISO8583Net.ISOFieldContent.N
-  fullName: ISO8583Net.ISOFieldContent.N
+  href: site/api/ISO8583Net.Types.ISOFieldContent.html#ISO8583Net_Types_ISOFieldContent_N
+  commentId: F:ISO8583Net.Types.ISOFieldContent.N
+  fullName: ISO8583Net.Types.ISOFieldContent.N
   nameWithType: ISOFieldContent.N
-- uid: ISO8583Net.ISOFieldContent.NS
+- uid: ISO8583Net.Types.ISOFieldContent.NS
   name: NS
-  href: site/api/ISO8583Net.ISOFieldContent.html#ISO8583Net_ISOFieldContent_NS
-  commentId: F:ISO8583Net.ISOFieldContent.NS
-  fullName: ISO8583Net.ISOFieldContent.NS
+  href: site/api/ISO8583Net.Types.ISOFieldContent.html#ISO8583Net_Types_ISOFieldContent_NS
+  commentId: F:ISO8583Net.Types.ISOFieldContent.NS
+  fullName: ISO8583Net.Types.ISOFieldContent.NS
   nameWithType: ISOFieldContent.NS
-- uid: ISO8583Net.ISOFieldContent.TRACK2
+- uid: ISO8583Net.Types.ISOFieldContent.TRACK2
   name: TRACK2
-  href: site/api/ISO8583Net.ISOFieldContent.html#ISO8583Net_ISOFieldContent_TRACK2
-  commentId: F:ISO8583Net.ISOFieldContent.TRACK2
-  fullName: ISO8583Net.ISOFieldContent.TRACK2
+  href: site/api/ISO8583Net.Types.ISOFieldContent.html#ISO8583Net_Types_ISOFieldContent_TRACK2
+  commentId: F:ISO8583Net.Types.ISOFieldContent.TRACK2
+  fullName: ISO8583Net.Types.ISOFieldContent.TRACK2
   nameWithType: ISOFieldContent.TRACK2
-- uid: ISO8583Net.ISOFieldLengthFormat
+- uid: ISO8583Net.Types.ISOFieldLengthFormat
   name: ISOFieldLengthFormat
-  href: site/api/ISO8583Net.ISOFieldLengthFormat.html
-  commentId: T:ISO8583Net.ISOFieldLengthFormat
-  fullName: ISO8583Net.ISOFieldLengthFormat
+  href: site/api/ISO8583Net.Types.ISOFieldLengthFormat.html
+  commentId: T:ISO8583Net.Types.ISOFieldLengthFormat
+  fullName: ISO8583Net.Types.ISOFieldLengthFormat
   nameWithType: ISOFieldLengthFormat
-- uid: ISO8583Net.ISOFieldLengthFormat.FIXED
+- uid: ISO8583Net.Types.ISOFieldLengthFormat.FIXED
   name: FIXED
-  href: site/api/ISO8583Net.ISOFieldLengthFormat.html#ISO8583Net_ISOFieldLengthFormat_FIXED
-  commentId: F:ISO8583Net.ISOFieldLengthFormat.FIXED
-  fullName: ISO8583Net.ISOFieldLengthFormat.FIXED
+  href: site/api/ISO8583Net.Types.ISOFieldLengthFormat.html#ISO8583Net_Types_ISOFieldLengthFormat_FIXED
+  commentId: F:ISO8583Net.Types.ISOFieldLengthFormat.FIXED
+  fullName: ISO8583Net.Types.ISOFieldLengthFormat.FIXED
   nameWithType: ISOFieldLengthFormat.FIXED
-- uid: ISO8583Net.ISOFieldLengthFormat.VAR
+- uid: ISO8583Net.Types.ISOFieldLengthFormat.VAR
   name: VAR
-  href: site/api/ISO8583Net.ISOFieldLengthFormat.html#ISO8583Net_ISOFieldLengthFormat_VAR
-  commentId: F:ISO8583Net.ISOFieldLengthFormat.VAR
-  fullName: ISO8583Net.ISOFieldLengthFormat.VAR
+  href: site/api/ISO8583Net.Types.ISOFieldLengthFormat.html#ISO8583Net_Types_ISOFieldLengthFormat_VAR
+  commentId: F:ISO8583Net.Types.ISOFieldLengthFormat.VAR
+  fullName: ISO8583Net.Types.ISOFieldLengthFormat.VAR
   nameWithType: ISOFieldLengthFormat.VAR
-- uid: ISO8583Net.ISOFieldPadding
+- uid: ISO8583Net.Types.ISOFieldPadding
   name: ISOFieldPadding
-  href: site/api/ISO8583Net.ISOFieldPadding.html
-  commentId: T:ISO8583Net.ISOFieldPadding
-  fullName: ISO8583Net.ISOFieldPadding
+  href: site/api/ISO8583Net.Types.ISOFieldPadding.html
+  commentId: T:ISO8583Net.Types.ISOFieldPadding
+  fullName: ISO8583Net.Types.ISOFieldPadding
   nameWithType: ISOFieldPadding
-- uid: ISO8583Net.ISOFieldPadding.LEFT
+- uid: ISO8583Net.Types.ISOFieldPadding.LEFT
   name: LEFT
-  href: site/api/ISO8583Net.ISOFieldPadding.html#ISO8583Net_ISOFieldPadding_LEFT
-  commentId: F:ISO8583Net.ISOFieldPadding.LEFT
-  fullName: ISO8583Net.ISOFieldPadding.LEFT
+  href: site/api/ISO8583Net.Types.ISOFieldPadding.html#ISO8583Net_Types_ISOFieldPadding_LEFT
+  commentId: F:ISO8583Net.Types.ISOFieldPadding.LEFT
+  fullName: ISO8583Net.Types.ISOFieldPadding.LEFT
   nameWithType: ISOFieldPadding.LEFT
-- uid: ISO8583Net.ISOFieldPadding.NONE
+- uid: ISO8583Net.Types.ISOFieldPadding.NONE
   name: NONE
-  href: site/api/ISO8583Net.ISOFieldPadding.html#ISO8583Net_ISOFieldPadding_NONE
-  commentId: F:ISO8583Net.ISOFieldPadding.NONE
-  fullName: ISO8583Net.ISOFieldPadding.NONE
+  href: site/api/ISO8583Net.Types.ISOFieldPadding.html#ISO8583Net_Types_ISOFieldPadding_NONE
+  commentId: F:ISO8583Net.Types.ISOFieldPadding.NONE
+  fullName: ISO8583Net.Types.ISOFieldPadding.NONE
   nameWithType: ISOFieldPadding.NONE
-- uid: ISO8583Net.ISOFieldPadding.RIGHT
+- uid: ISO8583Net.Types.ISOFieldPadding.RIGHT
   name: RIGHT
-  href: site/api/ISO8583Net.ISOFieldPadding.html#ISO8583Net_ISOFieldPadding_RIGHT
-  commentId: F:ISO8583Net.ISOFieldPadding.RIGHT
-  fullName: ISO8583Net.ISOFieldPadding.RIGHT
+  href: site/api/ISO8583Net.Types.ISOFieldPadding.html#ISO8583Net_Types_ISOFieldPadding_RIGHT
+  commentId: F:ISO8583Net.Types.ISOFieldPadding.RIGHT
+  fullName: ISO8583Net.Types.ISOFieldPadding.RIGHT
   nameWithType: ISOFieldPadding.RIGHT
-- uid: ISO8583Net.ISOFieldParticipation
+- uid: ISO8583Net.Types.ISOFieldParticipation
   name: ISOFieldParticipation
-  href: site/api/ISO8583Net.ISOFieldParticipation.html
-  commentId: T:ISO8583Net.ISOFieldParticipation
-  fullName: ISO8583Net.ISOFieldParticipation
+  href: site/api/ISO8583Net.Types.ISOFieldParticipation.html
+  commentId: T:ISO8583Net.Types.ISOFieldParticipation
+  fullName: ISO8583Net.Types.ISOFieldParticipation
   nameWithType: ISOFieldParticipation
-- uid: ISO8583Net.ISOFieldParticipation.CON
+- uid: ISO8583Net.Types.ISOFieldParticipation.CON
   name: CON
-  href: site/api/ISO8583Net.ISOFieldParticipation.html#ISO8583Net_ISOFieldParticipation_CON
-  commentId: F:ISO8583Net.ISOFieldParticipation.CON
-  fullName: ISO8583Net.ISOFieldParticipation.CON
+  href: site/api/ISO8583Net.Types.ISOFieldParticipation.html#ISO8583Net_Types_ISOFieldParticipation_CON
+  commentId: F:ISO8583Net.Types.ISOFieldParticipation.CON
+  fullName: ISO8583Net.Types.ISOFieldParticipation.CON
   nameWithType: ISOFieldParticipation.CON
-- uid: ISO8583Net.ISOFieldParticipation.MAN
+- uid: ISO8583Net.Types.ISOFieldParticipation.MAN
   name: MAN
-  href: site/api/ISO8583Net.ISOFieldParticipation.html#ISO8583Net_ISOFieldParticipation_MAN
-  commentId: F:ISO8583Net.ISOFieldParticipation.MAN
-  fullName: ISO8583Net.ISOFieldParticipation.MAN
+  href: site/api/ISO8583Net.Types.ISOFieldParticipation.html#ISO8583Net_Types_ISOFieldParticipation_MAN
+  commentId: F:ISO8583Net.Types.ISOFieldParticipation.MAN
+  fullName: ISO8583Net.Types.ISOFieldParticipation.MAN
   nameWithType: ISOFieldParticipation.MAN
-- uid: ISO8583Net.ISOFieldParticipation.OPT
+- uid: ISO8583Net.Types.ISOFieldParticipation.OPT
   name: OPT
-  href: site/api/ISO8583Net.ISOFieldParticipation.html#ISO8583Net_ISOFieldParticipation_OPT
-  commentId: F:ISO8583Net.ISOFieldParticipation.OPT
-  fullName: ISO8583Net.ISOFieldParticipation.OPT
+  href: site/api/ISO8583Net.Types.ISOFieldParticipation.html#ISO8583Net_Types_ISOFieldParticipation_OPT
+  commentId: F:ISO8583Net.Types.ISOFieldParticipation.OPT
+  fullName: ISO8583Net.Types.ISOFieldParticipation.OPT
   nameWithType: ISOFieldParticipation.OPT
-- uid: ISO8583Net.ISOUtils
+- uid: ISO8583Net.Utils
+  name: ISO8583Net.Utils
+  href: site/api/ISO8583Net.Utils.html
+  commentId: N:ISO8583Net.Utils
+  fullName: ISO8583Net.Utils
+  nameWithType: ISO8583Net.Utils
+- uid: ISO8583Net.Utils.ISOUtils
   name: ISOUtils
-  href: site/api/ISO8583Net.ISOUtils.html
-  commentId: T:ISO8583Net.ISOUtils
-  fullName: ISO8583Net.ISOUtils
+  href: site/api/ISO8583Net.Utils.ISOUtils.html
+  commentId: T:ISO8583Net.Utils.ISOUtils
+  fullName: ISO8583Net.Utils.ISOUtils
   nameWithType: ISOUtils
-- uid: ISO8583Net.ISOUtils.ascii2bcd(System.String,System.Byte[],System.Int32@,ISO8583Net.ISOFieldPadding)
+- uid: ISO8583Net.Utils.ISOUtils.ascii2bcd(System.String,System.Byte[],System.Int32@,ISO8583Net.Types.ISOFieldPadding)
   name: ascii2bcd(String, Byte[], ref Int32, ISOFieldPadding)
-  href: site/api/ISO8583Net.ISOUtils.html#ISO8583Net_ISOUtils_ascii2bcd_System_String_System_Byte___System_Int32__ISO8583Net_ISOFieldPadding_
-  commentId: M:ISO8583Net.ISOUtils.ascii2bcd(System.String,System.Byte[],System.Int32@,ISO8583Net.ISOFieldPadding)
+  href: site/api/ISO8583Net.Utils.ISOUtils.html#ISO8583Net_Utils_ISOUtils_ascii2bcd_System_String_System_Byte___System_Int32__ISO8583Net_Types_ISOFieldPadding_
+  commentId: M:ISO8583Net.Utils.ISOUtils.ascii2bcd(System.String,System.Byte[],System.Int32@,ISO8583Net.Types.ISOFieldPadding)
   name.vb: ascii2bcd(String, Byte(), ByRef Int32, ISOFieldPadding)
-  fullName: ISO8583Net.ISOUtils.ascii2bcd(System.String, System.Byte[], ref System.Int32, ISO8583Net.ISOFieldPadding)
-  fullName.vb: ISO8583Net.ISOUtils.ascii2bcd(System.String, System.Byte(), ByRef System.Int32, ISO8583Net.ISOFieldPadding)
+  fullName: ISO8583Net.Utils.ISOUtils.ascii2bcd(System.String, System.Byte[], ref System.Int32, ISO8583Net.Types.ISOFieldPadding)
+  fullName.vb: ISO8583Net.Utils.ISOUtils.ascii2bcd(System.String, System.Byte(), ByRef System.Int32, ISO8583Net.Types.ISOFieldPadding)
   nameWithType: ISOUtils.ascii2bcd(String, Byte[], ref Int32, ISOFieldPadding)
   nameWithType.vb: ISOUtils.ascii2bcd(String, Byte(), ByRef Int32, ISOFieldPadding)
-- uid: ISO8583Net.ISOUtils.ascii2bcd*
+- uid: ISO8583Net.Utils.ISOUtils.ascii2bcd*
   name: ascii2bcd
-  href: site/api/ISO8583Net.ISOUtils.html#ISO8583Net_ISOUtils_ascii2bcd_
-  commentId: Overload:ISO8583Net.ISOUtils.ascii2bcd
+  href: site/api/ISO8583Net.Utils.ISOUtils.html#ISO8583Net_Utils_ISOUtils_ascii2bcd_
+  commentId: Overload:ISO8583Net.Utils.ISOUtils.ascii2bcd
   isSpec: "True"
-  fullName: ISO8583Net.ISOUtils.ascii2bcd
+  fullName: ISO8583Net.Utils.ISOUtils.ascii2bcd
   nameWithType: ISOUtils.ascii2bcd
-- uid: ISO8583Net.ISOUtils.ascii2bytes(System.String,System.Byte[],System.Int32@)
+- uid: ISO8583Net.Utils.ISOUtils.ascii2bytes(System.String,System.Byte[],System.Int32@)
   name: ascii2bytes(String, Byte[], ref Int32)
-  href: site/api/ISO8583Net.ISOUtils.html#ISO8583Net_ISOUtils_ascii2bytes_System_String_System_Byte___System_Int32__
-  commentId: M:ISO8583Net.ISOUtils.ascii2bytes(System.String,System.Byte[],System.Int32@)
+  href: site/api/ISO8583Net.Utils.ISOUtils.html#ISO8583Net_Utils_ISOUtils_ascii2bytes_System_String_System_Byte___System_Int32__
+  commentId: M:ISO8583Net.Utils.ISOUtils.ascii2bytes(System.String,System.Byte[],System.Int32@)
   name.vb: ascii2bytes(String, Byte(), ByRef Int32)
-  fullName: ISO8583Net.ISOUtils.ascii2bytes(System.String, System.Byte[], ref System.Int32)
-  fullName.vb: ISO8583Net.ISOUtils.ascii2bytes(System.String, System.Byte(), ByRef System.Int32)
+  fullName: ISO8583Net.Utils.ISOUtils.ascii2bytes(System.String, System.Byte[], ref System.Int32)
+  fullName.vb: ISO8583Net.Utils.ISOUtils.ascii2bytes(System.String, System.Byte(), ByRef System.Int32)
   nameWithType: ISOUtils.ascii2bytes(String, Byte[], ref Int32)
   nameWithType.vb: ISOUtils.ascii2bytes(String, Byte(), ByRef Int32)
-- uid: ISO8583Net.ISOUtils.ascii2bytes*
+- uid: ISO8583Net.Utils.ISOUtils.ascii2bytes*
   name: ascii2bytes
-  href: site/api/ISO8583Net.ISOUtils.html#ISO8583Net_ISOUtils_ascii2bytes_
-  commentId: Overload:ISO8583Net.ISOUtils.ascii2bytes
+  href: site/api/ISO8583Net.Utils.ISOUtils.html#ISO8583Net_Utils_ISOUtils_ascii2bytes_
+  commentId: Overload:ISO8583Net.Utils.ISOUtils.ascii2bytes
   isSpec: "True"
-  fullName: ISO8583Net.ISOUtils.ascii2bytes
+  fullName: ISO8583Net.Utils.ISOUtils.ascii2bytes
   nameWithType: ISOUtils.ascii2bytes
-- uid: ISO8583Net.ISOUtils.ascii2ebcdic(System.String,System.Byte[],System.Int32@)
+- uid: ISO8583Net.Utils.ISOUtils.ascii2ebcdic(System.String,System.Byte[],System.Int32@)
   name: ascii2ebcdic(String, Byte[], ref Int32)
-  href: site/api/ISO8583Net.ISOUtils.html#ISO8583Net_ISOUtils_ascii2ebcdic_System_String_System_Byte___System_Int32__
-  commentId: M:ISO8583Net.ISOUtils.ascii2ebcdic(System.String,System.Byte[],System.Int32@)
+  href: site/api/ISO8583Net.Utils.ISOUtils.html#ISO8583Net_Utils_ISOUtils_ascii2ebcdic_System_String_System_Byte___System_Int32__
+  commentId: M:ISO8583Net.Utils.ISOUtils.ascii2ebcdic(System.String,System.Byte[],System.Int32@)
   name.vb: ascii2ebcdic(String, Byte(), ByRef Int32)
-  fullName: ISO8583Net.ISOUtils.ascii2ebcdic(System.String, System.Byte[], ref System.Int32)
-  fullName.vb: ISO8583Net.ISOUtils.ascii2ebcdic(System.String, System.Byte(), ByRef System.Int32)
+  fullName: ISO8583Net.Utils.ISOUtils.ascii2ebcdic(System.String, System.Byte[], ref System.Int32)
+  fullName.vb: ISO8583Net.Utils.ISOUtils.ascii2ebcdic(System.String, System.Byte(), ByRef System.Int32)
   nameWithType: ISOUtils.ascii2ebcdic(String, Byte[], ref Int32)
   nameWithType.vb: ISOUtils.ascii2ebcdic(String, Byte(), ByRef Int32)
-- uid: ISO8583Net.ISOUtils.ascii2ebcdic*
+- uid: ISO8583Net.Utils.ISOUtils.ascii2ebcdic*
   name: ascii2ebcdic
-  href: site/api/ISO8583Net.ISOUtils.html#ISO8583Net_ISOUtils_ascii2ebcdic_
-  commentId: Overload:ISO8583Net.ISOUtils.ascii2ebcdic
+  href: site/api/ISO8583Net.Utils.ISOUtils.html#ISO8583Net_Utils_ISOUtils_ascii2ebcdic_
+  commentId: Overload:ISO8583Net.Utils.ISOUtils.ascii2ebcdic
   isSpec: "True"
-  fullName: ISO8583Net.ISOUtils.ascii2ebcdic
+  fullName: ISO8583Net.Utils.ISOUtils.ascii2ebcdic
   nameWithType: ISOUtils.ascii2ebcdic
-- uid: ISO8583Net.ISOUtils.bcd2ascii(System.Byte[],System.Int32@,ISO8583Net.ISOFieldPadding,System.Int32)
+- uid: ISO8583Net.Utils.ISOUtils.bcd2ascii(System.Byte[],System.Int32@,ISO8583Net.Types.ISOFieldPadding,System.Int32)
   name: bcd2ascii(Byte[], ref Int32, ISOFieldPadding, Int32)
-  href: site/api/ISO8583Net.ISOUtils.html#ISO8583Net_ISOUtils_bcd2ascii_System_Byte___System_Int32__ISO8583Net_ISOFieldPadding_System_Int32_
-  commentId: M:ISO8583Net.ISOUtils.bcd2ascii(System.Byte[],System.Int32@,ISO8583Net.ISOFieldPadding,System.Int32)
+  href: site/api/ISO8583Net.Utils.ISOUtils.html#ISO8583Net_Utils_ISOUtils_bcd2ascii_System_Byte___System_Int32__ISO8583Net_Types_ISOFieldPadding_System_Int32_
+  commentId: M:ISO8583Net.Utils.ISOUtils.bcd2ascii(System.Byte[],System.Int32@,ISO8583Net.Types.ISOFieldPadding,System.Int32)
   name.vb: bcd2ascii(Byte(), ByRef Int32, ISOFieldPadding, Int32)
-  fullName: ISO8583Net.ISOUtils.bcd2ascii(System.Byte[], ref System.Int32, ISO8583Net.ISOFieldPadding, System.Int32)
-  fullName.vb: ISO8583Net.ISOUtils.bcd2ascii(System.Byte(), ByRef System.Int32, ISO8583Net.ISOFieldPadding, System.Int32)
+  fullName: ISO8583Net.Utils.ISOUtils.bcd2ascii(System.Byte[], ref System.Int32, ISO8583Net.Types.ISOFieldPadding, System.Int32)
+  fullName.vb: ISO8583Net.Utils.ISOUtils.bcd2ascii(System.Byte(), ByRef System.Int32, ISO8583Net.Types.ISOFieldPadding, System.Int32)
   nameWithType: ISOUtils.bcd2ascii(Byte[], ref Int32, ISOFieldPadding, Int32)
   nameWithType.vb: ISOUtils.bcd2ascii(Byte(), ByRef Int32, ISOFieldPadding, Int32)
-- uid: ISO8583Net.ISOUtils.bcd2ascii*
+- uid: ISO8583Net.Utils.ISOUtils.bcd2ascii*
   name: bcd2ascii
-  href: site/api/ISO8583Net.ISOUtils.html#ISO8583Net_ISOUtils_bcd2ascii_
-  commentId: Overload:ISO8583Net.ISOUtils.bcd2ascii
+  href: site/api/ISO8583Net.Utils.ISOUtils.html#ISO8583Net_Utils_ISOUtils_bcd2ascii_
+  commentId: Overload:ISO8583Net.Utils.ISOUtils.bcd2ascii
   isSpec: "True"
-  fullName: ISO8583Net.ISOUtils.bcd2ascii
+  fullName: ISO8583Net.Utils.ISOUtils.bcd2ascii
   nameWithType: ISOUtils.bcd2ascii
-- uid: ISO8583Net.ISOUtils.BufferConcat(System.Byte[],System.Byte[])
+- uid: ISO8583Net.Utils.ISOUtils.BufferConcat(System.Byte[],System.Byte[])
   name: BufferConcat(Byte[], Byte[])
-  href: site/api/ISO8583Net.ISOUtils.html#ISO8583Net_ISOUtils_BufferConcat_System_Byte___System_Byte___
-  commentId: M:ISO8583Net.ISOUtils.BufferConcat(System.Byte[],System.Byte[])
+  href: site/api/ISO8583Net.Utils.ISOUtils.html#ISO8583Net_Utils_ISOUtils_BufferConcat_System_Byte___System_Byte___
+  commentId: M:ISO8583Net.Utils.ISOUtils.BufferConcat(System.Byte[],System.Byte[])
   name.vb: BufferConcat(Byte(), Byte())
-  fullName: ISO8583Net.ISOUtils.BufferConcat(System.Byte[], System.Byte[])
-  fullName.vb: ISO8583Net.ISOUtils.BufferConcat(System.Byte(), System.Byte())
+  fullName: ISO8583Net.Utils.ISOUtils.BufferConcat(System.Byte[], System.Byte[])
+  fullName.vb: ISO8583Net.Utils.ISOUtils.BufferConcat(System.Byte(), System.Byte())
   nameWithType: ISOUtils.BufferConcat(Byte[], Byte[])
   nameWithType.vb: ISOUtils.BufferConcat(Byte(), Byte())
-- uid: ISO8583Net.ISOUtils.BufferConcat*
+- uid: ISO8583Net.Utils.ISOUtils.BufferConcat*
   name: BufferConcat
-  href: site/api/ISO8583Net.ISOUtils.html#ISO8583Net_ISOUtils_BufferConcat_
-  commentId: Overload:ISO8583Net.ISOUtils.BufferConcat
+  href: site/api/ISO8583Net.Utils.ISOUtils.html#ISO8583Net_Utils_ISOUtils_BufferConcat_
+  commentId: Overload:ISO8583Net.Utils.ISOUtils.BufferConcat
   isSpec: "True"
-  fullName: ISO8583Net.ISOUtils.BufferConcat
+  fullName: ISO8583Net.Utils.ISOUtils.BufferConcat
   nameWithType: ISOUtils.BufferConcat
-- uid: ISO8583Net.ISOUtils.bytes2ascii(System.Byte[],System.Int32@,System.Int32)
+- uid: ISO8583Net.Utils.ISOUtils.bytes2ascii(System.Byte[],System.Int32@,System.Int32)
   name: bytes2ascii(Byte[], ref Int32, Int32)
-  href: site/api/ISO8583Net.ISOUtils.html#ISO8583Net_ISOUtils_bytes2ascii_System_Byte___System_Int32__System_Int32_
-  commentId: M:ISO8583Net.ISOUtils.bytes2ascii(System.Byte[],System.Int32@,System.Int32)
+  href: site/api/ISO8583Net.Utils.ISOUtils.html#ISO8583Net_Utils_ISOUtils_bytes2ascii_System_Byte___System_Int32__System_Int32_
+  commentId: M:ISO8583Net.Utils.ISOUtils.bytes2ascii(System.Byte[],System.Int32@,System.Int32)
   name.vb: bytes2ascii(Byte(), ByRef Int32, Int32)
-  fullName: ISO8583Net.ISOUtils.bytes2ascii(System.Byte[], ref System.Int32, System.Int32)
-  fullName.vb: ISO8583Net.ISOUtils.bytes2ascii(System.Byte(), ByRef System.Int32, System.Int32)
+  fullName: ISO8583Net.Utils.ISOUtils.bytes2ascii(System.Byte[], ref System.Int32, System.Int32)
+  fullName.vb: ISO8583Net.Utils.ISOUtils.bytes2ascii(System.Byte(), ByRef System.Int32, System.Int32)
   nameWithType: ISOUtils.bytes2ascii(Byte[], ref Int32, Int32)
   nameWithType.vb: ISOUtils.bytes2ascii(Byte(), ByRef Int32, Int32)
-- uid: ISO8583Net.ISOUtils.bytes2ascii*
+- uid: ISO8583Net.Utils.ISOUtils.bytes2ascii*
   name: bytes2ascii
-  href: site/api/ISO8583Net.ISOUtils.html#ISO8583Net_ISOUtils_bytes2ascii_
-  commentId: Overload:ISO8583Net.ISOUtils.bytes2ascii
+  href: site/api/ISO8583Net.Utils.ISOUtils.html#ISO8583Net_Utils_ISOUtils_bytes2ascii_
+  commentId: Overload:ISO8583Net.Utils.ISOUtils.bytes2ascii
   isSpec: "True"
-  fullName: ISO8583Net.ISOUtils.bytes2ascii
+  fullName: ISO8583Net.Utils.ISOUtils.bytes2ascii
   nameWithType: ISOUtils.bytes2ascii
-- uid: ISO8583Net.ISOUtils.bytes2hex(System.Byte[])
+- uid: ISO8583Net.Utils.ISOUtils.bytes2hex(System.Byte[])
   name: bytes2hex(Byte[])
-  href: site/api/ISO8583Net.ISOUtils.html#ISO8583Net_ISOUtils_bytes2hex_System_Byte___
-  commentId: M:ISO8583Net.ISOUtils.bytes2hex(System.Byte[])
+  href: site/api/ISO8583Net.Utils.ISOUtils.html#ISO8583Net_Utils_ISOUtils_bytes2hex_System_Byte___
+  commentId: M:ISO8583Net.Utils.ISOUtils.bytes2hex(System.Byte[])
   name.vb: bytes2hex(Byte())
-  fullName: ISO8583Net.ISOUtils.bytes2hex(System.Byte[])
-  fullName.vb: ISO8583Net.ISOUtils.bytes2hex(System.Byte())
+  fullName: ISO8583Net.Utils.ISOUtils.bytes2hex(System.Byte[])
+  fullName.vb: ISO8583Net.Utils.ISOUtils.bytes2hex(System.Byte())
   nameWithType: ISOUtils.bytes2hex(Byte[])
   nameWithType.vb: ISOUtils.bytes2hex(Byte())
-- uid: ISO8583Net.ISOUtils.bytes2hex(System.Byte[],System.Int32@,System.Int32)
+- uid: ISO8583Net.Utils.ISOUtils.bytes2hex(System.Byte[],System.Int32@,System.Int32)
   name: bytes2hex(Byte[], ref Int32, Int32)
-  href: site/api/ISO8583Net.ISOUtils.html#ISO8583Net_ISOUtils_bytes2hex_System_Byte___System_Int32__System_Int32_
-  commentId: M:ISO8583Net.ISOUtils.bytes2hex(System.Byte[],System.Int32@,System.Int32)
+  href: site/api/ISO8583Net.Utils.ISOUtils.html#ISO8583Net_Utils_ISOUtils_bytes2hex_System_Byte___System_Int32__System_Int32_
+  commentId: M:ISO8583Net.Utils.ISOUtils.bytes2hex(System.Byte[],System.Int32@,System.Int32)
   name.vb: bytes2hex(Byte(), ByRef Int32, Int32)
-  fullName: ISO8583Net.ISOUtils.bytes2hex(System.Byte[], ref System.Int32, System.Int32)
-  fullName.vb: ISO8583Net.ISOUtils.bytes2hex(System.Byte(), ByRef System.Int32, System.Int32)
+  fullName: ISO8583Net.Utils.ISOUtils.bytes2hex(System.Byte[], ref System.Int32, System.Int32)
+  fullName.vb: ISO8583Net.Utils.ISOUtils.bytes2hex(System.Byte(), ByRef System.Int32, System.Int32)
   nameWithType: ISOUtils.bytes2hex(Byte[], ref Int32, Int32)
   nameWithType.vb: ISOUtils.bytes2hex(Byte(), ByRef Int32, Int32)
-- uid: ISO8583Net.ISOUtils.bytes2hex*
+- uid: ISO8583Net.Utils.ISOUtils.bytes2hex*
   name: bytes2hex
-  href: site/api/ISO8583Net.ISOUtils.html#ISO8583Net_ISOUtils_bytes2hex_
-  commentId: Overload:ISO8583Net.ISOUtils.bytes2hex
+  href: site/api/ISO8583Net.Utils.ISOUtils.html#ISO8583Net_Utils_ISOUtils_bytes2hex_
+  commentId: Overload:ISO8583Net.Utils.ISOUtils.bytes2hex
   isSpec: "True"
-  fullName: ISO8583Net.ISOUtils.bytes2hex
+  fullName: ISO8583Net.Utils.ISOUtils.bytes2hex
   nameWithType: ISOUtils.bytes2hex
-- uid: ISO8583Net.ISOUtils.bytes2int(System.Byte[],System.Int32@,System.Int32)
+- uid: ISO8583Net.Utils.ISOUtils.bytes2int(System.Byte[],System.Int32@,System.Int32)
   name: bytes2int(Byte[], ref Int32, Int32)
-  href: site/api/ISO8583Net.ISOUtils.html#ISO8583Net_ISOUtils_bytes2int_System_Byte___System_Int32__System_Int32_
-  commentId: M:ISO8583Net.ISOUtils.bytes2int(System.Byte[],System.Int32@,System.Int32)
+  href: site/api/ISO8583Net.Utils.ISOUtils.html#ISO8583Net_Utils_ISOUtils_bytes2int_System_Byte___System_Int32__System_Int32_
+  commentId: M:ISO8583Net.Utils.ISOUtils.bytes2int(System.Byte[],System.Int32@,System.Int32)
   name.vb: bytes2int(Byte(), ByRef Int32, Int32)
-  fullName: ISO8583Net.ISOUtils.bytes2int(System.Byte[], ref System.Int32, System.Int32)
-  fullName.vb: ISO8583Net.ISOUtils.bytes2int(System.Byte(), ByRef System.Int32, System.Int32)
+  fullName: ISO8583Net.Utils.ISOUtils.bytes2int(System.Byte[], ref System.Int32, System.Int32)
+  fullName.vb: ISO8583Net.Utils.ISOUtils.bytes2int(System.Byte(), ByRef System.Int32, System.Int32)
   nameWithType: ISOUtils.bytes2int(Byte[], ref Int32, Int32)
   nameWithType.vb: ISOUtils.bytes2int(Byte(), ByRef Int32, Int32)
-- uid: ISO8583Net.ISOUtils.bytes2int*
+- uid: ISO8583Net.Utils.ISOUtils.bytes2int*
   name: bytes2int
-  href: site/api/ISO8583Net.ISOUtils.html#ISO8583Net_ISOUtils_bytes2int_
-  commentId: Overload:ISO8583Net.ISOUtils.bytes2int
+  href: site/api/ISO8583Net.Utils.ISOUtils.html#ISO8583Net_Utils_ISOUtils_bytes2int_
+  commentId: Overload:ISO8583Net.Utils.ISOUtils.bytes2int
   isSpec: "True"
-  fullName: ISO8583Net.ISOUtils.bytes2int
+  fullName: ISO8583Net.Utils.ISOUtils.bytes2int
   nameWithType: ISOUtils.bytes2int
-- uid: ISO8583Net.ISOUtils.checkIsHexDigits(System.String)
+- uid: ISO8583Net.Utils.ISOUtils.checkIsHexDigits(System.String)
   name: checkIsHexDigits(String)
-  href: site/api/ISO8583Net.ISOUtils.html#ISO8583Net_ISOUtils_checkIsHexDigits_System_String_
-  commentId: M:ISO8583Net.ISOUtils.checkIsHexDigits(System.String)
-  fullName: ISO8583Net.ISOUtils.checkIsHexDigits(System.String)
+  href: site/api/ISO8583Net.Utils.ISOUtils.html#ISO8583Net_Utils_ISOUtils_checkIsHexDigits_System_String_
+  commentId: M:ISO8583Net.Utils.ISOUtils.checkIsHexDigits(System.String)
+  fullName: ISO8583Net.Utils.ISOUtils.checkIsHexDigits(System.String)
   nameWithType: ISOUtils.checkIsHexDigits(String)
-- uid: ISO8583Net.ISOUtils.checkIsHexDigits*
+- uid: ISO8583Net.Utils.ISOUtils.checkIsHexDigits*
   name: checkIsHexDigits
-  href: site/api/ISO8583Net.ISOUtils.html#ISO8583Net_ISOUtils_checkIsHexDigits_
-  commentId: Overload:ISO8583Net.ISOUtils.checkIsHexDigits
+  href: site/api/ISO8583Net.Utils.ISOUtils.html#ISO8583Net_Utils_ISOUtils_checkIsHexDigits_
+  commentId: Overload:ISO8583Net.Utils.ISOUtils.checkIsHexDigits
   isSpec: "True"
-  fullName: ISO8583Net.ISOUtils.checkIsHexDigits
+  fullName: ISO8583Net.Utils.ISOUtils.checkIsHexDigits
   nameWithType: ISOUtils.checkIsHexDigits
-- uid: ISO8583Net.ISOUtils.checkIsOnlyDigits(System.String)
+- uid: ISO8583Net.Utils.ISOUtils.checkIsOnlyDigits(System.String)
   name: checkIsOnlyDigits(String)
-  href: site/api/ISO8583Net.ISOUtils.html#ISO8583Net_ISOUtils_checkIsOnlyDigits_System_String_
-  commentId: M:ISO8583Net.ISOUtils.checkIsOnlyDigits(System.String)
-  fullName: ISO8583Net.ISOUtils.checkIsOnlyDigits(System.String)
+  href: site/api/ISO8583Net.Utils.ISOUtils.html#ISO8583Net_Utils_ISOUtils_checkIsOnlyDigits_System_String_
+  commentId: M:ISO8583Net.Utils.ISOUtils.checkIsOnlyDigits(System.String)
+  fullName: ISO8583Net.Utils.ISOUtils.checkIsOnlyDigits(System.String)
   nameWithType: ISOUtils.checkIsOnlyDigits(String)
-- uid: ISO8583Net.ISOUtils.checkIsOnlyDigits*
+- uid: ISO8583Net.Utils.ISOUtils.checkIsOnlyDigits*
   name: checkIsOnlyDigits
-  href: site/api/ISO8583Net.ISOUtils.html#ISO8583Net_ISOUtils_checkIsOnlyDigits_
-  commentId: Overload:ISO8583Net.ISOUtils.checkIsOnlyDigits
+  href: site/api/ISO8583Net.Utils.ISOUtils.html#ISO8583Net_Utils_ISOUtils_checkIsOnlyDigits_
+  commentId: Overload:ISO8583Net.Utils.ISOUtils.checkIsOnlyDigits
   isSpec: "True"
-  fullName: ISO8583Net.ISOUtils.checkIsOnlyDigits
+  fullName: ISO8583Net.Utils.ISOUtils.checkIsOnlyDigits
   nameWithType: ISOUtils.checkIsOnlyDigits
-- uid: ISO8583Net.ISOUtils.ebcdic2ascii(System.Byte[],System.Int32@,System.Int32)
+- uid: ISO8583Net.Utils.ISOUtils.ebcdic2ascii(System.Byte[],System.Int32@,System.Int32)
   name: ebcdic2ascii(Byte[], ref Int32, Int32)
-  href: site/api/ISO8583Net.ISOUtils.html#ISO8583Net_ISOUtils_ebcdic2ascii_System_Byte___System_Int32__System_Int32_
-  commentId: M:ISO8583Net.ISOUtils.ebcdic2ascii(System.Byte[],System.Int32@,System.Int32)
+  href: site/api/ISO8583Net.Utils.ISOUtils.html#ISO8583Net_Utils_ISOUtils_ebcdic2ascii_System_Byte___System_Int32__System_Int32_
+  commentId: M:ISO8583Net.Utils.ISOUtils.ebcdic2ascii(System.Byte[],System.Int32@,System.Int32)
   name.vb: ebcdic2ascii(Byte(), ByRef Int32, Int32)
-  fullName: ISO8583Net.ISOUtils.ebcdic2ascii(System.Byte[], ref System.Int32, System.Int32)
-  fullName.vb: ISO8583Net.ISOUtils.ebcdic2ascii(System.Byte(), ByRef System.Int32, System.Int32)
+  fullName: ISO8583Net.Utils.ISOUtils.ebcdic2ascii(System.Byte[], ref System.Int32, System.Int32)
+  fullName.vb: ISO8583Net.Utils.ISOUtils.ebcdic2ascii(System.Byte(), ByRef System.Int32, System.Int32)
   nameWithType: ISOUtils.ebcdic2ascii(Byte[], ref Int32, Int32)
   nameWithType.vb: ISOUtils.ebcdic2ascii(Byte(), ByRef Int32, Int32)
-- uid: ISO8583Net.ISOUtils.ebcdic2ascii*
+- uid: ISO8583Net.Utils.ISOUtils.ebcdic2ascii*
   name: ebcdic2ascii
-  href: site/api/ISO8583Net.ISOUtils.html#ISO8583Net_ISOUtils_ebcdic2ascii_
-  commentId: Overload:ISO8583Net.ISOUtils.ebcdic2ascii
+  href: site/api/ISO8583Net.Utils.ISOUtils.html#ISO8583Net_Utils_ISOUtils_ebcdic2ascii_
+  commentId: Overload:ISO8583Net.Utils.ISOUtils.ebcdic2ascii
   isSpec: "True"
-  fullName: ISO8583Net.ISOUtils.ebcdic2ascii
+  fullName: ISO8583Net.Utils.ISOUtils.ebcdic2ascii
   nameWithType: ISOUtils.ebcdic2ascii
-- uid: ISO8583Net.ISOUtils.hex2bytes(System.String)
+- uid: ISO8583Net.Utils.ISOUtils.hex2bytes(System.String)
   name: hex2bytes(String)
-  href: site/api/ISO8583Net.ISOUtils.html#ISO8583Net_ISOUtils_hex2bytes_System_String_
-  commentId: M:ISO8583Net.ISOUtils.hex2bytes(System.String)
-  fullName: ISO8583Net.ISOUtils.hex2bytes(System.String)
+  href: site/api/ISO8583Net.Utils.ISOUtils.html#ISO8583Net_Utils_ISOUtils_hex2bytes_System_String_
+  commentId: M:ISO8583Net.Utils.ISOUtils.hex2bytes(System.String)
+  fullName: ISO8583Net.Utils.ISOUtils.hex2bytes(System.String)
   nameWithType: ISOUtils.hex2bytes(String)
-- uid: ISO8583Net.ISOUtils.hex2bytes(System.String,System.Byte[],System.Int32@)
+- uid: ISO8583Net.Utils.ISOUtils.hex2bytes(System.String,System.Byte[],System.Int32@)
   name: hex2bytes(String, Byte[], ref Int32)
-  href: site/api/ISO8583Net.ISOUtils.html#ISO8583Net_ISOUtils_hex2bytes_System_String_System_Byte___System_Int32__
-  commentId: M:ISO8583Net.ISOUtils.hex2bytes(System.String,System.Byte[],System.Int32@)
+  href: site/api/ISO8583Net.Utils.ISOUtils.html#ISO8583Net_Utils_ISOUtils_hex2bytes_System_String_System_Byte___System_Int32__
+  commentId: M:ISO8583Net.Utils.ISOUtils.hex2bytes(System.String,System.Byte[],System.Int32@)
   name.vb: hex2bytes(String, Byte(), ByRef Int32)
-  fullName: ISO8583Net.ISOUtils.hex2bytes(System.String, System.Byte[], ref System.Int32)
-  fullName.vb: ISO8583Net.ISOUtils.hex2bytes(System.String, System.Byte(), ByRef System.Int32)
+  fullName: ISO8583Net.Utils.ISOUtils.hex2bytes(System.String, System.Byte[], ref System.Int32)
+  fullName.vb: ISO8583Net.Utils.ISOUtils.hex2bytes(System.String, System.Byte(), ByRef System.Int32)
   nameWithType: ISOUtils.hex2bytes(String, Byte[], ref Int32)
   nameWithType.vb: ISOUtils.hex2bytes(String, Byte(), ByRef Int32)
-- uid: ISO8583Net.ISOUtils.hex2bytes*
+- uid: ISO8583Net.Utils.ISOUtils.hex2bytes*
   name: hex2bytes
-  href: site/api/ISO8583Net.ISOUtils.html#ISO8583Net_ISOUtils_hex2bytes_
-  commentId: Overload:ISO8583Net.ISOUtils.hex2bytes
+  href: site/api/ISO8583Net.Utils.ISOUtils.html#ISO8583Net_Utils_ISOUtils_hex2bytes_
+  commentId: Overload:ISO8583Net.Utils.ISOUtils.hex2bytes
   isSpec: "True"
-  fullName: ISO8583Net.ISOUtils.hex2bytes
+  fullName: ISO8583Net.Utils.ISOUtils.hex2bytes
   nameWithType: ISOUtils.hex2bytes
-- uid: ISO8583Net.ISOUtils.HexToByteArray(System.String)
+- uid: ISO8583Net.Utils.ISOUtils.HexToByteArray(System.String)
   name: HexToByteArray(String)
-  href: site/api/ISO8583Net.ISOUtils.html#ISO8583Net_ISOUtils_HexToByteArray_System_String_
-  commentId: M:ISO8583Net.ISOUtils.HexToByteArray(System.String)
-  fullName: ISO8583Net.ISOUtils.HexToByteArray(System.String)
+  href: site/api/ISO8583Net.Utils.ISOUtils.html#ISO8583Net_Utils_ISOUtils_HexToByteArray_System_String_
+  commentId: M:ISO8583Net.Utils.ISOUtils.HexToByteArray(System.String)
+  fullName: ISO8583Net.Utils.ISOUtils.HexToByteArray(System.String)
   nameWithType: ISOUtils.HexToByteArray(String)
-- uid: ISO8583Net.ISOUtils.HexToByteArray*
+- uid: ISO8583Net.Utils.ISOUtils.HexToByteArray*
   name: HexToByteArray
-  href: site/api/ISO8583Net.ISOUtils.html#ISO8583Net_ISOUtils_HexToByteArray_
-  commentId: Overload:ISO8583Net.ISOUtils.HexToByteArray
+  href: site/api/ISO8583Net.Utils.ISOUtils.html#ISO8583Net_Utils_ISOUtils_HexToByteArray_
+  commentId: Overload:ISO8583Net.Utils.ISOUtils.HexToByteArray
   isSpec: "True"
-  fullName: ISO8583Net.ISOUtils.HexToByteArray
+  fullName: ISO8583Net.Utils.ISOUtils.HexToByteArray
   nameWithType: ISOUtils.HexToByteArray
-- uid: ISO8583Net.ISOUtils.int2ascii(System.Int32,System.Byte[],System.Int32@,System.Int32)
+- uid: ISO8583Net.Utils.ISOUtils.int2ascii(System.Int32,System.Byte[],System.Int32@,System.Int32)
   name: int2ascii(Int32, Byte[], ref Int32, Int32)
-  href: site/api/ISO8583Net.ISOUtils.html#ISO8583Net_ISOUtils_int2ascii_System_Int32_System_Byte___System_Int32__System_Int32_
-  commentId: M:ISO8583Net.ISOUtils.int2ascii(System.Int32,System.Byte[],System.Int32@,System.Int32)
+  href: site/api/ISO8583Net.Utils.ISOUtils.html#ISO8583Net_Utils_ISOUtils_int2ascii_System_Int32_System_Byte___System_Int32__System_Int32_
+  commentId: M:ISO8583Net.Utils.ISOUtils.int2ascii(System.Int32,System.Byte[],System.Int32@,System.Int32)
   name.vb: int2ascii(Int32, Byte(), ByRef Int32, Int32)
-  fullName: ISO8583Net.ISOUtils.int2ascii(System.Int32, System.Byte[], ref System.Int32, System.Int32)
-  fullName.vb: ISO8583Net.ISOUtils.int2ascii(System.Int32, System.Byte(), ByRef System.Int32, System.Int32)
+  fullName: ISO8583Net.Utils.ISOUtils.int2ascii(System.Int32, System.Byte[], ref System.Int32, System.Int32)
+  fullName.vb: ISO8583Net.Utils.ISOUtils.int2ascii(System.Int32, System.Byte(), ByRef System.Int32, System.Int32)
   nameWithType: ISOUtils.int2ascii(Int32, Byte[], ref Int32, Int32)
   nameWithType.vb: ISOUtils.int2ascii(Int32, Byte(), ByRef Int32, Int32)
-- uid: ISO8583Net.ISOUtils.int2ascii*
+- uid: ISO8583Net.Utils.ISOUtils.int2ascii*
   name: int2ascii
-  href: site/api/ISO8583Net.ISOUtils.html#ISO8583Net_ISOUtils_int2ascii_
-  commentId: Overload:ISO8583Net.ISOUtils.int2ascii
+  href: site/api/ISO8583Net.Utils.ISOUtils.html#ISO8583Net_Utils_ISOUtils_int2ascii_
+  commentId: Overload:ISO8583Net.Utils.ISOUtils.int2ascii
   isSpec: "True"
-  fullName: ISO8583Net.ISOUtils.int2ascii
+  fullName: ISO8583Net.Utils.ISOUtils.int2ascii
   nameWithType: ISOUtils.int2ascii
-- uid: ISO8583Net.ISOUtils.int2Bcd(System.Int32,System.Byte[],System.Int32@,System.Int32)
+- uid: ISO8583Net.Utils.ISOUtils.int2Bcd(System.Int32,System.Byte[],System.Int32@,System.Int32)
   name: int2Bcd(Int32, Byte[], ref Int32, Int32)
-  href: site/api/ISO8583Net.ISOUtils.html#ISO8583Net_ISOUtils_int2Bcd_System_Int32_System_Byte___System_Int32__System_Int32_
-  commentId: M:ISO8583Net.ISOUtils.int2Bcd(System.Int32,System.Byte[],System.Int32@,System.Int32)
+  href: site/api/ISO8583Net.Utils.ISOUtils.html#ISO8583Net_Utils_ISOUtils_int2Bcd_System_Int32_System_Byte___System_Int32__System_Int32_
+  commentId: M:ISO8583Net.Utils.ISOUtils.int2Bcd(System.Int32,System.Byte[],System.Int32@,System.Int32)
   name.vb: int2Bcd(Int32, Byte(), ByRef Int32, Int32)
-  fullName: ISO8583Net.ISOUtils.int2Bcd(System.Int32, System.Byte[], ref System.Int32, System.Int32)
-  fullName.vb: ISO8583Net.ISOUtils.int2Bcd(System.Int32, System.Byte(), ByRef System.Int32, System.Int32)
+  fullName: ISO8583Net.Utils.ISOUtils.int2Bcd(System.Int32, System.Byte[], ref System.Int32, System.Int32)
+  fullName.vb: ISO8583Net.Utils.ISOUtils.int2Bcd(System.Int32, System.Byte(), ByRef System.Int32, System.Int32)
   nameWithType: ISOUtils.int2Bcd(Int32, Byte[], ref Int32, Int32)
   nameWithType.vb: ISOUtils.int2Bcd(Int32, Byte(), ByRef Int32, Int32)
-- uid: ISO8583Net.ISOUtils.int2Bcd*
+- uid: ISO8583Net.Utils.ISOUtils.int2Bcd*
   name: int2Bcd
-  href: site/api/ISO8583Net.ISOUtils.html#ISO8583Net_ISOUtils_int2Bcd_
-  commentId: Overload:ISO8583Net.ISOUtils.int2Bcd
+  href: site/api/ISO8583Net.Utils.ISOUtils.html#ISO8583Net_Utils_ISOUtils_int2Bcd_
+  commentId: Overload:ISO8583Net.Utils.ISOUtils.int2Bcd
   isSpec: "True"
-  fullName: ISO8583Net.ISOUtils.int2Bcd
+  fullName: ISO8583Net.Utils.ISOUtils.int2Bcd
   nameWithType: ISOUtils.int2Bcd
-- uid: ISO8583Net.ISOUtils.int2Bytes(System.Int32,System.Byte[],System.Int32@,System.Int32)
+- uid: ISO8583Net.Utils.ISOUtils.int2Bytes(System.Int32,System.Byte[],System.Int32@,System.Int32)
   name: int2Bytes(Int32, Byte[], ref Int32, Int32)
-  href: site/api/ISO8583Net.ISOUtils.html#ISO8583Net_ISOUtils_int2Bytes_System_Int32_System_Byte___System_Int32__System_Int32_
-  commentId: M:ISO8583Net.ISOUtils.int2Bytes(System.Int32,System.Byte[],System.Int32@,System.Int32)
+  href: site/api/ISO8583Net.Utils.ISOUtils.html#ISO8583Net_Utils_ISOUtils_int2Bytes_System_Int32_System_Byte___System_Int32__System_Int32_
+  commentId: M:ISO8583Net.Utils.ISOUtils.int2Bytes(System.Int32,System.Byte[],System.Int32@,System.Int32)
   name.vb: int2Bytes(Int32, Byte(), ByRef Int32, Int32)
-  fullName: ISO8583Net.ISOUtils.int2Bytes(System.Int32, System.Byte[], ref System.Int32, System.Int32)
-  fullName.vb: ISO8583Net.ISOUtils.int2Bytes(System.Int32, System.Byte(), ByRef System.Int32, System.Int32)
+  fullName: ISO8583Net.Utils.ISOUtils.int2Bytes(System.Int32, System.Byte[], ref System.Int32, System.Int32)
+  fullName.vb: ISO8583Net.Utils.ISOUtils.int2Bytes(System.Int32, System.Byte(), ByRef System.Int32, System.Int32)
   nameWithType: ISOUtils.int2Bytes(Int32, Byte[], ref Int32, Int32)
   nameWithType.vb: ISOUtils.int2Bytes(Int32, Byte(), ByRef Int32, Int32)
-- uid: ISO8583Net.ISOUtils.int2Bytes*
+- uid: ISO8583Net.Utils.ISOUtils.int2Bytes*
   name: int2Bytes
-  href: site/api/ISO8583Net.ISOUtils.html#ISO8583Net_ISOUtils_int2Bytes_
-  commentId: Overload:ISO8583Net.ISOUtils.int2Bytes
+  href: site/api/ISO8583Net.Utils.ISOUtils.html#ISO8583Net_Utils_ISOUtils_int2Bytes_
+  commentId: Overload:ISO8583Net.Utils.ISOUtils.int2Bytes
   isSpec: "True"
-  fullName: ISO8583Net.ISOUtils.int2Bytes
+  fullName: ISO8583Net.Utils.ISOUtils.int2Bytes
   nameWithType: ISOUtils.int2Bytes
-- uid: ISO8583Net.ISOUtils.int2ebcdic(System.Int32,System.Byte[],System.Int32@,System.Int32)
+- uid: ISO8583Net.Utils.ISOUtils.int2ebcdic(System.Int32,System.Byte[],System.Int32@,System.Int32)
   name: int2ebcdic(Int32, Byte[], ref Int32, Int32)
-  href: site/api/ISO8583Net.ISOUtils.html#ISO8583Net_ISOUtils_int2ebcdic_System_Int32_System_Byte___System_Int32__System_Int32_
-  commentId: M:ISO8583Net.ISOUtils.int2ebcdic(System.Int32,System.Byte[],System.Int32@,System.Int32)
+  href: site/api/ISO8583Net.Utils.ISOUtils.html#ISO8583Net_Utils_ISOUtils_int2ebcdic_System_Int32_System_Byte___System_Int32__System_Int32_
+  commentId: M:ISO8583Net.Utils.ISOUtils.int2ebcdic(System.Int32,System.Byte[],System.Int32@,System.Int32)
   name.vb: int2ebcdic(Int32, Byte(), ByRef Int32, Int32)
-  fullName: ISO8583Net.ISOUtils.int2ebcdic(System.Int32, System.Byte[], ref System.Int32, System.Int32)
-  fullName.vb: ISO8583Net.ISOUtils.int2ebcdic(System.Int32, System.Byte(), ByRef System.Int32, System.Int32)
+  fullName: ISO8583Net.Utils.ISOUtils.int2ebcdic(System.Int32, System.Byte[], ref System.Int32, System.Int32)
+  fullName.vb: ISO8583Net.Utils.ISOUtils.int2ebcdic(System.Int32, System.Byte(), ByRef System.Int32, System.Int32)
   nameWithType: ISOUtils.int2ebcdic(Int32, Byte[], ref Int32, Int32)
   nameWithType.vb: ISOUtils.int2ebcdic(Int32, Byte(), ByRef Int32, Int32)
-- uid: ISO8583Net.ISOUtils.int2ebcdic*
+- uid: ISO8583Net.Utils.ISOUtils.int2ebcdic*
   name: int2ebcdic
-  href: site/api/ISO8583Net.ISOUtils.html#ISO8583Net_ISOUtils_int2ebcdic_
-  commentId: Overload:ISO8583Net.ISOUtils.int2ebcdic
+  href: site/api/ISO8583Net.Utils.ISOUtils.html#ISO8583Net_Utils_ISOUtils_int2ebcdic_
+  commentId: Overload:ISO8583Net.Utils.ISOUtils.int2ebcdic
   isSpec: "True"
-  fullName: ISO8583Net.ISOUtils.int2ebcdic
+  fullName: ISO8583Net.Utils.ISOUtils.int2ebcdic
   nameWithType: ISOUtils.int2ebcdic
-- uid: ISO8583Net.ISOUtils.isASCII(System.String)
+- uid: ISO8583Net.Utils.ISOUtils.isASCII(System.String)
   name: isASCII(String)
-  href: site/api/ISO8583Net.ISOUtils.html#ISO8583Net_ISOUtils_isASCII_System_String_
-  commentId: M:ISO8583Net.ISOUtils.isASCII(System.String)
-  fullName: ISO8583Net.ISOUtils.isASCII(System.String)
+  href: site/api/ISO8583Net.Utils.ISOUtils.html#ISO8583Net_Utils_ISOUtils_isASCII_System_String_
+  commentId: M:ISO8583Net.Utils.ISOUtils.isASCII(System.String)
+  fullName: ISO8583Net.Utils.ISOUtils.isASCII(System.String)
   nameWithType: ISOUtils.isASCII(String)
-- uid: ISO8583Net.ISOUtils.isASCII*
+- uid: ISO8583Net.Utils.ISOUtils.isASCII*
   name: isASCII
-  href: site/api/ISO8583Net.ISOUtils.html#ISO8583Net_ISOUtils_isASCII_
-  commentId: Overload:ISO8583Net.ISOUtils.isASCII
+  href: site/api/ISO8583Net.Utils.ISOUtils.html#ISO8583Net_Utils_ISOUtils_isASCII_
+  commentId: Overload:ISO8583Net.Utils.ISOUtils.isASCII
   isSpec: "True"
-  fullName: ISO8583Net.ISOUtils.isASCII
+  fullName: ISO8583Net.Utils.ISOUtils.isASCII
   nameWithType: ISOUtils.isASCII
-- uid: ISO8583Net.ISOUtils.PrintHEX(System.Byte[],System.Int32)
+- uid: ISO8583Net.Utils.ISOUtils.PrintHEX(System.Byte[],System.Int32)
   name: PrintHEX(Byte[], Int32)
-  href: site/api/ISO8583Net.ISOUtils.html#ISO8583Net_ISOUtils_PrintHEX_System_Byte___System_Int32_
-  commentId: M:ISO8583Net.ISOUtils.PrintHEX(System.Byte[],System.Int32)
+  href: site/api/ISO8583Net.Utils.ISOUtils.html#ISO8583Net_Utils_ISOUtils_PrintHEX_System_Byte___System_Int32_
+  commentId: M:ISO8583Net.Utils.ISOUtils.PrintHEX(System.Byte[],System.Int32)
   name.vb: PrintHEX(Byte(), Int32)
-  fullName: ISO8583Net.ISOUtils.PrintHEX(System.Byte[], System.Int32)
-  fullName.vb: ISO8583Net.ISOUtils.PrintHEX(System.Byte(), System.Int32)
+  fullName: ISO8583Net.Utils.ISOUtils.PrintHEX(System.Byte[], System.Int32)
+  fullName.vb: ISO8583Net.Utils.ISOUtils.PrintHEX(System.Byte(), System.Int32)
   nameWithType: ISOUtils.PrintHEX(Byte[], Int32)
   nameWithType.vb: ISOUtils.PrintHEX(Byte(), Int32)
-- uid: ISO8583Net.ISOUtils.PrintHEX*
+- uid: ISO8583Net.Utils.ISOUtils.PrintHEX*
   name: PrintHEX
-  href: site/api/ISO8583Net.ISOUtils.html#ISO8583Net_ISOUtils_PrintHEX_
-  commentId: Overload:ISO8583Net.ISOUtils.PrintHEX
+  href: site/api/ISO8583Net.Utils.ISOUtils.html#ISO8583Net_Utils_ISOUtils_PrintHEX_
+  commentId: Overload:ISO8583Net.Utils.ISOUtils.PrintHEX
   isSpec: "True"
-  fullName: ISO8583Net.ISOUtils.PrintHEX
+  fullName: ISO8583Net.Utils.ISOUtils.PrintHEX
   nameWithType: ISOUtils.PrintHEX
-- uid: ISO8583Net.ISOUtils.SubArray*
+- uid: ISO8583Net.Utils.ISOUtils.SubArray*
   name: SubArray
-  href: site/api/ISO8583Net.ISOUtils.html#ISO8583Net_ISOUtils_SubArray_
-  commentId: Overload:ISO8583Net.ISOUtils.SubArray
+  href: site/api/ISO8583Net.Utils.ISOUtils.html#ISO8583Net_Utils_ISOUtils_SubArray_
+  commentId: Overload:ISO8583Net.Utils.ISOUtils.SubArray
   isSpec: "True"
-  fullName: ISO8583Net.ISOUtils.SubArray
+  fullName: ISO8583Net.Utils.ISOUtils.SubArray
   nameWithType: ISOUtils.SubArray
-- uid: ISO8583Net.ISOUtils.SubArray``1(``0[],System.Int32,System.Int32)
+- uid: ISO8583Net.Utils.ISOUtils.SubArray``1(``0[],System.Int32,System.Int32)
   name: SubArray<T>(T[], Int32, Int32)
-  href: site/api/ISO8583Net.ISOUtils.html#ISO8583Net_ISOUtils_SubArray__1___0___System_Int32_System_Int32_
-  commentId: M:ISO8583Net.ISOUtils.SubArray``1(``0[],System.Int32,System.Int32)
+  href: site/api/ISO8583Net.Utils.ISOUtils.html#ISO8583Net_Utils_ISOUtils_SubArray__1___0___System_Int32_System_Int32_
+  commentId: M:ISO8583Net.Utils.ISOUtils.SubArray``1(``0[],System.Int32,System.Int32)
   name.vb: SubArray(Of T)(T(), Int32, Int32)
-  fullName: ISO8583Net.ISOUtils.SubArray<T>(T[], System.Int32, System.Int32)
-  fullName.vb: ISO8583Net.ISOUtils.SubArray(Of T)(T(), System.Int32, System.Int32)
+  fullName: ISO8583Net.Utils.ISOUtils.SubArray<T>(T[], System.Int32, System.Int32)
+  fullName.vb: ISO8583Net.Utils.ISOUtils.SubArray(Of T)(T(), System.Int32, System.Int32)
   nameWithType: ISOUtils.SubArray<T>(T[], Int32, Int32)
   nameWithType.vb: ISOUtils.SubArray(Of T)(T(), Int32, Int32)
-- uid: ISO8583Net.ISOUtils.ToHexStr(System.Byte[],System.Int32,System.Int32)
+- uid: ISO8583Net.Utils.ISOUtils.ToHexStr(System.Byte[],System.Int32,System.Int32)
   name: ToHexStr(Byte[], Int32, Int32)
-  href: site/api/ISO8583Net.ISOUtils.html#ISO8583Net_ISOUtils_ToHexStr_System_Byte___System_Int32_System_Int32_
-  commentId: M:ISO8583Net.ISOUtils.ToHexStr(System.Byte[],System.Int32,System.Int32)
+  href: site/api/ISO8583Net.Utils.ISOUtils.html#ISO8583Net_Utils_ISOUtils_ToHexStr_System_Byte___System_Int32_System_Int32_
+  commentId: M:ISO8583Net.Utils.ISOUtils.ToHexStr(System.Byte[],System.Int32,System.Int32)
   name.vb: ToHexStr(Byte(), Int32, Int32)
-  fullName: ISO8583Net.ISOUtils.ToHexStr(System.Byte[], System.Int32, System.Int32)
-  fullName.vb: ISO8583Net.ISOUtils.ToHexStr(System.Byte(), System.Int32, System.Int32)
+  fullName: ISO8583Net.Utils.ISOUtils.ToHexStr(System.Byte[], System.Int32, System.Int32)
+  fullName.vb: ISO8583Net.Utils.ISOUtils.ToHexStr(System.Byte(), System.Int32, System.Int32)
   nameWithType: ISOUtils.ToHexStr(Byte[], Int32, Int32)
   nameWithType.vb: ISOUtils.ToHexStr(Byte(), Int32, Int32)
-- uid: ISO8583Net.ISOUtils.ToHexStr(System.String,System.Byte[],System.Int32)
+- uid: ISO8583Net.Utils.ISOUtils.ToHexStr(System.String,System.Byte[],System.Int32)
   name: ToHexStr(String, Byte[], Int32)
-  href: site/api/ISO8583Net.ISOUtils.html#ISO8583Net_ISOUtils_ToHexStr_System_String_System_Byte___System_Int32_
-  commentId: M:ISO8583Net.ISOUtils.ToHexStr(System.String,System.Byte[],System.Int32)
+  href: site/api/ISO8583Net.Utils.ISOUtils.html#ISO8583Net_Utils_ISOUtils_ToHexStr_System_String_System_Byte___System_Int32_
+  commentId: M:ISO8583Net.Utils.ISOUtils.ToHexStr(System.String,System.Byte[],System.Int32)
   name.vb: ToHexStr(String, Byte(), Int32)
-  fullName: ISO8583Net.ISOUtils.ToHexStr(System.String, System.Byte[], System.Int32)
-  fullName.vb: ISO8583Net.ISOUtils.ToHexStr(System.String, System.Byte(), System.Int32)
+  fullName: ISO8583Net.Utils.ISOUtils.ToHexStr(System.String, System.Byte[], System.Int32)
+  fullName.vb: ISO8583Net.Utils.ISOUtils.ToHexStr(System.String, System.Byte(), System.Int32)
   nameWithType: ISOUtils.ToHexStr(String, Byte[], Int32)
   nameWithType.vb: ISOUtils.ToHexStr(String, Byte(), Int32)
-- uid: ISO8583Net.ISOUtils.ToHexStr*
+- uid: ISO8583Net.Utils.ISOUtils.ToHexStr*
   name: ToHexStr
-  href: site/api/ISO8583Net.ISOUtils.html#ISO8583Net_ISOUtils_ToHexStr_
-  commentId: Overload:ISO8583Net.ISOUtils.ToHexStr
+  href: site/api/ISO8583Net.Utils.ISOUtils.html#ISO8583Net_Utils_ISOUtils_ToHexStr_
+  commentId: Overload:ISO8583Net.Utils.ISOUtils.ToHexStr
   isSpec: "True"
-  fullName: ISO8583Net.ISOUtils.ToHexStr
+  fullName: ISO8583Net.Utils.ISOUtils.ToHexStr
   nameWithType: ISOUtils.ToHexStr
