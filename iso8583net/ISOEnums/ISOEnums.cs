@@ -1,4 +1,4 @@
-﻿namespace ISO8583Net
+﻿namespace ISO8583Net.Types
 {
     /// <summary>
     /// Indicates an ISO field participation in a message type.

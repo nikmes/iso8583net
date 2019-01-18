@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using ISO8583Net.Types;
 
 
-namespace ISO8583Net
+namespace ISO8583Net.Utils
 {
     /// <summary>
-    /// The ISO8583Utils Class Contains all methods for performing fast conversion between different data types.
+    /// The ISO8583Utils Class Contains all methods for performing fast conversion between different data types
     /// </summary>
     /// <remarks>
     /// This class can perform the below convertsions:
@@ -94,7 +95,7 @@ namespace ISO8583Net
         /// </summary>
         /// <param name="data">The array from where subarray will be created</param>  
         /// <param name="index">Starting position for the sub array</param>  
-        /// <param name="length">LEngth of sub arrat starting from postion index</param>  
+        /// <param name="length">Length of sub arrayt starting from postion index</param>  
         public static T[] SubArray<T>(this T[] data, int index, int length)
         {
             T[] result = new T[length];
@@ -103,7 +104,11 @@ namespace ISO8583Net
 
             return result;
         }
-
+        /// <summary>
+        /// Extents array functionality by allowing to concatenate two arrays
+        /// </summary>
+        /// <param name="inData1">The first arrays to be concatanated with the next array</param>  
+        /// <param name="inData2">The arrays to be concatanate to the previous array</param>  
         public static byte[] BufferConcat(byte[] inData1, byte[] inData2)
         {
             List<byte> tmp = new List<byte>();

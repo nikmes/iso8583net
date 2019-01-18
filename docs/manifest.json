@@ -29,11 +29,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "site/api/ISO8583Net.ISOFieldCoding.yml",
+      "source_relative_path": "site/api/ISO8583Net.Types.ISOFieldCoding.yml",
       "output": {
         ".html": {
-          "relative_path": "site/api/ISO8583Net.ISOFieldCoding.html",
-          "hash": "t7RvZkc2evH0eiivHAQ0zg=="
+          "relative_path": "site/api/ISO8583Net.Types.ISOFieldCoding.html",
+          "hash": "f0C2wDC8yyUrCMpTLQvi0Q=="
         }
       },
       "is_incremental": false,
@@ -41,11 +41,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "site/api/ISO8583Net.ISOFieldContent.yml",
+      "source_relative_path": "site/api/ISO8583Net.Types.ISOFieldContent.yml",
       "output": {
         ".html": {
-          "relative_path": "site/api/ISO8583Net.ISOFieldContent.html",
-          "hash": "97CYuxAUV8BO4HuJJ7Xn5w=="
+          "relative_path": "site/api/ISO8583Net.Types.ISOFieldContent.html",
+          "hash": "d9ZV7FSfkezI+lMtBUWRsA=="
         }
       },
       "is_incremental": false,
@@ -53,11 +53,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "site/api/ISO8583Net.ISOFieldLengthFormat.yml",
+      "source_relative_path": "site/api/ISO8583Net.Types.ISOFieldLengthFormat.yml",
       "output": {
         ".html": {
-          "relative_path": "site/api/ISO8583Net.ISOFieldLengthFormat.html",
-          "hash": "nRvshO3EpbM3hxNhckUOpQ=="
+          "relative_path": "site/api/ISO8583Net.Types.ISOFieldLengthFormat.html",
+          "hash": "q7XnURR/QYKO60g97CW0Pw=="
         }
       },
       "is_incremental": false,
@@ -65,11 +65,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "site/api/ISO8583Net.ISOFieldPadding.yml",
+      "source_relative_path": "site/api/ISO8583Net.Types.ISOFieldPadding.yml",
       "output": {
         ".html": {
-          "relative_path": "site/api/ISO8583Net.ISOFieldPadding.html",
-          "hash": "tIjFE492kTIlFJpDfADWIg=="
+          "relative_path": "site/api/ISO8583Net.Types.ISOFieldPadding.html",
+          "hash": "i9ixjsrwax9JcvZ8NYuMgQ=="
         }
       },
       "is_incremental": false,
@@ -77,11 +77,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "site/api/ISO8583Net.ISOFieldParticipation.yml",
+      "source_relative_path": "site/api/ISO8583Net.Types.ISOFieldParticipation.yml",
       "output": {
         ".html": {
-          "relative_path": "site/api/ISO8583Net.ISOFieldParticipation.html",
-          "hash": "lKVJIlfon1OLI6FfK1IxYQ=="
+          "relative_path": "site/api/ISO8583Net.Types.ISOFieldParticipation.html",
+          "hash": "DXmY1zZuSzNOXCOY1IMiVg=="
         }
       },
       "is_incremental": false,
@@ -89,11 +89,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "site/api/ISO8583Net.ISOUtils.yml",
+      "source_relative_path": "site/api/ISO8583Net.Types.yml",
       "output": {
         ".html": {
-          "relative_path": "site/api/ISO8583Net.ISOUtils.html",
-          "hash": "V4AB1hfVVT1fjI4UFxElQg=="
+          "relative_path": "site/api/ISO8583Net.Types.html",
+          "hash": "yx3jUmnwq6Tzz8GEge8NYg=="
         }
       },
       "is_incremental": false,
@@ -101,11 +101,23 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "site/api/ISO8583Net.yml",
+      "source_relative_path": "site/api/ISO8583Net.Utils.ISOUtils.yml",
       "output": {
         ".html": {
-          "relative_path": "site/api/ISO8583Net.html",
-          "hash": "aZ8x/SjQw5hUiMsNjGsMUA=="
+          "relative_path": "site/api/ISO8583Net.Utils.ISOUtils.html",
+          "hash": "taKx1kxcvN0g1rGBhhUNkw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "site/api/ISO8583Net.Utils.yml",
+      "output": {
+        ".html": {
+          "relative_path": "site/api/ISO8583Net.Utils.html",
+          "hash": "U6Y4R0CVDiKhU4dH8bdo0Q=="
         }
       },
       "is_incremental": false,
@@ -129,7 +141,7 @@
       "output": {
         ".html": {
           "relative_path": "site/api/toc.html",
-          "hash": "nfayL6zve9iTRG8frY3gHQ=="
+          "hash": "mv92dQ/dVqC8wSy+tBmKdg=="
         }
       },
       "is_incremental": false,
@@ -200,7 +212,7 @@
       "output": {
         ".html": {
           "relative_path": "toc.html",
-          "hash": "9AvwR3c+doVg8k3Xw8P4Eg=="
+          "hash": "eTlES187m1Yvx3I0lY7DNw=="
         }
       },
       "is_incremental": false,
@@ -215,22 +227,22 @@
         "incrementalPhase": "build"
       },
       "processors": {
-        "TocDocumentProcessor": {
-          "can_incremental": false,
-          "details": "Processor TocDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
-          "incrementalPhase": "build"
-        },
         "ResourceDocumentProcessor": {
           "can_incremental": false,
           "details": "Processor ResourceDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
+          "incrementalPhase": "build"
+        },
+        "ManagedReferenceDocumentProcessor": {
+          "can_incremental": false,
           "incrementalPhase": "build"
         },
         "ConceptualDocumentProcessor": {
           "can_incremental": false,
           "incrementalPhase": "build"
         },
-        "ManagedReferenceDocumentProcessor": {
+        "TocDocumentProcessor": {
           "can_incremental": false,
+          "details": "Processor TocDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
           "incrementalPhase": "build"
         }
       }
