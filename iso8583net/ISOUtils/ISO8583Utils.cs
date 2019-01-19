@@ -120,8 +120,9 @@ namespace ISO8583Net.Utils
             return tmp.ToArray();
         }
 
-        // static array initialization methods
-
+        /// <summary>
+        /// Initializes static array used for Byte to Hex convertions 
+        /// </summary>
         private static uint[] CreateLookup32()
         {
             var result = new uint[256];

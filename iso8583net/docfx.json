@@ -10,6 +10,7 @@
         }
       ],
       "dest": "site\\api",
+      "filter": "filterConfig.yml",
       "disableGitFeatures": false,
       "disableDefaultFilter": false
     }
@@ -20,6 +21,14 @@
         "files": [
           "site/api/**.yml",
           "site/api/index.md"
+        ]
+      },
+      {
+        "files": [
+          "site/tutorials/**.md",
+          "site/tutorials/**/toc.yml",
+          "toc.yml",
+          "*.md"
         ]
       },
       {

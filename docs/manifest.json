@@ -1,6 +1,6 @@
 {
   "homepages": [],
-  "source_base_path": "C:/Users/nikmes/Source/Repos/ISO8583Net/iso8583net",
+  "source_base_path": "C:/users/nikmes/source/repos/iso8583net/iso8583net",
   "xrefmap": "xrefmap.yml",
   "files": [
     {
@@ -12,7 +12,7 @@
           "hash": "+gj7tiIgyxkta3R4qw9p3Q=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -24,7 +24,7 @@
           "hash": "X/GkP+UGDFDKUsTTpvBidQ=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -33,10 +33,10 @@
       "output": {
         ".html": {
           "relative_path": "site/api/ISO8583Net.Types.ISOFieldCoding.html",
-          "hash": "f0C2wDC8yyUrCMpTLQvi0Q=="
+          "hash": "yDQk/NHbTD12zRfwEseIlQ=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -45,7 +45,7 @@
       "output": {
         ".html": {
           "relative_path": "site/api/ISO8583Net.Types.ISOFieldContent.html",
-          "hash": "d9ZV7FSfkezI+lMtBUWRsA=="
+          "hash": "vP5nehazw/oMkVHgEObDRQ=="
         }
       },
       "is_incremental": false,
@@ -57,10 +57,10 @@
       "output": {
         ".html": {
           "relative_path": "site/api/ISO8583Net.Types.ISOFieldLengthFormat.html",
-          "hash": "q7XnURR/QYKO60g97CW0Pw=="
+          "hash": "vilA5aUId4CuX/fJotll+Q=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -69,10 +69,10 @@
       "output": {
         ".html": {
           "relative_path": "site/api/ISO8583Net.Types.ISOFieldPadding.html",
-          "hash": "i9ixjsrwax9JcvZ8NYuMgQ=="
+          "hash": "12MCkeI3i8Pu40BMgv9qWw=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -81,10 +81,10 @@
       "output": {
         ".html": {
           "relative_path": "site/api/ISO8583Net.Types.ISOFieldParticipation.html",
-          "hash": "DXmY1zZuSzNOXCOY1IMiVg=="
+          "hash": "drtrrlApLsOJT0rX4k9lKQ=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -93,7 +93,7 @@
       "output": {
         ".html": {
           "relative_path": "site/api/ISO8583Net.Types.html",
-          "hash": "yx3jUmnwq6Tzz8GEge8NYg=="
+          "hash": "q9mpd5fPJjoG84Qg1UTLlA=="
         }
       },
       "is_incremental": false,
@@ -105,10 +105,10 @@
       "output": {
         ".html": {
           "relative_path": "site/api/ISO8583Net.Utils.ISOUtils.html",
-          "hash": "taKx1kxcvN0g1rGBhhUNkw=="
+          "hash": "M8Iay9n1fcO7J0co47GkeA=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -120,7 +120,7 @@
           "hash": "U6Y4R0CVDiKhU4dH8bdo0Q=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -132,7 +132,7 @@
           "hash": "WP+UC5+uhkWMNANFDfh85A=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -156,7 +156,7 @@
           "hash": "vlbatXpRguFYjxKjJCf6UA=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -191,7 +191,7 @@
           "hash": "pfB3zupCRxHSK9FK4PDsQA=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -208,11 +208,35 @@
     },
     {
       "type": "Toc",
+      "source_relative_path": "site/tutorials/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "site/tutorials/toc.html",
+          "hash": "FG//YpYmVeE1VQ9g/BckFA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "site/tutorials/tutorials.md",
+      "output": {
+        ".html": {
+          "relative_path": "site/tutorials/tutorials.html",
+          "hash": "fZGKWzTz0+Q1AbtqADN6qw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "Toc",
       "source_relative_path": "toc.yml",
       "output": {
         ".html": {
           "relative_path": "toc.html",
-          "hash": "eTlES187m1Yvx3I0lY7DNw=="
+          "hash": "1ZGkGyjnuwTfs/tqEfjQwA=="
         }
       },
       "is_incremental": false,
@@ -222,35 +246,34 @@
   "incremental_info": [
     {
       "status": {
-        "can_incremental": false,
-        "details": "Disable incremental build by force rebuild option.",
+        "can_incremental": true,
         "incrementalPhase": "build"
       },
       "processors": {
+        "TocDocumentProcessor": {
+          "can_incremental": false,
+          "details": "Processor TocDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
+          "incrementalPhase": "build"
+        },
         "ResourceDocumentProcessor": {
           "can_incremental": false,
           "details": "Processor ResourceDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
           "incrementalPhase": "build"
         },
-        "ManagedReferenceDocumentProcessor": {
-          "can_incremental": false,
-          "incrementalPhase": "build"
-        },
         "ConceptualDocumentProcessor": {
-          "can_incremental": false,
+          "can_incremental": true,
           "incrementalPhase": "build"
         },
-        "TocDocumentProcessor": {
-          "can_incremental": false,
-          "details": "Processor TocDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
+        "ManagedReferenceDocumentProcessor": {
+          "can_incremental": true,
           "incrementalPhase": "build"
         }
       }
     },
     {
       "status": {
-        "can_incremental": false,
-        "details": "Cannot support incremental post processing, the reason is: it's disabled.",
+        "can_incremental": true,
+        "details": "Can support incremental post processing.",
         "incrementalPhase": "postProcessing"
       },
       "processors": {}
