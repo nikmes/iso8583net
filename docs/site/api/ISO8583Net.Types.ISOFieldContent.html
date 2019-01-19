@@ -103,11 +103,6 @@
 </td>
       </tr>
       <tr>
-        <td id="ISO8583Net_Types_ISOFieldContent_ANP">ANP</td>
-        <td><p>Data consist only of alphabetic characters</p>
-</td>
-      </tr>
-      <tr>
         <td id="ISO8583Net_Types_ISOFieldContent_ANS">ANS</td>
         <td><p>Data consist only of alphabetic, numeric and special characters</p>
 </td>
@@ -119,22 +114,32 @@
       </tr>
       <tr>
         <td id="ISO8583Net_Types_ISOFieldContent_HD">HD</td>
-        <td><p>Data consist only of hexadecimal digits</p>
+        <td><p>Data consist only of hexadecimal valid characters and digits (A-B-C-D-E-F-0-1-2-3-4-5-6-7-8-9) only</p>
 </td>
       </tr>
       <tr>
         <td id="ISO8583Net_Types_ISOFieldContent_N">N</td>
-        <td><p>Data consist only of numeric digits</p>
+        <td><p>Data consist only of numeric characters (digits)</p>
 </td>
       </tr>
       <tr>
         <td id="ISO8583Net_Types_ISOFieldContent_NS">NS</td>
-        <td><p>Data consist only of numeric digits and special characters</p>
+        <td><p>Data consist only of numeric and special characters</p>
 </td>
       </tr>
       <tr>
-        <td id="ISO8583Net_Types_ISOFieldContent_TRACK2">TRACK2</td>
-        <td><p>Data consist only of valid TRACK2 characters</p>
+        <td id="ISO8583Net_Types_ISOFieldContent_S">S</td>
+        <td><p>Special Characters only</p>
+</td>
+      </tr>
+      <tr>
+        <td id="ISO8583Net_Types_ISOFieldContent_XN">XN</td>
+        <td><p>Numeric (amount) values, where the first byte is either 'C' to indicate a positive or Credit value, or 'D' to indicate a negative or Debit value, followed by the numeric value (using n digits)</p>
+</td>
+      </tr>
+      <tr>
+        <td id="ISO8583Net_Types_ISOFieldContent_Z">Z</td>
+        <td><p>Tracks 2 and 3 code set as defined in ISO/IEC 7813 and ISO/IEC 4909 respectively</p>
 </td>
       </tr>
     </tbody>

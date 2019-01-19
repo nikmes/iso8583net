@@ -1,15 +1,15 @@
 ﻿namespace ISO8583Net.Types
 {
     /// <summary>
-    /// Indicates an ISO field participation in a message type.
+    /// ISO field participation in the an ISO message type
     /// </summary>
     public enum ISOFieldParticipation
     {
-        /// <summary>Mandatory, the field mast exist in the message type</summary>
+        /// <summary>ISO field is mandatory, must exist in the message type</summary>
         MAN,
-        /// <summary>Optional, the field may exist in the message type</summary>
+        /// <summary>ISO field is optional, may exist in the message type</summary>
         OPT,
-        /// <summary>Conditional, the field mast exists in the message type if some conditions are met</summary>
+        /// <summary>ISO field is conditional, must exists in the message type if some conditions are met</summary>
         CON
     }
 
@@ -20,37 +20,37 @@
     /// </summary>
     public enum ISOFieldLengthFormat
     {
-        /// <summary>The field is of fixed length type. There is no length indicator</summary>
+        /// <summary>ISO field has fixed length type. There is no field data length indicator</summary>
         FIXED,
-        /// <summary>The field is of varialble length type. There is a length indicator before the data</summary>
+        /// <summary>ISO field has varialble length type. Field data are preceeded by length indicator</summary>
         VAR,
     }
 
     /// <summary>Defines the encoding of the ISO field value</summary>
     public enum ISOFieldCoding
     {
-        /// <summary>ISO field value is encoded in ASCII</summary>       
+        /// <summary>ISO field data are encoded in ASCII</summary>       
         ASCII,
-        /// <summary>ISO field value is encoded in BCD</summary>        
+        /// <summary>ISO field data are encoded in BCD</summary>        
         BCD,
-        /// <summary>ISO field value is encoded in BCDU (BCD Unpacked)</summary>        
+        /// <summary>ISO field data are encoded in BCDU (BCD Unpacked)</summary>        
         BCDU,
-        /// <summary>ISO field value is encoded in EBCDIC</summary>        
+        /// <summary>ISO field data are encoded in EBCDIC</summary>        
         EBCDIC,
-        /// <summary>ISO field value is encoded in BIN (Binary)</summary>        
+        /// <summary>ISO field data are encoded in BIN (Binary)</summary>        
         BIN,
-        /// <summary>ISO field value is encoded in Z (Track2 Encoding)</summary>       
+        /// <summary>ISO field data are encoded in Z (Track2 Encoding)</summary>       
         Z
     }
 
-    /// <summary>Defines the padding of the ISO field value</summary>
+    /// <summary>ISO field data paddding method.</summary>
     public enum ISOFieldPadding
     {
-        /// <summary>Field is using left padding</summary>
+        /// <summary>ISO field data are left padded</summary>
         LEFT,
-        /// <summary>Field is using right padding</summary>
+        /// <summary>ISO field data are right padded</summary>
         RIGHT,
-        /// <summary>Field is using no padding</summary>
+        /// <summary>ISO field data are not padded</summary>
         NONE
     }
 
@@ -59,21 +59,23 @@
     {
         /// <summary>Data consist only of alphabetic characters</summary>
         A,
+        /// <summary>Data consist only of numeric characters (digits)</summary>
+        N,
         /// <summary>Data consist only of alphabetic and numeric characters</summary>
         AN,
-        /// <summary>Data consist only of alphabetic characters</summary>
-        ANP,
         /// <summary>Data consist only of alphabetic, numeric and special characters</summary>
         ANS,
+        /// <summary>Numeric (amount) values, where the first byte is either 'C' to indicate a positive or Credit value, or 'D' to indicate a negative or Debit value, followed by the numeric value (using n digits)</summary>
+        XN,
+        /// <summary>Special Characters only</summary>
+        S,
+        /// <summary>Data consist only of numeric and special characters</summary>
+        NS,
         /// <summary>Data consist only of alphabetic and special characters</summary>
         AS,
-        /// <summary>Data consist only of hexadecimal digits</summary>
+        /// <summary>Data consist only of hexadecimal valid characters and digits (A-B-C-D-E-F-0-1-2-3-4-5-6-7-8-9) only</summary>
         HD,
-        /// <summary>Data consist only of numeric digits</summary>
-        N,
-        /// <summary>Data consist only of numeric digits and special characters</summary>
-        NS,
-        /// <summary>Data consist only of valid TRACK2 characters</summary>
-        TRACK2
+        /// <summary>Tracks 2 and 3 code set as defined in ISO/IEC 7813 and ISO/IEC 4909 respectively</summary>
+        Z
     }
 }

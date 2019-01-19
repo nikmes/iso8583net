@@ -67,12 +67,6 @@ references:
   commentId: F:ISO8583Net.Types.ISOFieldContent.AN
   fullName: ISO8583Net.Types.ISOFieldContent.AN
   nameWithType: ISOFieldContent.AN
-- uid: ISO8583Net.Types.ISOFieldContent.ANP
-  name: ANP
-  href: site/api/ISO8583Net.Types.ISOFieldContent.html#ISO8583Net_Types_ISOFieldContent_ANP
-  commentId: F:ISO8583Net.Types.ISOFieldContent.ANP
-  fullName: ISO8583Net.Types.ISOFieldContent.ANP
-  nameWithType: ISOFieldContent.ANP
 - uid: ISO8583Net.Types.ISOFieldContent.ANS
   name: ANS
   href: site/api/ISO8583Net.Types.ISOFieldContent.html#ISO8583Net_Types_ISOFieldContent_ANS
@@ -103,12 +97,24 @@ references:
   commentId: F:ISO8583Net.Types.ISOFieldContent.NS
   fullName: ISO8583Net.Types.ISOFieldContent.NS
   nameWithType: ISOFieldContent.NS
-- uid: ISO8583Net.Types.ISOFieldContent.TRACK2
-  name: TRACK2
-  href: site/api/ISO8583Net.Types.ISOFieldContent.html#ISO8583Net_Types_ISOFieldContent_TRACK2
-  commentId: F:ISO8583Net.Types.ISOFieldContent.TRACK2
-  fullName: ISO8583Net.Types.ISOFieldContent.TRACK2
-  nameWithType: ISOFieldContent.TRACK2
+- uid: ISO8583Net.Types.ISOFieldContent.S
+  name: S
+  href: site/api/ISO8583Net.Types.ISOFieldContent.html#ISO8583Net_Types_ISOFieldContent_S
+  commentId: F:ISO8583Net.Types.ISOFieldContent.S
+  fullName: ISO8583Net.Types.ISOFieldContent.S
+  nameWithType: ISOFieldContent.S
+- uid: ISO8583Net.Types.ISOFieldContent.XN
+  name: XN
+  href: site/api/ISO8583Net.Types.ISOFieldContent.html#ISO8583Net_Types_ISOFieldContent_XN
+  commentId: F:ISO8583Net.Types.ISOFieldContent.XN
+  fullName: ISO8583Net.Types.ISOFieldContent.XN
+  nameWithType: ISOFieldContent.XN
+- uid: ISO8583Net.Types.ISOFieldContent.Z
+  name: Z
+  href: site/api/ISO8583Net.Types.ISOFieldContent.html#ISO8583Net_Types_ISOFieldContent_Z
+  commentId: F:ISO8583Net.Types.ISOFieldContent.Z
+  fullName: ISO8583Net.Types.ISOFieldContent.Z
+  nameWithType: ISOFieldContent.Z
 - uid: ISO8583Net.Types.ISOFieldLengthFormat
   name: ISOFieldLengthFormat
   href: site/api/ISO8583Net.Types.ISOFieldLengthFormat.html
