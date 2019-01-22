@@ -88,28 +88,56 @@ namespace ISO8583Net.Utils
         };
 
         /// <summary>Static array for fast lookup to convert from bytes to hex</summary>
-        private static readonly uint[] _lookup32 = CreateLookup32();
+        private static readonly uint[] _lookup32 = createLookup32();
 
         /// <summary>
         /// Extents array functionality by allowing to get a new array (sub array) from an array
         /// </summary>
         /// <param name="data">The array from where subarray will be created</param>  
         /// <param name="index">Starting position for the sub array</param>  
-        /// <param name="length">Length of sub arrayt starting from postion index</param>  
-        public static T[] SubArray<T>(this T[] data, int index, int length)
+        /// <param name="length">Length of sub arrayt starting from postion index</param>
+        /// <typeparam name="T">An array of any type. Int, Char, Byte etc</typeparam>
+        /// <returns>
+        /// A sub array, portion of the original array in a new array object
+        /// </returns>
+        public static T[] SubArray<T>(this T[] inData, int index, int length)
         {
             T[] result = new T[length];
 
-            Array.Copy(data, index, result, 0, length);
+            Array.Copy(inData, index, result, 0, length);
 
             return result;
         }
+
+        /// <summary>
+        /// Extents array functionality by allowing to concatenate two arrays
+        /// </summary>
+        /// <param name="inData1">The first arrays to be concatanated with the next array</param>  
+        /// <param name="inData2">The arrays to be concatanate to the previous array</param>
+        /// <returns>
+        /// A new array, the resutl of the concatanation of the two arrays passed as parameters
+        /// </returns>
+        /// <typeparam name="T">An array of any type. Int, Char, Byte etc</typeparam>
+        public static T[] concatArray<T>(this T[] inData1, T[] inData2) // int index, int length)
+        {
+            List<T> tmp = new List<T>();
+
+            tmp.AddRange(inData1);
+
+            tmp.AddRange(inData2);
+            
+            return tmp.ToArray();
+        }
+
         /// <summary>
         /// Extents array functionality by allowing to concatenate two arrays
         /// </summary>
         /// <param name="inData1">The first arrays to be concatanated with the next array</param>  
         /// <param name="inData2">The arrays to be concatanate to the previous array</param>  
-        public static byte[] BufferConcat(byte[] inData1, byte[] inData2)
+        /// <returns>
+        /// A new array, the resutl of the concatanation of the two arrays passed as parameters
+        /// </returns>
+        public static byte[] bufferConcat(byte[] inData1, byte[] inData2)
         {
             List<byte> tmp = new List<byte>();
 
@@ -123,7 +151,10 @@ namespace ISO8583Net.Utils
         /// <summary>
         /// Initializes static array used for Byte to Hex convertions 
         /// </summary>
-        private static uint[] CreateLookup32()
+        /// <returns>
+        /// The initialized unsigned int array
+        /// </returns>
+        private static uint[] createLookup32()
         {
             var result = new uint[256];
 
@@ -613,10 +644,14 @@ namespace ISO8583Net.Utils
             return Encoding.UTF8.GetByteCount(value) == value.Length;
         }
         /// <summary>
-        /// Adds two integers and returns the result.
+        /// Prepares in a string a nice representation of binary data to hex data and ascii (whereever binary characters happen to be printable else is replacing them with a dot
         /// </summary>
         /// <param name="value">The integer to be convert to bytes</param>  
-        public static string PrintHEX(byte[] iPtr, int iNumBytes)
+        /// <returns>
+        /// The string with the nicely formated hex representation of binary data
+        /// </returns>
+
+        public static string printHex(byte[] iPtr, int iNumBytes)
         {
             uint kDL_OUTPUT_HEX_COLS = 16;
 
