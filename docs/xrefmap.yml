@@ -356,6 +356,22 @@ references:
   isSpec: "True"
   fullName: ISO8583Net.Utils.ISOUtils.checkIsOnlyDigits
   nameWithType: ISOUtils.checkIsOnlyDigits
+- uid: ISO8583Net.Utils.ISOUtils.ConcatArray*
+  name: ConcatArray
+  href: site/api/ISO8583Net.Utils.ISOUtils.html#ISO8583Net_Utils_ISOUtils_ConcatArray_
+  commentId: Overload:ISO8583Net.Utils.ISOUtils.ConcatArray
+  isSpec: "True"
+  fullName: ISO8583Net.Utils.ISOUtils.ConcatArray
+  nameWithType: ISOUtils.ConcatArray
+- uid: ISO8583Net.Utils.ISOUtils.ConcatArray``1(``0[],``0[])
+  name: ConcatArray<T>(T[], T[])
+  href: site/api/ISO8583Net.Utils.ISOUtils.html#ISO8583Net_Utils_ISOUtils_ConcatArray__1___0_____0___
+  commentId: M:ISO8583Net.Utils.ISOUtils.ConcatArray``1(``0[],``0[])
+  name.vb: ConcatArray(Of T)(T(), T())
+  fullName: ISO8583Net.Utils.ISOUtils.ConcatArray<T>(T[], T[])
+  fullName.vb: ISO8583Net.Utils.ISOUtils.ConcatArray(Of T)(T(), T())
+  nameWithType: ISOUtils.ConcatArray<T>(T[], T[])
+  nameWithType.vb: ISOUtils.ConcatArray(Of T)(T(), T())
 - uid: ISO8583Net.Utils.ISOUtils.ebcdic2ascii(System.Byte[],System.Int32@,System.Int32)
   name: ebcdic2ascii(Byte[], ref Int32, Int32)
   href: site/api/ISO8583Net.Utils.ISOUtils.html#ISO8583Net_Utils_ISOUtils_ebcdic2ascii_System_Byte___System_Int32__System_Int32_

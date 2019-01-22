@@ -15,4 +15,13 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ISOField\" />
+    <Folder Include="ISOPackager\" />
+    <Folder Include="ISOHeader\" />
+    <Folder Include="ISOMessage\" />
+    <Folder Include="ISOInterpreter\" />
+    <Folder Include="ISODialects\" />
+  </ItemGroup>
+
 </Project>
