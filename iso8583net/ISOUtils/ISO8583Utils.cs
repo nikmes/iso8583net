@@ -1,7 +1,7 @@
-﻿using System;
+﻿using ISO8583Net.Types;
+using System;
 using System.Collections.Generic;
 using System.Text;
-using ISO8583Net.Types;
 
 
 namespace ISO8583Net.Utils
@@ -88,7 +88,7 @@ namespace ISO8583Net.Utils
         };
 
         /// <summary>Static array for fast lookup to convert from bytes to hex</summary>
-        private static readonly uint[] _lookup32 = createLookup32();
+        private static readonly uint[] _lookup32 = CreateLookup32();
 
         /// <summary>
         /// Extents array functionality by allowing to get a new array (sub array) from an array
@@ -118,7 +118,7 @@ namespace ISO8583Net.Utils
         /// A new array, the resutl of the concatanation of the two arrays passed as parameters
         /// </returns>
         /// <typeparam name="T">An array of any type. Int, Char, Byte etc</typeparam>
-        public static T[] concatArray<T>(this T[] inData1, T[] inData2) // int index, int length)
+        public static T[] ConcatArray<T>(this T[] inData1, T[] inData2) // int index, int length)
         {
             List<T> tmp = new List<T>();
 
@@ -137,7 +137,7 @@ namespace ISO8583Net.Utils
         /// <returns>
         /// A new array, the resutl of the concatanation of the two arrays passed as parameters
         /// </returns>
-        public static byte[] bufferConcat(byte[] inData1, byte[] inData2)
+        public static byte[] BufferConcat(byte[] inData1, byte[] inData2)
         {
             List<byte> tmp = new List<byte>();
 
@@ -154,7 +154,7 @@ namespace ISO8583Net.Utils
         /// <returns>
         /// The initialized unsigned int array
         /// </returns>
-        private static uint[] createLookup32()
+        private static uint[] CreateLookup32()
         {
             var result = new uint[256];
 
@@ -234,7 +234,7 @@ namespace ISO8583Net.Utils
         /// Adds two integers and returns the result.
         /// </summary>
         /// <param name="value">The integer to be convert to bytes</param>  
-        public static void int2Bytes(int value, byte[] packedBytes, ref int index, int numHexDigits)
+        public static void Int2Bytes(int value, byte[] packedBytes, ref int index, int numHexDigits)
         {
             // !! PROBLEM NEED TO CONVERT BASE ON LENGTH OF LENGTH !!! NOT ALWAYS 1 BYTE !!!!!!
 
@@ -256,7 +256,7 @@ namespace ISO8583Net.Utils
         /// Adds two integers and returns the result.
         /// </summary>
         /// <param name="value">The integer to be convert to bytes</param>  
-        public static int bytes2int(byte[] packedBytes, ref int index, int numHexDigits)
+        public static int Bytes2Int(byte[] packedBytes, ref int index, int numHexDigits)
         {
             int pos = 8 * ((numHexDigits / 2) - 1);
 

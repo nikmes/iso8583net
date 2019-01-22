@@ -1,6 +1,6 @@
 {
   "homepages": [],
-  "source_base_path": "C:/users/nikmes/source/repos/iso8583net/iso8583net",
+  "source_base_path": "C:/Users/nikmes/source/repos/iso8583net/iso8583net",
   "xrefmap": "xrefmap.yml",
   "files": [
     {
@@ -22,6 +22,330 @@
         ".html": {
           "relative_path": "site/about/about.html",
           "hash": "X/GkP+UGDFDKUsTTpvBidQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "site/api/ISO8583Net.Field.BerTLV.yml",
+      "output": {
+        ".html": {
+          "relative_path": "site/api/ISO8583Net.Field.BerTLV.html",
+          "hash": "xHCa3PWzHifDe5hMf8cJNA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "site/api/ISO8583Net.Field.BerTLVObject.yml",
+      "output": {
+        ".html": {
+          "relative_path": "site/api/ISO8583Net.Field.BerTLVObject.html",
+          "hash": "6vzgC5o5eHXmsKxFiyV+Hg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "site/api/ISO8583Net.Field.ISOComponent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "site/api/ISO8583Net.Field.ISOComponent.html",
+          "hash": "b7KFVVVxoFG6/8IT8BKeVQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "site/api/ISO8583Net.Field.ISOField.yml",
+      "output": {
+        ".html": {
+          "relative_path": "site/api/ISO8583Net.Field.ISOField.html",
+          "hash": "mLu0+sk3CSk3CTdt9HNl6A=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "site/api/ISO8583Net.Field.ISOFieldBitmap.yml",
+      "output": {
+        ".html": {
+          "relative_path": "site/api/ISO8583Net.Field.ISOFieldBitmap.html",
+          "hash": "aXZxRMht8TJFD/VJBOEg6w=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "site/api/ISO8583Net.Field.ISOMessageFields.yml",
+      "output": {
+        ".html": {
+          "relative_path": "site/api/ISO8583Net.Field.ISOMessageFields.html",
+          "hash": "QxaqmcxFcQnNbgEgzY6wmA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "site/api/ISO8583Net.Field.ISOMessageSubFields.yml",
+      "output": {
+        ".html": {
+          "relative_path": "site/api/ISO8583Net.Field.ISOMessageSubFields.html",
+          "hash": "XW8YZDgvvPc+lwQwl8FcRQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "site/api/ISO8583Net.Field.yml",
+      "output": {
+        ".html": {
+          "relative_path": "site/api/ISO8583Net.Field.html",
+          "hash": "ykgVsR0EuiUWW9yfb+zSaQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "site/api/ISO8583Net.Header.ISOHeader.yml",
+      "output": {
+        ".html": {
+          "relative_path": "site/api/ISO8583Net.Header.ISOHeader.html",
+          "hash": "2mGHL1WLxiTWYTO+LzchsQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "site/api/ISO8583Net.Header.ISOVisaHeader.yml",
+      "output": {
+        ".html": {
+          "relative_path": "site/api/ISO8583Net.Header.ISOVisaHeader.html",
+          "hash": "SNbl0fNnbeXWZgIb+hz0Cg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "site/api/ISO8583Net.Header.yml",
+      "output": {
+        ".html": {
+          "relative_path": "site/api/ISO8583Net.Header.html",
+          "hash": "m394WlKYfZgCHGTUDWjDsA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "site/api/ISO8583Net.Interpreter.ISOIndexedValueInterpreter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "site/api/ISO8583Net.Interpreter.ISOIndexedValueInterpreter.html",
+          "hash": "ysBNdC8EICmhRXoIBI6yhg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "site/api/ISO8583Net.Interpreter.ISOInterpreter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "site/api/ISO8583Net.Interpreter.ISOInterpreter.html",
+          "hash": "gsZArVxMireVnXnh+bbQGg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "site/api/ISO8583Net.Interpreter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "site/api/ISO8583Net.Interpreter.html",
+          "hash": "iTQpTnZ5kn9dRADjb0atZg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "site/api/ISO8583Net.Message.ISOMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "site/api/ISO8583Net.Message.ISOMessage.html",
+          "hash": "Fxxs3qZS+vj1zxmGEKyuNw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "site/api/ISO8583Net.Message.yml",
+      "output": {
+        ".html": {
+          "relative_path": "site/api/ISO8583Net.Message.html",
+          "hash": "eXb9r84Z/1PXumUfmem9VQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "site/api/ISO8583Net.Packager.ISOFieldDefinition.yml",
+      "output": {
+        ".html": {
+          "relative_path": "site/api/ISO8583Net.Packager.ISOFieldDefinition.html",
+          "hash": "j5s5x7mwP4dyx0LWmBQW4A=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "site/api/ISO8583Net.Packager.ISOFieldPackager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "site/api/ISO8583Net.Packager.ISOFieldPackager.html",
+          "hash": "cjelyS5A3D/Ajk5aHJifUg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "site/api/ISO8583Net.Packager.ISOHeaderPackager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "site/api/ISO8583Net.Packager.ISOHeaderPackager.html",
+          "hash": "EfyLAz84+q5mt2wRIjjXeQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "site/api/ISO8583Net.Packager.ISOHeaderVisaPackager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "site/api/ISO8583Net.Packager.ISOHeaderVisaPackager.html",
+          "hash": "7AM1p4mqfNKX430wXABCTg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "site/api/ISO8583Net.Packager.ISOMessageFieldsPackager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "site/api/ISO8583Net.Packager.ISOMessageFieldsPackager.html",
+          "hash": "hBpyvgGtClLjU9/yY7QMdQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "site/api/ISO8583Net.Packager.ISOMessagePackager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "site/api/ISO8583Net.Packager.ISOMessagePackager.html",
+          "hash": "tJz9TRt8LmJ+J7VFxkqX6A=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "site/api/ISO8583Net.Packager.ISOMessageSubFieldsPackager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "site/api/ISO8583Net.Packager.ISOMessageSubFieldsPackager.html",
+          "hash": "UZmr2sWk4MS5/vbrP3GWeQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "site/api/ISO8583Net.Packager.ISOMessageTypesPackager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "site/api/ISO8583Net.Packager.ISOMessageTypesPackager.html",
+          "hash": "IZcV5/LKgEDLEoc1X8r6KA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "site/api/ISO8583Net.Packager.ISOMsgTypePackager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "site/api/ISO8583Net.Packager.ISOMsgTypePackager.html",
+          "hash": "WpWQuhRuH8hnmKl1ctyYCQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "site/api/ISO8583Net.Packager.ISOPackager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "site/api/ISO8583Net.Packager.ISOPackager.html",
+          "hash": "LeSqEAVhF8asvZbviVUk6Q=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "site/api/ISO8583Net.Packager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "site/api/ISO8583Net.Packager.html",
+          "hash": "WPNe3sF3/XlbISnm7C/DPA=="
         }
       },
       "is_incremental": true,
@@ -105,10 +429,10 @@
       "output": {
         ".html": {
           "relative_path": "site/api/ISO8583Net.Utils.ISOUtils.html",
-          "hash": "7IfNE4tZvRGiYi2iFudhGQ=="
+          "hash": "E4f/ZTogakjGMNojkTsbYw=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -120,7 +444,7 @@
           "hash": "U6Y4R0CVDiKhU4dH8bdo0Q=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -141,7 +465,7 @@
       "output": {
         ".html": {
           "relative_path": "site/api/toc.html",
-          "hash": "mv92dQ/dVqC8wSy+tBmKdg=="
+          "hash": "pq0M6YqqFeu0FUvuMAZ0lg=="
         }
       },
       "is_incremental": false,
@@ -236,7 +560,7 @@
       "output": {
         ".html": {
           "relative_path": "toc.html",
-          "hash": "1ZGkGyjnuwTfs/tqEfjQwA=="
+          "hash": "gOWIAupcbN+alXlPysBRyg=="
         }
       },
       "is_incremental": false,
@@ -250,6 +574,11 @@
         "incrementalPhase": "build"
       },
       "processors": {
+        "TocDocumentProcessor": {
+          "can_incremental": false,
+          "details": "Processor TocDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
+          "incrementalPhase": "build"
+        },
         "ResourceDocumentProcessor": {
           "can_incremental": false,
           "details": "Processor ResourceDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
@@ -261,11 +590,6 @@
         },
         "ConceptualDocumentProcessor": {
           "can_incremental": true,
-          "incrementalPhase": "build"
-        },
-        "TocDocumentProcessor": {
-          "can_incremental": false,
-          "details": "Processor TocDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
           "incrementalPhase": "build"
         }
       }
