@@ -1,5 +1,5 @@
 # **ISO8583Net**
 
+A highly configurable .net library for building and parsing iso8583 financial messages. 
 
-## Quick Start Notes:
-1. Add images to the *images* folder if the file is referencing an image.
+**This is library is still work in progress**
