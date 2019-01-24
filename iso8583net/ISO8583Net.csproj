@@ -22,7 +22,6 @@
     <Folder Include="ISOMessage\" />
     <Folder Include="ISOInterpreter\" />
     <Folder Include="ISODialects\" />
-    <Folder Include="ISOPackagerLoader\" />
   </ItemGroup>
 
 </Project>

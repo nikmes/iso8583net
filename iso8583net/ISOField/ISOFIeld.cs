@@ -60,8 +60,6 @@ namespace ISO8583Net.Field
 
         public override String ToString()
         {
-            //return (String.Format("Field [{0}]{1}[{2}]\n", m_number.ToString().PadLeft(3, '0'), " ".PadLeft(4, ' '), m_value));
-
             return (String.Format("Field [{0}]{1}[{2}]\n{3}", m_number.ToString().PadLeft(3, '0')," ".PadRight(4, ' '), m_value, m_packager.InterpretField(m_value)));
         }
     }

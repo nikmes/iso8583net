@@ -44,11 +44,6 @@ namespace ISO8583Net.Packager
             m_storeClass = storageClass.ToString();
         }
 
-        public string GetStorageClass()
-        {
-            return m_storeClass;
-        }
-
         public void SetComposite(bool compositeIndicator)
         {
             m_composite = compositeIndicator;
@@ -63,16 +58,6 @@ namespace ISO8583Net.Packager
         {
             return m_number;
         }
-
-        public string GetContentCoding()
-        {
-            return m_isoFieldDefinition.contentCoding.ToString();
-        }
-
-        public string GetContentFormat()
-        {
-            return m_isoFieldDefinition.content.ToString();
-        }
         
         public ISOFieldDefinition GetISOFieldDefinition()
         {
@@ -82,11 +67,6 @@ namespace ISO8583Net.Packager
         public void SetISOFieldDefinition(ISOFieldDefinition isoFieldDefinition)
         {
             m_isoFieldDefinition = isoFieldDefinition;
-        }
-
-        public string GetFieldName()
-        {
-            return m_isoFieldDefinition.name;
         }
 
         public string InterpretField(String fieldValue)

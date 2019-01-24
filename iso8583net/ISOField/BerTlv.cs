@@ -1,4 +1,4 @@
-﻿using ISO8583Net.Utils;
+﻿using ISO8583Net.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;

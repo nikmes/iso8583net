@@ -1,5 +1,5 @@
 ﻿using ISO8583Net.Field;
-using ISO8583Net.Utils;
+using ISO8583Net.Utilities;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Text;

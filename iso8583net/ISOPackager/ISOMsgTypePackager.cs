@@ -84,6 +84,7 @@ namespace ISO8583Net.Packager
         {
             return m_conBitmap.GetByteArray();
         }
+
         public ISOFieldBitmap GetMandatoryBitmap()
         {
             return m_manBitmap;

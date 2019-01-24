@@ -1,6 +1,6 @@
 ﻿using ISO8583Net.Packager;
 using ISO8583Net.Types;
-using ISO8583Net.Utils;
+using ISO8583Net.Utilities;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
