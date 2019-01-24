@@ -1,6 +1,6 @@
 ﻿using ISO8583Net.Field;
 using ISO8583Net.Types;
-using ISO8583Net.Utils;
+using ISO8583Net.Utilities;
 using Microsoft.Extensions.Logging;
 using System.Text;
 
@@ -123,7 +123,7 @@ namespace ISO8583Net.Packager
             {
                 case ISOFieldCoding.EBCDIC:
 
-                    if (ISOUtils.isASCII(fldValue))
+                    if (ISOUtils.IsAscii(fldValue))
                     {
                         if (Logger.IsEnabled(LogLevel.Debug)) Logger.LogDebug("Field [" + fldNumber + "] contains only EBCDIC characters [OK]");
                     }
@@ -136,7 +136,7 @@ namespace ISO8583Net.Packager
 
                 case ISOFieldCoding.ASCII:
 
-                    if (ISOUtils.isASCII(fldValue))
+                    if (ISOUtils.IsAscii(fldValue))
                     {
                         if (Logger.IsEnabled(LogLevel.Debug)) Logger.LogDebug("Field [" + fldNumber + "] contains only ASCII characters [OK]");
                     }
@@ -150,7 +150,7 @@ namespace ISO8583Net.Packager
                 case ISOFieldCoding.BCDU:
                 case ISOFieldCoding.BCD:
 
-                    if (ISOUtils.checkIsOnlyDigits(fldValue))
+                    if (ISOUtils.IsDigits(fldValue))
                     {
                        // if (Logger.IsEnabled(LogLevel.Debug)) Logger.LogDebug("Field [" + fldNumber + "] contains only decimal digits [OK]");
                     }
@@ -164,7 +164,7 @@ namespace ISO8583Net.Packager
 
                 case ISOFieldCoding.BIN:
  
-                    if (ISOUtils.checkIsHexDigits(fldValue))
+                    if (ISOUtils.IsHexDigits(fldValue))
                     {
                         //if (Logger.IsEnabled(LogLevel.Debug)) Logger.LogDebug("Field [" + fldNumber + "] contains only hexadecimal digits [OK]");
                     }

@@ -1,5 +1,4 @@
 ﻿using ISO8583Net.Field;
-using ISO8583Net.Loader;
 using Microsoft.Extensions.Logging;
 using System;
 
@@ -20,6 +19,13 @@ namespace ISO8583Net.Packager
         public ISOMessagePackager(ILogger logger, string fileName) : base (logger)
         {
             ISOPackagerLoader isoPackagerLoader = new ISOPackagerLoader(Logger, fileName, ref m_msgFieldsPackager);
+
+            m_totalFields = m_msgFieldsPackager.GetTotalFields();
+        }
+
+        public ISOMessagePackager(ILogger logger) : base(logger)
+        {
+            ISOPackagerLoader isoPackagerLoader = new ISOPackagerLoader(Logger, ref m_msgFieldsPackager);
 
             m_totalFields = m_msgFieldsPackager.GetTotalFields();
         }
