@@ -17,7 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="ISOField\" />
     <Folder Include="ISOHeader\" />
     <Folder Include="ISOMessage\" />
     <Folder Include="ISOInterpreter\" />

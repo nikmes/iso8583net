@@ -422,7 +422,7 @@ namespace ISO8583Net.Packager
 
                             ISOFieldPackager fPackager = LoadISOFieldPackager(reader);
 
-                            ISOMessageSubFieldsPackager newMsgFieldPackager = LoadISOMessageSubFieldsPackager(reader, fldNumber);
+                            ISOFieldBitmapSubFieldsPackager newMsgFieldPackager = LoadISOMessageSubFieldsPackager(reader, fldNumber);
 
                             newMsgFieldPackager.SetISOFieldDefinition(fPackager.GetISOFieldDefinition());
 
@@ -478,9 +478,9 @@ namespace ISO8583Net.Packager
             return msgFieldPackager;
         }
 
-        private ISOMessageSubFieldsPackager LoadISOMessageSubFieldsPackager(XmlReader reader, int fieldNumber)
+        private ISOFieldBitmapSubFieldsPackager LoadISOMessageSubFieldsPackager(XmlReader reader, int fieldNumber)
         {
-            ISOMessageSubFieldsPackager msgFieldPackager = new ISOMessageSubFieldsPackager(Logger, fieldNumber, m_totalFields);
+            ISOFieldBitmapSubFieldsPackager msgFieldPackager = new ISOFieldBitmapSubFieldsPackager(Logger, fieldNumber, m_totalFields);
 
             if (reader.ReadToDescendant("isofield"))
             {
@@ -507,7 +507,7 @@ namespace ISO8583Net.Packager
 
                             ISOFieldPackager fPackager = LoadISOFieldPackager(reader);
 
-                            ISOMessageSubFieldsPackager newMsgFieldPackager = LoadISOMessageSubFieldsPackager(reader, fldNumber);
+                            ISOFieldBitmapSubFieldsPackager newMsgFieldPackager = LoadISOMessageSubFieldsPackager(reader, fldNumber);
 
                             newMsgFieldPackager.SetISOFieldDefinition(fPackager.GetISOFieldDefinition());
 
