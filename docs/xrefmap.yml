@@ -1894,12 +1894,6 @@ references:
   commentId: M:ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.#ctor(Microsoft.Extensions.Logging.ILogger,System.Int32,System.Int32)
   fullName: ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.ISOFieldBitmapSubFieldsPackager(Microsoft.Extensions.Logging.ILogger, System.Int32, System.Int32)
   nameWithType: ISOFieldBitmapSubFieldsPackager.ISOFieldBitmapSubFieldsPackager(ILogger, Int32, Int32)
-- uid: ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.#ctor(Microsoft.Extensions.Logging.ILogger,System.Int32,System.Int32,ISO8583Net.Packager.ISOFieldDefinition)
-  name: ISOFieldBitmapSubFieldsPackager(ILogger, Int32, Int32, ISOFieldDefinition)
-  href: site/api/ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.html#ISO8583Net_Packager_ISOFieldBitmapSubFieldsPackager__ctor_Microsoft_Extensions_Logging_ILogger_System_Int32_System_Int32_ISO8583Net_Packager_ISOFieldDefinition_
-  commentId: M:ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.#ctor(Microsoft.Extensions.Logging.ILogger,System.Int32,System.Int32,ISO8583Net.Packager.ISOFieldDefinition)
-  fullName: ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.ISOFieldBitmapSubFieldsPackager(Microsoft.Extensions.Logging.ILogger, System.Int32, System.Int32, ISO8583Net.Packager.ISOFieldDefinition)
-  nameWithType: ISOFieldBitmapSubFieldsPackager.ISOFieldBitmapSubFieldsPackager(ILogger, Int32, Int32, ISOFieldDefinition)
 - uid: ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.#ctor*
   name: ISOFieldBitmapSubFieldsPackager
   href: site/api/ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.html#ISO8583Net_Packager_ISOFieldBitmapSubFieldsPackager__ctor_

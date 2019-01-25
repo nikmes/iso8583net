@@ -105,6 +105,24 @@
             <param name="fieldValue">The value (as string) to be assigned to the iso field</param>
             <example>SetFieldValue(2,"4000XXXXXXXX4000")</example>
         </member>
+        <member name="P:ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.totalFields">
+            <summary>
+            Total number of subfields  
+            </summary>
+        </member>
+        <member name="M:ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.Add(ISO8583Net.Packager.ISOPackager,System.Int32)">
+            <summary>
+            Adds packager of subfield to the array of sub field packagers
+            </summary>
+        </member>
+        <member name="M:ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.Pack(ISO8583Net.Field.ISOComponent,System.Byte[],System.Int32@)">
+            <summary>
+            Packs all subfields of field 
+            </summary>
+            <remarks>
+            The way the length is handled is completely wrong, needs to be coded correctly
+            </remarks>
+        </member>
         <member name="P:ISO8583Net.Packager.ISOFieldDefinition.lengthFormat">
             <value>The length format indicator</value>
         </member>

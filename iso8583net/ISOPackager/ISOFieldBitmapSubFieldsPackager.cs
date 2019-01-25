@@ -10,18 +10,10 @@ namespace ISO8583Net.Packager
     {
         private ISOPackager[] m_fieldPackagerList;
 
+        /// <summary>
+        /// Total number of subfields  
+        /// </summary>
         public int totalFields { get; set; }
-
-        public ISOFieldBitmapSubFieldsPackager(ILogger logger, int fieldNumber, int totalFields, ISOFieldDefinition isoFieldDefinition) : base (logger, isoFieldDefinition)
-        {
-            this.totalFields = totalFields;
-
-            m_number = fieldNumber;
-
-            m_composite = true;
-
-            m_fieldPackagerList = new ISOPackager[totalFields+1];
-        }
 
         public ISOFieldBitmapSubFieldsPackager(ILogger logger, int fieldNumber, int totalFields) : base(logger)
         {
@@ -34,10 +26,19 @@ namespace ISO8583Net.Packager
             m_fieldPackagerList = new ISOPackager[totalFields + 1];
         }
 
+        /// <summary>
+        /// Adds packager of subfield to the array of sub field packagers
+        /// </summary>
         public void Add(ISOPackager fieldPackager, int number)
         {
             m_fieldPackagerList[number] = fieldPackager;
         }
+        /// <summary>
+        /// Packs all subfields of field 
+        /// </summary>
+        /// <remarks>
+        /// The way the length is handled is completely wrong, needs to be coded correctly
+        /// </remarks>
 
         public override void Pack(ISOComponent isoMessageFields, byte[] packedBytes, ref int index)
         {
@@ -61,7 +62,8 @@ namespace ISO8583Net.Packager
                     m_fieldPackagerList[fieldNumber].Pack(isoFields[fieldNumber], packedBytes, ref index);
                 }
             }
-            
+
+           
             //!!! Hack always assumes length is in binary format !!!!
             //int bytesCopied = (i - (indexStarts - (m_isoFieldDefinition.m_lengthLength/2))); // bytes used for length not inclusive in length indicator
 
