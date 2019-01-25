@@ -28,7 +28,7 @@ namespace ISO8583Net.Message
 
             // based on isoHeaderPackager storage class initialize the correct ISOHeader
 
-            m_isoHeader = new ISOVisaHeader(Logger, m_isoHeaderPackager);
+            m_isoHeader = new ISOHeaderVisa(Logger, m_isoHeaderPackager);
         }
 
         public ISOMessage(ILogger logger, ISOMessagePackager isoMessagePackager) : base(logger, 0) 
@@ -40,7 +40,7 @@ namespace ISO8583Net.Message
             m_isoHeaderPackager = new ISOHeaderVisaPackager(Logger);
 
             // based on isoHeaderPackager storage class initialize the correct ISOHeader
-            m_isoHeader = new ISOVisaHeader(Logger, m_isoHeaderPackager);
+            m_isoHeader = new ISOHeaderVisa(Logger, m_isoHeaderPackager);
         }
 
         public override void SetValue(string value)
