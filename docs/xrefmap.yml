@@ -1716,6 +1716,12 @@ references:
   commentId: F:ISO8583Net.Message.ISOMessage.m_isoMesssagePackager
   fullName: ISO8583Net.Message.ISOMessage.m_isoMesssagePackager
   nameWithType: ISOMessage.m_isoMesssagePackager
+- uid: ISO8583Net.Message.ISOMessage.m_totalFields
+  name: m_totalFields
+  href: site/api/ISO8583Net.Message.ISOMessage.html#ISO8583Net_Message_ISOMessage_m_totalFields
+  commentId: F:ISO8583Net.Message.ISOMessage.m_totalFields
+  fullName: ISO8583Net.Message.ISOMessage.m_totalFields
+  nameWithType: ISOMessage.m_totalFields
 - uid: ISO8583Net.Message.ISOMessage.Pack
   name: Pack()
   href: site/api/ISO8583Net.Message.ISOMessage.html#ISO8583Net_Message_ISOMessage_Pack

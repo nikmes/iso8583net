@@ -37,18 +37,14 @@ namespace ISO8583Net.Field
                 {
                     m_isoFields[fieldNumber].SetValue(fieldValue);
 
-                    if (fieldNumber > 1 && fieldNumber != 65 && fieldNumber !=129)
+                    if (fieldNumber > 0) 
                     {
-                        ((ISOFieldBitmap)m_isoFields[1]).SetBit(fieldNumber); // if ISOMessageFields linked to ISOMessage then Bitmap is in position 1
-                    }
-                    else
-                    {
-                        //if (Logger.IsEnabled(LogLevel.Error)) Logger.LogError("Attempt to set value for bit [" + fieldNumber.ToString().PadLeft(3, '0') + "], which is bitmnap indicator!");
+                        ((ISOFieldBitmap)m_isoFields[1]).SetBit(fieldNumber); 
                     }
                 }
                 else
                 {
-                    if (Logger.IsEnabled(LogLevel.Error)) Logger.LogError("Trying to set Field [" + fieldNumber + "] that dose not exist in packager definition file");
+                    Logger.LogError("Trying to set Field [" + fieldNumber + "] that dose not exist in packager definition file");
                 }
             }
         }
@@ -61,13 +57,13 @@ namespace ISO8583Net.Field
 
                 if (SetFieldPackager(fieldNumber))
                 {
-                   ((ISOFieldBitmap)m_isoFields[1]).SetBit(fieldNumber);                    
+                    ((ISOFieldBitmap)m_isoFields[1]).SetBit(fieldNumber);                    
 
-                   m_isoFields[fieldNumber].SetFieldValue(subFieldNumber, fieldValue);
+                    m_isoFields[fieldNumber].SetFieldValue(subFieldNumber, fieldValue);
                 }
                 else
                 {
-                    //if (Logger.IsEnabled(LogLevel.Error)) Logger.LogError("Trying to set SubField [" + subFieldNumber.ToString() + "] of Field [" + fieldNumber + "] that dose not exist in packager definition file");
+                    Logger.LogError("Trying to set SubField [" + subFieldNumber.ToString() + "] of Field [" + fieldNumber + "] that dose not exist in packager definition file");
                 }
             }
             else
@@ -101,7 +97,7 @@ namespace ISO8583Net.Field
             }
             else
             {
-                if (Logger.IsEnabled(LogLevel.Error)) Logger.LogError("Field Packager was not initialized from XML Packager definition file");
+                Logger.LogError("Field Packager was not initialized from XML Packager definition file");
 
                 return false;
             }
