@@ -12,11 +12,13 @@ namespace ISO8583Net.Message
     {
         protected ISOMessagePackager m_isoMesssagePackager;
 
-        protected ISOMessageFields   m_isoMessageFields;
+        protected ISOMessageFields m_isoMessageFields;
 
-        protected ISOHeaderPackager  m_isoHeaderPackager = null;
+        protected ISOHeaderPackager m_isoHeaderPackager = null;
 
-        protected ISOHeader          m_isoHeader = null;
+        protected ISOHeader m_isoHeader = null;
+
+        protected int m_totalFields;
 
         public ISOMessage(ILogger logger, ISOMessagePackager messagePackager, ISOHeaderPackager isoHeaderPackager) : base(logger, 0)
         {
@@ -27,8 +29,9 @@ namespace ISO8583Net.Message
             m_isoMessageFields = new ISOMessageFields(Logger, m_isoMesssagePackager.GetISOMessageFieldsPackager(), 0);
 
             // based on isoHeaderPackager storage class initialize the correct ISOHeader
-
             m_isoHeader = new ISOHeaderVisa(Logger, m_isoHeaderPackager);
+
+            m_totalFields = ((ISOMessagePackager)m_isoMesssagePackager).GetTotalFields();
         }
 
         public ISOMessage(ILogger logger, ISOMessagePackager isoMessagePackager) : base(logger, 0) 
@@ -41,6 +44,8 @@ namespace ISO8583Net.Message
 
             // based on isoHeaderPackager storage class initialize the correct ISOHeader
             m_isoHeader = new ISOHeaderVisa(Logger, m_isoHeaderPackager);
+
+            m_totalFields = ((ISOMessagePackager)m_isoMesssagePackager).GetTotalFields();
         }
 
         public override void SetValue(string value)
@@ -52,25 +57,25 @@ namespace ISO8583Net.Message
 
         public override void SetFieldValue(int fieldNumber, String fieldValue)
         {
-            if (fieldNumber >= 0 && fieldNumber <= ((ISOMessagePackager)m_isoMesssagePackager).GetTotalFields())
+            if (fieldNumber >= 0 && fieldNumber <= m_totalFields) 
             {
                 m_isoMessageFields.SetFieldValue(fieldNumber, fieldValue);
             }
             else
             {
-               // if (Logger.IsEnabled(LogLevel.Error)) Logger.LogError("Attempt to set value for an out of range field[", fieldNumber.ToString().PadLeft(3, ' ') + "]"); 
+                Logger.LogError("Attempt to set value for an out of range field[", fieldNumber.ToString().PadLeft(3, ' ') + "]"); 
             }
         }
 
         public void SetFieldValue(int fieldNumber, int subFieldNumber, String fieldValue)
         {
-            if (fieldNumber >= 0 && fieldNumber <= ((ISOMessagePackager)m_isoMesssagePackager).GetTotalFields() && fieldNumber != 65 && fieldNumber != 129)
+            if (fieldNumber >= 0 && fieldNumber <= m_totalFields && fieldNumber != 65 && fieldNumber != 129)
             {
                 m_isoMessageFields.SetFieldValue(fieldNumber, subFieldNumber, fieldValue);                
             }
             else
             {
-                //if (Logger.IsEnabled(LogLevel.Error)) Logger.LogError("Attempt to set value for an out of range field[", fieldNumber.ToString().PadLeft(3, ' ') + "]");
+                Logger.LogError("Attempt to set value for an out of range field[", fieldNumber.ToString().PadLeft(3, ' ') + "]");
             }
         }
 
