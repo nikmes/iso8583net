@@ -15,7 +15,7 @@ namespace ISO8583Net.Packager
 
         public override void Pack(ISOHeader isoHeader, byte[] packedBytes, ref int index)
         {
-            ISOVisaHeader visaHeader = (ISOVisaHeader)isoHeader;
+            ISOHeaderVisa visaHeader = (ISOHeaderVisa)isoHeader;
 
             ISOUtils.hex2bytes(isoHeader.Length().ToString("X2"), packedBytes, ref index);
 
@@ -61,7 +61,7 @@ namespace ISO8583Net.Packager
         {
             // Unpack should check for existense of Header Field 13 always
 
-            ISOVisaHeader visaHeader = (ISOVisaHeader)isoHeader;
+            ISOHeaderVisa visaHeader = (ISOHeaderVisa)isoHeader;
 
             if (Logger.IsEnabled(LogLevel.Information)) Logger.LogInformation("Unpacking VISA Header");
 

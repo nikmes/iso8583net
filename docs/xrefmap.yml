@@ -1265,293 +1265,293 @@ references:
   isSpec: "True"
   fullName: ISO8583Net.Header.ISOHeader.UnPack
   nameWithType: ISOHeader.UnPack
-- uid: ISO8583Net.Header.ISOVisaHeader
-  name: ISOVisaHeader
-  href: site/api/ISO8583Net.Header.ISOVisaHeader.html
-  commentId: T:ISO8583Net.Header.ISOVisaHeader
-  fullName: ISO8583Net.Header.ISOVisaHeader
-  nameWithType: ISOVisaHeader
-- uid: ISO8583Net.Header.ISOVisaHeader.#ctor(Microsoft.Extensions.Logging.ILogger)
-  name: ISOVisaHeader(ILogger)
-  href: site/api/ISO8583Net.Header.ISOVisaHeader.html#ISO8583Net_Header_ISOVisaHeader__ctor_Microsoft_Extensions_Logging_ILogger_
-  commentId: M:ISO8583Net.Header.ISOVisaHeader.#ctor(Microsoft.Extensions.Logging.ILogger)
-  fullName: ISO8583Net.Header.ISOVisaHeader.ISOVisaHeader(Microsoft.Extensions.Logging.ILogger)
-  nameWithType: ISOVisaHeader.ISOVisaHeader(ILogger)
-- uid: ISO8583Net.Header.ISOVisaHeader.#ctor(Microsoft.Extensions.Logging.ILogger,ISO8583Net.Packager.ISOHeaderPackager)
-  name: ISOVisaHeader(ILogger, ISOHeaderPackager)
-  href: site/api/ISO8583Net.Header.ISOVisaHeader.html#ISO8583Net_Header_ISOVisaHeader__ctor_Microsoft_Extensions_Logging_ILogger_ISO8583Net_Packager_ISOHeaderPackager_
-  commentId: M:ISO8583Net.Header.ISOVisaHeader.#ctor(Microsoft.Extensions.Logging.ILogger,ISO8583Net.Packager.ISOHeaderPackager)
-  fullName: ISO8583Net.Header.ISOVisaHeader.ISOVisaHeader(Microsoft.Extensions.Logging.ILogger, ISO8583Net.Packager.ISOHeaderPackager)
-  nameWithType: ISOVisaHeader.ISOVisaHeader(ILogger, ISOHeaderPackager)
-- uid: ISO8583Net.Header.ISOVisaHeader.#ctor*
-  name: ISOVisaHeader
-  href: site/api/ISO8583Net.Header.ISOVisaHeader.html#ISO8583Net_Header_ISOVisaHeader__ctor_
-  commentId: Overload:ISO8583Net.Header.ISOVisaHeader.#ctor
+- uid: ISO8583Net.Header.ISOHeaderVisa
+  name: ISOHeaderVisa
+  href: site/api/ISO8583Net.Header.ISOHeaderVisa.html
+  commentId: T:ISO8583Net.Header.ISOHeaderVisa
+  fullName: ISO8583Net.Header.ISOHeaderVisa
+  nameWithType: ISOHeaderVisa
+- uid: ISO8583Net.Header.ISOHeaderVisa.#ctor(Microsoft.Extensions.Logging.ILogger)
+  name: ISOHeaderVisa(ILogger)
+  href: site/api/ISO8583Net.Header.ISOHeaderVisa.html#ISO8583Net_Header_ISOHeaderVisa__ctor_Microsoft_Extensions_Logging_ILogger_
+  commentId: M:ISO8583Net.Header.ISOHeaderVisa.#ctor(Microsoft.Extensions.Logging.ILogger)
+  fullName: ISO8583Net.Header.ISOHeaderVisa.ISOHeaderVisa(Microsoft.Extensions.Logging.ILogger)
+  nameWithType: ISOHeaderVisa.ISOHeaderVisa(ILogger)
+- uid: ISO8583Net.Header.ISOHeaderVisa.#ctor(Microsoft.Extensions.Logging.ILogger,ISO8583Net.Packager.ISOHeaderPackager)
+  name: ISOHeaderVisa(ILogger, ISOHeaderPackager)
+  href: site/api/ISO8583Net.Header.ISOHeaderVisa.html#ISO8583Net_Header_ISOHeaderVisa__ctor_Microsoft_Extensions_Logging_ILogger_ISO8583Net_Packager_ISOHeaderPackager_
+  commentId: M:ISO8583Net.Header.ISOHeaderVisa.#ctor(Microsoft.Extensions.Logging.ILogger,ISO8583Net.Packager.ISOHeaderPackager)
+  fullName: ISO8583Net.Header.ISOHeaderVisa.ISOHeaderVisa(Microsoft.Extensions.Logging.ILogger, ISO8583Net.Packager.ISOHeaderPackager)
+  nameWithType: ISOHeaderVisa.ISOHeaderVisa(ILogger, ISOHeaderPackager)
+- uid: ISO8583Net.Header.ISOHeaderVisa.#ctor*
+  name: ISOHeaderVisa
+  href: site/api/ISO8583Net.Header.ISOHeaderVisa.html#ISO8583Net_Header_ISOHeaderVisa__ctor_
+  commentId: Overload:ISO8583Net.Header.ISOHeaderVisa.#ctor
   isSpec: "True"
-  fullName: ISO8583Net.Header.ISOVisaHeader.ISOVisaHeader
-  nameWithType: ISOVisaHeader.ISOVisaHeader
-- uid: ISO8583Net.Header.ISOVisaHeader.h01_HeaderLength
+  fullName: ISO8583Net.Header.ISOHeaderVisa.ISOHeaderVisa
+  nameWithType: ISOHeaderVisa.ISOHeaderVisa
+- uid: ISO8583Net.Header.ISOHeaderVisa.h01_HeaderLength
   name: h01_HeaderLength
-  href: site/api/ISO8583Net.Header.ISOVisaHeader.html#ISO8583Net_Header_ISOVisaHeader_h01_HeaderLength
-  commentId: P:ISO8583Net.Header.ISOVisaHeader.h01_HeaderLength
-  fullName: ISO8583Net.Header.ISOVisaHeader.h01_HeaderLength
-  nameWithType: ISOVisaHeader.h01_HeaderLength
-- uid: ISO8583Net.Header.ISOVisaHeader.h01_HeaderLength*
+  href: site/api/ISO8583Net.Header.ISOHeaderVisa.html#ISO8583Net_Header_ISOHeaderVisa_h01_HeaderLength
+  commentId: P:ISO8583Net.Header.ISOHeaderVisa.h01_HeaderLength
+  fullName: ISO8583Net.Header.ISOHeaderVisa.h01_HeaderLength
+  nameWithType: ISOHeaderVisa.h01_HeaderLength
+- uid: ISO8583Net.Header.ISOHeaderVisa.h01_HeaderLength*
   name: h01_HeaderLength
-  href: site/api/ISO8583Net.Header.ISOVisaHeader.html#ISO8583Net_Header_ISOVisaHeader_h01_HeaderLength_
-  commentId: Overload:ISO8583Net.Header.ISOVisaHeader.h01_HeaderLength
+  href: site/api/ISO8583Net.Header.ISOHeaderVisa.html#ISO8583Net_Header_ISOHeaderVisa_h01_HeaderLength_
+  commentId: Overload:ISO8583Net.Header.ISOHeaderVisa.h01_HeaderLength
   isSpec: "True"
-  fullName: ISO8583Net.Header.ISOVisaHeader.h01_HeaderLength
-  nameWithType: ISOVisaHeader.h01_HeaderLength
-- uid: ISO8583Net.Header.ISOVisaHeader.h02_HeaderFlagAndFormat
+  fullName: ISO8583Net.Header.ISOHeaderVisa.h01_HeaderLength
+  nameWithType: ISOHeaderVisa.h01_HeaderLength
+- uid: ISO8583Net.Header.ISOHeaderVisa.h02_HeaderFlagAndFormat
   name: h02_HeaderFlagAndFormat
-  href: site/api/ISO8583Net.Header.ISOVisaHeader.html#ISO8583Net_Header_ISOVisaHeader_h02_HeaderFlagAndFormat
-  commentId: P:ISO8583Net.Header.ISOVisaHeader.h02_HeaderFlagAndFormat
-  fullName: ISO8583Net.Header.ISOVisaHeader.h02_HeaderFlagAndFormat
-  nameWithType: ISOVisaHeader.h02_HeaderFlagAndFormat
-- uid: ISO8583Net.Header.ISOVisaHeader.h02_HeaderFlagAndFormat*
+  href: site/api/ISO8583Net.Header.ISOHeaderVisa.html#ISO8583Net_Header_ISOHeaderVisa_h02_HeaderFlagAndFormat
+  commentId: P:ISO8583Net.Header.ISOHeaderVisa.h02_HeaderFlagAndFormat
+  fullName: ISO8583Net.Header.ISOHeaderVisa.h02_HeaderFlagAndFormat
+  nameWithType: ISOHeaderVisa.h02_HeaderFlagAndFormat
+- uid: ISO8583Net.Header.ISOHeaderVisa.h02_HeaderFlagAndFormat*
   name: h02_HeaderFlagAndFormat
-  href: site/api/ISO8583Net.Header.ISOVisaHeader.html#ISO8583Net_Header_ISOVisaHeader_h02_HeaderFlagAndFormat_
-  commentId: Overload:ISO8583Net.Header.ISOVisaHeader.h02_HeaderFlagAndFormat
+  href: site/api/ISO8583Net.Header.ISOHeaderVisa.html#ISO8583Net_Header_ISOHeaderVisa_h02_HeaderFlagAndFormat_
+  commentId: Overload:ISO8583Net.Header.ISOHeaderVisa.h02_HeaderFlagAndFormat
   isSpec: "True"
-  fullName: ISO8583Net.Header.ISOVisaHeader.h02_HeaderFlagAndFormat
-  nameWithType: ISOVisaHeader.h02_HeaderFlagAndFormat
-- uid: ISO8583Net.Header.ISOVisaHeader.h03_TextFormat
+  fullName: ISO8583Net.Header.ISOHeaderVisa.h02_HeaderFlagAndFormat
+  nameWithType: ISOHeaderVisa.h02_HeaderFlagAndFormat
+- uid: ISO8583Net.Header.ISOHeaderVisa.h03_TextFormat
   name: h03_TextFormat
-  href: site/api/ISO8583Net.Header.ISOVisaHeader.html#ISO8583Net_Header_ISOVisaHeader_h03_TextFormat
-  commentId: P:ISO8583Net.Header.ISOVisaHeader.h03_TextFormat
-  fullName: ISO8583Net.Header.ISOVisaHeader.h03_TextFormat
-  nameWithType: ISOVisaHeader.h03_TextFormat
-- uid: ISO8583Net.Header.ISOVisaHeader.h03_TextFormat*
+  href: site/api/ISO8583Net.Header.ISOHeaderVisa.html#ISO8583Net_Header_ISOHeaderVisa_h03_TextFormat
+  commentId: P:ISO8583Net.Header.ISOHeaderVisa.h03_TextFormat
+  fullName: ISO8583Net.Header.ISOHeaderVisa.h03_TextFormat
+  nameWithType: ISOHeaderVisa.h03_TextFormat
+- uid: ISO8583Net.Header.ISOHeaderVisa.h03_TextFormat*
   name: h03_TextFormat
-  href: site/api/ISO8583Net.Header.ISOVisaHeader.html#ISO8583Net_Header_ISOVisaHeader_h03_TextFormat_
-  commentId: Overload:ISO8583Net.Header.ISOVisaHeader.h03_TextFormat
+  href: site/api/ISO8583Net.Header.ISOHeaderVisa.html#ISO8583Net_Header_ISOHeaderVisa_h03_TextFormat_
+  commentId: Overload:ISO8583Net.Header.ISOHeaderVisa.h03_TextFormat
   isSpec: "True"
-  fullName: ISO8583Net.Header.ISOVisaHeader.h03_TextFormat
-  nameWithType: ISOVisaHeader.h03_TextFormat
-- uid: ISO8583Net.Header.ISOVisaHeader.h04_TotalMessageLength
+  fullName: ISO8583Net.Header.ISOHeaderVisa.h03_TextFormat
+  nameWithType: ISOHeaderVisa.h03_TextFormat
+- uid: ISO8583Net.Header.ISOHeaderVisa.h04_TotalMessageLength
   name: h04_TotalMessageLength
-  href: site/api/ISO8583Net.Header.ISOVisaHeader.html#ISO8583Net_Header_ISOVisaHeader_h04_TotalMessageLength
-  commentId: P:ISO8583Net.Header.ISOVisaHeader.h04_TotalMessageLength
-  fullName: ISO8583Net.Header.ISOVisaHeader.h04_TotalMessageLength
-  nameWithType: ISOVisaHeader.h04_TotalMessageLength
-- uid: ISO8583Net.Header.ISOVisaHeader.h04_TotalMessageLength*
+  href: site/api/ISO8583Net.Header.ISOHeaderVisa.html#ISO8583Net_Header_ISOHeaderVisa_h04_TotalMessageLength
+  commentId: P:ISO8583Net.Header.ISOHeaderVisa.h04_TotalMessageLength
+  fullName: ISO8583Net.Header.ISOHeaderVisa.h04_TotalMessageLength
+  nameWithType: ISOHeaderVisa.h04_TotalMessageLength
+- uid: ISO8583Net.Header.ISOHeaderVisa.h04_TotalMessageLength*
   name: h04_TotalMessageLength
-  href: site/api/ISO8583Net.Header.ISOVisaHeader.html#ISO8583Net_Header_ISOVisaHeader_h04_TotalMessageLength_
-  commentId: Overload:ISO8583Net.Header.ISOVisaHeader.h04_TotalMessageLength
+  href: site/api/ISO8583Net.Header.ISOHeaderVisa.html#ISO8583Net_Header_ISOHeaderVisa_h04_TotalMessageLength_
+  commentId: Overload:ISO8583Net.Header.ISOHeaderVisa.h04_TotalMessageLength
   isSpec: "True"
-  fullName: ISO8583Net.Header.ISOVisaHeader.h04_TotalMessageLength
-  nameWithType: ISOVisaHeader.h04_TotalMessageLength
-- uid: ISO8583Net.Header.ISOVisaHeader.h05_DestinationStationId
+  fullName: ISO8583Net.Header.ISOHeaderVisa.h04_TotalMessageLength
+  nameWithType: ISOHeaderVisa.h04_TotalMessageLength
+- uid: ISO8583Net.Header.ISOHeaderVisa.h05_DestinationStationId
   name: h05_DestinationStationId
-  href: site/api/ISO8583Net.Header.ISOVisaHeader.html#ISO8583Net_Header_ISOVisaHeader_h05_DestinationStationId
-  commentId: P:ISO8583Net.Header.ISOVisaHeader.h05_DestinationStationId
-  fullName: ISO8583Net.Header.ISOVisaHeader.h05_DestinationStationId
-  nameWithType: ISOVisaHeader.h05_DestinationStationId
-- uid: ISO8583Net.Header.ISOVisaHeader.h05_DestinationStationId*
+  href: site/api/ISO8583Net.Header.ISOHeaderVisa.html#ISO8583Net_Header_ISOHeaderVisa_h05_DestinationStationId
+  commentId: P:ISO8583Net.Header.ISOHeaderVisa.h05_DestinationStationId
+  fullName: ISO8583Net.Header.ISOHeaderVisa.h05_DestinationStationId
+  nameWithType: ISOHeaderVisa.h05_DestinationStationId
+- uid: ISO8583Net.Header.ISOHeaderVisa.h05_DestinationStationId*
   name: h05_DestinationStationId
-  href: site/api/ISO8583Net.Header.ISOVisaHeader.html#ISO8583Net_Header_ISOVisaHeader_h05_DestinationStationId_
-  commentId: Overload:ISO8583Net.Header.ISOVisaHeader.h05_DestinationStationId
+  href: site/api/ISO8583Net.Header.ISOHeaderVisa.html#ISO8583Net_Header_ISOHeaderVisa_h05_DestinationStationId_
+  commentId: Overload:ISO8583Net.Header.ISOHeaderVisa.h05_DestinationStationId
   isSpec: "True"
-  fullName: ISO8583Net.Header.ISOVisaHeader.h05_DestinationStationId
-  nameWithType: ISOVisaHeader.h05_DestinationStationId
-- uid: ISO8583Net.Header.ISOVisaHeader.h06_SourceStationId
+  fullName: ISO8583Net.Header.ISOHeaderVisa.h05_DestinationStationId
+  nameWithType: ISOHeaderVisa.h05_DestinationStationId
+- uid: ISO8583Net.Header.ISOHeaderVisa.h06_SourceStationId
   name: h06_SourceStationId
-  href: site/api/ISO8583Net.Header.ISOVisaHeader.html#ISO8583Net_Header_ISOVisaHeader_h06_SourceStationId
-  commentId: P:ISO8583Net.Header.ISOVisaHeader.h06_SourceStationId
-  fullName: ISO8583Net.Header.ISOVisaHeader.h06_SourceStationId
-  nameWithType: ISOVisaHeader.h06_SourceStationId
-- uid: ISO8583Net.Header.ISOVisaHeader.h06_SourceStationId*
+  href: site/api/ISO8583Net.Header.ISOHeaderVisa.html#ISO8583Net_Header_ISOHeaderVisa_h06_SourceStationId
+  commentId: P:ISO8583Net.Header.ISOHeaderVisa.h06_SourceStationId
+  fullName: ISO8583Net.Header.ISOHeaderVisa.h06_SourceStationId
+  nameWithType: ISOHeaderVisa.h06_SourceStationId
+- uid: ISO8583Net.Header.ISOHeaderVisa.h06_SourceStationId*
   name: h06_SourceStationId
-  href: site/api/ISO8583Net.Header.ISOVisaHeader.html#ISO8583Net_Header_ISOVisaHeader_h06_SourceStationId_
-  commentId: Overload:ISO8583Net.Header.ISOVisaHeader.h06_SourceStationId
+  href: site/api/ISO8583Net.Header.ISOHeaderVisa.html#ISO8583Net_Header_ISOHeaderVisa_h06_SourceStationId_
+  commentId: Overload:ISO8583Net.Header.ISOHeaderVisa.h06_SourceStationId
   isSpec: "True"
-  fullName: ISO8583Net.Header.ISOVisaHeader.h06_SourceStationId
-  nameWithType: ISOVisaHeader.h06_SourceStationId
-- uid: ISO8583Net.Header.ISOVisaHeader.h07_RoundTripControlInformation
+  fullName: ISO8583Net.Header.ISOHeaderVisa.h06_SourceStationId
+  nameWithType: ISOHeaderVisa.h06_SourceStationId
+- uid: ISO8583Net.Header.ISOHeaderVisa.h07_RoundTripControlInformation
   name: h07_RoundTripControlInformation
-  href: site/api/ISO8583Net.Header.ISOVisaHeader.html#ISO8583Net_Header_ISOVisaHeader_h07_RoundTripControlInformation
-  commentId: P:ISO8583Net.Header.ISOVisaHeader.h07_RoundTripControlInformation
-  fullName: ISO8583Net.Header.ISOVisaHeader.h07_RoundTripControlInformation
-  nameWithType: ISOVisaHeader.h07_RoundTripControlInformation
-- uid: ISO8583Net.Header.ISOVisaHeader.h07_RoundTripControlInformation*
+  href: site/api/ISO8583Net.Header.ISOHeaderVisa.html#ISO8583Net_Header_ISOHeaderVisa_h07_RoundTripControlInformation
+  commentId: P:ISO8583Net.Header.ISOHeaderVisa.h07_RoundTripControlInformation
+  fullName: ISO8583Net.Header.ISOHeaderVisa.h07_RoundTripControlInformation
+  nameWithType: ISOHeaderVisa.h07_RoundTripControlInformation
+- uid: ISO8583Net.Header.ISOHeaderVisa.h07_RoundTripControlInformation*
   name: h07_RoundTripControlInformation
-  href: site/api/ISO8583Net.Header.ISOVisaHeader.html#ISO8583Net_Header_ISOVisaHeader_h07_RoundTripControlInformation_
-  commentId: Overload:ISO8583Net.Header.ISOVisaHeader.h07_RoundTripControlInformation
+  href: site/api/ISO8583Net.Header.ISOHeaderVisa.html#ISO8583Net_Header_ISOHeaderVisa_h07_RoundTripControlInformation_
+  commentId: Overload:ISO8583Net.Header.ISOHeaderVisa.h07_RoundTripControlInformation
   isSpec: "True"
-  fullName: ISO8583Net.Header.ISOVisaHeader.h07_RoundTripControlInformation
-  nameWithType: ISOVisaHeader.h07_RoundTripControlInformation
-- uid: ISO8583Net.Header.ISOVisaHeader.h08_BaseIFlag
+  fullName: ISO8583Net.Header.ISOHeaderVisa.h07_RoundTripControlInformation
+  nameWithType: ISOHeaderVisa.h07_RoundTripControlInformation
+- uid: ISO8583Net.Header.ISOHeaderVisa.h08_BaseIFlag
   name: h08_BaseIFlag
-  href: site/api/ISO8583Net.Header.ISOVisaHeader.html#ISO8583Net_Header_ISOVisaHeader_h08_BaseIFlag
-  commentId: P:ISO8583Net.Header.ISOVisaHeader.h08_BaseIFlag
-  fullName: ISO8583Net.Header.ISOVisaHeader.h08_BaseIFlag
-  nameWithType: ISOVisaHeader.h08_BaseIFlag
-- uid: ISO8583Net.Header.ISOVisaHeader.h08_BaseIFlag*
+  href: site/api/ISO8583Net.Header.ISOHeaderVisa.html#ISO8583Net_Header_ISOHeaderVisa_h08_BaseIFlag
+  commentId: P:ISO8583Net.Header.ISOHeaderVisa.h08_BaseIFlag
+  fullName: ISO8583Net.Header.ISOHeaderVisa.h08_BaseIFlag
+  nameWithType: ISOHeaderVisa.h08_BaseIFlag
+- uid: ISO8583Net.Header.ISOHeaderVisa.h08_BaseIFlag*
   name: h08_BaseIFlag
-  href: site/api/ISO8583Net.Header.ISOVisaHeader.html#ISO8583Net_Header_ISOVisaHeader_h08_BaseIFlag_
-  commentId: Overload:ISO8583Net.Header.ISOVisaHeader.h08_BaseIFlag
+  href: site/api/ISO8583Net.Header.ISOHeaderVisa.html#ISO8583Net_Header_ISOHeaderVisa_h08_BaseIFlag_
+  commentId: Overload:ISO8583Net.Header.ISOHeaderVisa.h08_BaseIFlag
   isSpec: "True"
-  fullName: ISO8583Net.Header.ISOVisaHeader.h08_BaseIFlag
-  nameWithType: ISOVisaHeader.h08_BaseIFlag
-- uid: ISO8583Net.Header.ISOVisaHeader.h09_MessageStatusFlag
+  fullName: ISO8583Net.Header.ISOHeaderVisa.h08_BaseIFlag
+  nameWithType: ISOHeaderVisa.h08_BaseIFlag
+- uid: ISO8583Net.Header.ISOHeaderVisa.h09_MessageStatusFlag
   name: h09_MessageStatusFlag
-  href: site/api/ISO8583Net.Header.ISOVisaHeader.html#ISO8583Net_Header_ISOVisaHeader_h09_MessageStatusFlag
-  commentId: P:ISO8583Net.Header.ISOVisaHeader.h09_MessageStatusFlag
-  fullName: ISO8583Net.Header.ISOVisaHeader.h09_MessageStatusFlag
-  nameWithType: ISOVisaHeader.h09_MessageStatusFlag
-- uid: ISO8583Net.Header.ISOVisaHeader.h09_MessageStatusFlag*
+  href: site/api/ISO8583Net.Header.ISOHeaderVisa.html#ISO8583Net_Header_ISOHeaderVisa_h09_MessageStatusFlag
+  commentId: P:ISO8583Net.Header.ISOHeaderVisa.h09_MessageStatusFlag
+  fullName: ISO8583Net.Header.ISOHeaderVisa.h09_MessageStatusFlag
+  nameWithType: ISOHeaderVisa.h09_MessageStatusFlag
+- uid: ISO8583Net.Header.ISOHeaderVisa.h09_MessageStatusFlag*
   name: h09_MessageStatusFlag
-  href: site/api/ISO8583Net.Header.ISOVisaHeader.html#ISO8583Net_Header_ISOVisaHeader_h09_MessageStatusFlag_
-  commentId: Overload:ISO8583Net.Header.ISOVisaHeader.h09_MessageStatusFlag
+  href: site/api/ISO8583Net.Header.ISOHeaderVisa.html#ISO8583Net_Header_ISOHeaderVisa_h09_MessageStatusFlag_
+  commentId: Overload:ISO8583Net.Header.ISOHeaderVisa.h09_MessageStatusFlag
   isSpec: "True"
-  fullName: ISO8583Net.Header.ISOVisaHeader.h09_MessageStatusFlag
-  nameWithType: ISOVisaHeader.h09_MessageStatusFlag
-- uid: ISO8583Net.Header.ISOVisaHeader.h10_BatchNumber
+  fullName: ISO8583Net.Header.ISOHeaderVisa.h09_MessageStatusFlag
+  nameWithType: ISOHeaderVisa.h09_MessageStatusFlag
+- uid: ISO8583Net.Header.ISOHeaderVisa.h10_BatchNumber
   name: h10_BatchNumber
-  href: site/api/ISO8583Net.Header.ISOVisaHeader.html#ISO8583Net_Header_ISOVisaHeader_h10_BatchNumber
-  commentId: P:ISO8583Net.Header.ISOVisaHeader.h10_BatchNumber
-  fullName: ISO8583Net.Header.ISOVisaHeader.h10_BatchNumber
-  nameWithType: ISOVisaHeader.h10_BatchNumber
-- uid: ISO8583Net.Header.ISOVisaHeader.h10_BatchNumber*
+  href: site/api/ISO8583Net.Header.ISOHeaderVisa.html#ISO8583Net_Header_ISOHeaderVisa_h10_BatchNumber
+  commentId: P:ISO8583Net.Header.ISOHeaderVisa.h10_BatchNumber
+  fullName: ISO8583Net.Header.ISOHeaderVisa.h10_BatchNumber
+  nameWithType: ISOHeaderVisa.h10_BatchNumber
+- uid: ISO8583Net.Header.ISOHeaderVisa.h10_BatchNumber*
   name: h10_BatchNumber
-  href: site/api/ISO8583Net.Header.ISOVisaHeader.html#ISO8583Net_Header_ISOVisaHeader_h10_BatchNumber_
-  commentId: Overload:ISO8583Net.Header.ISOVisaHeader.h10_BatchNumber
+  href: site/api/ISO8583Net.Header.ISOHeaderVisa.html#ISO8583Net_Header_ISOHeaderVisa_h10_BatchNumber_
+  commentId: Overload:ISO8583Net.Header.ISOHeaderVisa.h10_BatchNumber
   isSpec: "True"
-  fullName: ISO8583Net.Header.ISOVisaHeader.h10_BatchNumber
-  nameWithType: ISOVisaHeader.h10_BatchNumber
-- uid: ISO8583Net.Header.ISOVisaHeader.h11_Reserved
+  fullName: ISO8583Net.Header.ISOHeaderVisa.h10_BatchNumber
+  nameWithType: ISOHeaderVisa.h10_BatchNumber
+- uid: ISO8583Net.Header.ISOHeaderVisa.h11_Reserved
   name: h11_Reserved
-  href: site/api/ISO8583Net.Header.ISOVisaHeader.html#ISO8583Net_Header_ISOVisaHeader_h11_Reserved
-  commentId: P:ISO8583Net.Header.ISOVisaHeader.h11_Reserved
-  fullName: ISO8583Net.Header.ISOVisaHeader.h11_Reserved
-  nameWithType: ISOVisaHeader.h11_Reserved
-- uid: ISO8583Net.Header.ISOVisaHeader.h11_Reserved*
+  href: site/api/ISO8583Net.Header.ISOHeaderVisa.html#ISO8583Net_Header_ISOHeaderVisa_h11_Reserved
+  commentId: P:ISO8583Net.Header.ISOHeaderVisa.h11_Reserved
+  fullName: ISO8583Net.Header.ISOHeaderVisa.h11_Reserved
+  nameWithType: ISOHeaderVisa.h11_Reserved
+- uid: ISO8583Net.Header.ISOHeaderVisa.h11_Reserved*
   name: h11_Reserved
-  href: site/api/ISO8583Net.Header.ISOVisaHeader.html#ISO8583Net_Header_ISOVisaHeader_h11_Reserved_
-  commentId: Overload:ISO8583Net.Header.ISOVisaHeader.h11_Reserved
+  href: site/api/ISO8583Net.Header.ISOHeaderVisa.html#ISO8583Net_Header_ISOHeaderVisa_h11_Reserved_
+  commentId: Overload:ISO8583Net.Header.ISOHeaderVisa.h11_Reserved
   isSpec: "True"
-  fullName: ISO8583Net.Header.ISOVisaHeader.h11_Reserved
-  nameWithType: ISOVisaHeader.h11_Reserved
-- uid: ISO8583Net.Header.ISOVisaHeader.h12_UserInformation
+  fullName: ISO8583Net.Header.ISOHeaderVisa.h11_Reserved
+  nameWithType: ISOHeaderVisa.h11_Reserved
+- uid: ISO8583Net.Header.ISOHeaderVisa.h12_UserInformation
   name: h12_UserInformation
-  href: site/api/ISO8583Net.Header.ISOVisaHeader.html#ISO8583Net_Header_ISOVisaHeader_h12_UserInformation
-  commentId: P:ISO8583Net.Header.ISOVisaHeader.h12_UserInformation
-  fullName: ISO8583Net.Header.ISOVisaHeader.h12_UserInformation
-  nameWithType: ISOVisaHeader.h12_UserInformation
-- uid: ISO8583Net.Header.ISOVisaHeader.h12_UserInformation*
+  href: site/api/ISO8583Net.Header.ISOHeaderVisa.html#ISO8583Net_Header_ISOHeaderVisa_h12_UserInformation
+  commentId: P:ISO8583Net.Header.ISOHeaderVisa.h12_UserInformation
+  fullName: ISO8583Net.Header.ISOHeaderVisa.h12_UserInformation
+  nameWithType: ISOHeaderVisa.h12_UserInformation
+- uid: ISO8583Net.Header.ISOHeaderVisa.h12_UserInformation*
   name: h12_UserInformation
-  href: site/api/ISO8583Net.Header.ISOVisaHeader.html#ISO8583Net_Header_ISOVisaHeader_h12_UserInformation_
-  commentId: Overload:ISO8583Net.Header.ISOVisaHeader.h12_UserInformation
+  href: site/api/ISO8583Net.Header.ISOHeaderVisa.html#ISO8583Net_Header_ISOHeaderVisa_h12_UserInformation_
+  commentId: Overload:ISO8583Net.Header.ISOHeaderVisa.h12_UserInformation
   isSpec: "True"
-  fullName: ISO8583Net.Header.ISOVisaHeader.h12_UserInformation
-  nameWithType: ISOVisaHeader.h12_UserInformation
-- uid: ISO8583Net.Header.ISOVisaHeader.h13_Bitmap
+  fullName: ISO8583Net.Header.ISOHeaderVisa.h12_UserInformation
+  nameWithType: ISOHeaderVisa.h12_UserInformation
+- uid: ISO8583Net.Header.ISOHeaderVisa.h13_Bitmap
   name: h13_Bitmap
-  href: site/api/ISO8583Net.Header.ISOVisaHeader.html#ISO8583Net_Header_ISOVisaHeader_h13_Bitmap
-  commentId: P:ISO8583Net.Header.ISOVisaHeader.h13_Bitmap
-  fullName: ISO8583Net.Header.ISOVisaHeader.h13_Bitmap
-  nameWithType: ISOVisaHeader.h13_Bitmap
-- uid: ISO8583Net.Header.ISOVisaHeader.h13_Bitmap*
+  href: site/api/ISO8583Net.Header.ISOHeaderVisa.html#ISO8583Net_Header_ISOHeaderVisa_h13_Bitmap
+  commentId: P:ISO8583Net.Header.ISOHeaderVisa.h13_Bitmap
+  fullName: ISO8583Net.Header.ISOHeaderVisa.h13_Bitmap
+  nameWithType: ISOHeaderVisa.h13_Bitmap
+- uid: ISO8583Net.Header.ISOHeaderVisa.h13_Bitmap*
   name: h13_Bitmap
-  href: site/api/ISO8583Net.Header.ISOVisaHeader.html#ISO8583Net_Header_ISOVisaHeader_h13_Bitmap_
-  commentId: Overload:ISO8583Net.Header.ISOVisaHeader.h13_Bitmap
+  href: site/api/ISO8583Net.Header.ISOHeaderVisa.html#ISO8583Net_Header_ISOHeaderVisa_h13_Bitmap_
+  commentId: Overload:ISO8583Net.Header.ISOHeaderVisa.h13_Bitmap
   isSpec: "True"
-  fullName: ISO8583Net.Header.ISOVisaHeader.h13_Bitmap
-  nameWithType: ISOVisaHeader.h13_Bitmap
-- uid: ISO8583Net.Header.ISOVisaHeader.h14_RejectedGroupData
+  fullName: ISO8583Net.Header.ISOHeaderVisa.h13_Bitmap
+  nameWithType: ISOHeaderVisa.h13_Bitmap
+- uid: ISO8583Net.Header.ISOHeaderVisa.h14_RejectedGroupData
   name: h14_RejectedGroupData
-  href: site/api/ISO8583Net.Header.ISOVisaHeader.html#ISO8583Net_Header_ISOVisaHeader_h14_RejectedGroupData
-  commentId: P:ISO8583Net.Header.ISOVisaHeader.h14_RejectedGroupData
-  fullName: ISO8583Net.Header.ISOVisaHeader.h14_RejectedGroupData
-  nameWithType: ISOVisaHeader.h14_RejectedGroupData
-- uid: ISO8583Net.Header.ISOVisaHeader.h14_RejectedGroupData*
+  href: site/api/ISO8583Net.Header.ISOHeaderVisa.html#ISO8583Net_Header_ISOHeaderVisa_h14_RejectedGroupData
+  commentId: P:ISO8583Net.Header.ISOHeaderVisa.h14_RejectedGroupData
+  fullName: ISO8583Net.Header.ISOHeaderVisa.h14_RejectedGroupData
+  nameWithType: ISOHeaderVisa.h14_RejectedGroupData
+- uid: ISO8583Net.Header.ISOHeaderVisa.h14_RejectedGroupData*
   name: h14_RejectedGroupData
-  href: site/api/ISO8583Net.Header.ISOVisaHeader.html#ISO8583Net_Header_ISOVisaHeader_h14_RejectedGroupData_
-  commentId: Overload:ISO8583Net.Header.ISOVisaHeader.h14_RejectedGroupData
+  href: site/api/ISO8583Net.Header.ISOHeaderVisa.html#ISO8583Net_Header_ISOHeaderVisa_h14_RejectedGroupData_
+  commentId: Overload:ISO8583Net.Header.ISOHeaderVisa.h14_RejectedGroupData
   isSpec: "True"
-  fullName: ISO8583Net.Header.ISOVisaHeader.h14_RejectedGroupData
-  nameWithType: ISOVisaHeader.h14_RejectedGroupData
-- uid: ISO8583Net.Header.ISOVisaHeader.Length
+  fullName: ISO8583Net.Header.ISOHeaderVisa.h14_RejectedGroupData
+  nameWithType: ISOHeaderVisa.h14_RejectedGroupData
+- uid: ISO8583Net.Header.ISOHeaderVisa.Length
   name: Length()
-  href: site/api/ISO8583Net.Header.ISOVisaHeader.html#ISO8583Net_Header_ISOVisaHeader_Length
-  commentId: M:ISO8583Net.Header.ISOVisaHeader.Length
-  fullName: ISO8583Net.Header.ISOVisaHeader.Length()
-  nameWithType: ISOVisaHeader.Length()
-- uid: ISO8583Net.Header.ISOVisaHeader.Length*
+  href: site/api/ISO8583Net.Header.ISOHeaderVisa.html#ISO8583Net_Header_ISOHeaderVisa_Length
+  commentId: M:ISO8583Net.Header.ISOHeaderVisa.Length
+  fullName: ISO8583Net.Header.ISOHeaderVisa.Length()
+  nameWithType: ISOHeaderVisa.Length()
+- uid: ISO8583Net.Header.ISOHeaderVisa.Length*
   name: Length
-  href: site/api/ISO8583Net.Header.ISOVisaHeader.html#ISO8583Net_Header_ISOVisaHeader_Length_
-  commentId: Overload:ISO8583Net.Header.ISOVisaHeader.Length
+  href: site/api/ISO8583Net.Header.ISOHeaderVisa.html#ISO8583Net_Header_ISOHeaderVisa_Length_
+  commentId: Overload:ISO8583Net.Header.ISOHeaderVisa.Length
   isSpec: "True"
-  fullName: ISO8583Net.Header.ISOVisaHeader.Length
-  nameWithType: ISOVisaHeader.Length
-- uid: ISO8583Net.Header.ISOVisaHeader.m_length
+  fullName: ISO8583Net.Header.ISOHeaderVisa.Length
+  nameWithType: ISOHeaderVisa.Length
+- uid: ISO8583Net.Header.ISOHeaderVisa.m_length
   name: m_length
-  href: site/api/ISO8583Net.Header.ISOVisaHeader.html#ISO8583Net_Header_ISOVisaHeader_m_length
-  commentId: F:ISO8583Net.Header.ISOVisaHeader.m_length
-  fullName: ISO8583Net.Header.ISOVisaHeader.m_length
-  nameWithType: ISOVisaHeader.m_length
-- uid: ISO8583Net.Header.ISOVisaHeader.Pack(System.Byte[],System.Int32@)
+  href: site/api/ISO8583Net.Header.ISOHeaderVisa.html#ISO8583Net_Header_ISOHeaderVisa_m_length
+  commentId: F:ISO8583Net.Header.ISOHeaderVisa.m_length
+  fullName: ISO8583Net.Header.ISOHeaderVisa.m_length
+  nameWithType: ISOHeaderVisa.m_length
+- uid: ISO8583Net.Header.ISOHeaderVisa.Pack(System.Byte[],System.Int32@)
   name: Pack(Byte[], ref Int32)
-  href: site/api/ISO8583Net.Header.ISOVisaHeader.html#ISO8583Net_Header_ISOVisaHeader_Pack_System_Byte___System_Int32__
-  commentId: M:ISO8583Net.Header.ISOVisaHeader.Pack(System.Byte[],System.Int32@)
+  href: site/api/ISO8583Net.Header.ISOHeaderVisa.html#ISO8583Net_Header_ISOHeaderVisa_Pack_System_Byte___System_Int32__
+  commentId: M:ISO8583Net.Header.ISOHeaderVisa.Pack(System.Byte[],System.Int32@)
   name.vb: Pack(Byte(), ByRef Int32)
-  fullName: ISO8583Net.Header.ISOVisaHeader.Pack(System.Byte[], ref System.Int32)
-  fullName.vb: ISO8583Net.Header.ISOVisaHeader.Pack(System.Byte(), ByRef System.Int32)
-  nameWithType: ISOVisaHeader.Pack(Byte[], ref Int32)
-  nameWithType.vb: ISOVisaHeader.Pack(Byte(), ByRef Int32)
-- uid: ISO8583Net.Header.ISOVisaHeader.Pack*
+  fullName: ISO8583Net.Header.ISOHeaderVisa.Pack(System.Byte[], ref System.Int32)
+  fullName.vb: ISO8583Net.Header.ISOHeaderVisa.Pack(System.Byte(), ByRef System.Int32)
+  nameWithType: ISOHeaderVisa.Pack(Byte[], ref Int32)
+  nameWithType.vb: ISOHeaderVisa.Pack(Byte(), ByRef Int32)
+- uid: ISO8583Net.Header.ISOHeaderVisa.Pack*
   name: Pack
-  href: site/api/ISO8583Net.Header.ISOVisaHeader.html#ISO8583Net_Header_ISOVisaHeader_Pack_
-  commentId: Overload:ISO8583Net.Header.ISOVisaHeader.Pack
+  href: site/api/ISO8583Net.Header.ISOHeaderVisa.html#ISO8583Net_Header_ISOHeaderVisa_Pack_
+  commentId: Overload:ISO8583Net.Header.ISOHeaderVisa.Pack
   isSpec: "True"
-  fullName: ISO8583Net.Header.ISOVisaHeader.Pack
-  nameWithType: ISOVisaHeader.Pack
-- uid: ISO8583Net.Header.ISOVisaHeader.SetMessageLength(System.Int32)
+  fullName: ISO8583Net.Header.ISOHeaderVisa.Pack
+  nameWithType: ISOHeaderVisa.Pack
+- uid: ISO8583Net.Header.ISOHeaderVisa.SetMessageLength(System.Int32)
   name: SetMessageLength(Int32)
-  href: site/api/ISO8583Net.Header.ISOVisaHeader.html#ISO8583Net_Header_ISOVisaHeader_SetMessageLength_System_Int32_
-  commentId: M:ISO8583Net.Header.ISOVisaHeader.SetMessageLength(System.Int32)
-  fullName: ISO8583Net.Header.ISOVisaHeader.SetMessageLength(System.Int32)
-  nameWithType: ISOVisaHeader.SetMessageLength(Int32)
-- uid: ISO8583Net.Header.ISOVisaHeader.SetMessageLength*
+  href: site/api/ISO8583Net.Header.ISOHeaderVisa.html#ISO8583Net_Header_ISOHeaderVisa_SetMessageLength_System_Int32_
+  commentId: M:ISO8583Net.Header.ISOHeaderVisa.SetMessageLength(System.Int32)
+  fullName: ISO8583Net.Header.ISOHeaderVisa.SetMessageLength(System.Int32)
+  nameWithType: ISOHeaderVisa.SetMessageLength(Int32)
+- uid: ISO8583Net.Header.ISOHeaderVisa.SetMessageLength*
   name: SetMessageLength
-  href: site/api/ISO8583Net.Header.ISOVisaHeader.html#ISO8583Net_Header_ISOVisaHeader_SetMessageLength_
-  commentId: Overload:ISO8583Net.Header.ISOVisaHeader.SetMessageLength
+  href: site/api/ISO8583Net.Header.ISOHeaderVisa.html#ISO8583Net_Header_ISOHeaderVisa_SetMessageLength_
+  commentId: Overload:ISO8583Net.Header.ISOHeaderVisa.SetMessageLength
   isSpec: "True"
-  fullName: ISO8583Net.Header.ISOVisaHeader.SetMessageLength
-  nameWithType: ISOVisaHeader.SetMessageLength
-- uid: ISO8583Net.Header.ISOVisaHeader.SetValue(System.Byte[])
+  fullName: ISO8583Net.Header.ISOHeaderVisa.SetMessageLength
+  nameWithType: ISOHeaderVisa.SetMessageLength
+- uid: ISO8583Net.Header.ISOHeaderVisa.SetValue(System.Byte[])
   name: SetValue(Byte[])
-  href: site/api/ISO8583Net.Header.ISOVisaHeader.html#ISO8583Net_Header_ISOVisaHeader_SetValue_System_Byte___
-  commentId: M:ISO8583Net.Header.ISOVisaHeader.SetValue(System.Byte[])
+  href: site/api/ISO8583Net.Header.ISOHeaderVisa.html#ISO8583Net_Header_ISOHeaderVisa_SetValue_System_Byte___
+  commentId: M:ISO8583Net.Header.ISOHeaderVisa.SetValue(System.Byte[])
   name.vb: SetValue(Byte())
-  fullName: ISO8583Net.Header.ISOVisaHeader.SetValue(System.Byte[])
-  fullName.vb: ISO8583Net.Header.ISOVisaHeader.SetValue(System.Byte())
-  nameWithType: ISOVisaHeader.SetValue(Byte[])
-  nameWithType.vb: ISOVisaHeader.SetValue(Byte())
-- uid: ISO8583Net.Header.ISOVisaHeader.SetValue*
+  fullName: ISO8583Net.Header.ISOHeaderVisa.SetValue(System.Byte[])
+  fullName.vb: ISO8583Net.Header.ISOHeaderVisa.SetValue(System.Byte())
+  nameWithType: ISOHeaderVisa.SetValue(Byte[])
+  nameWithType.vb: ISOHeaderVisa.SetValue(Byte())
+- uid: ISO8583Net.Header.ISOHeaderVisa.SetValue*
   name: SetValue
-  href: site/api/ISO8583Net.Header.ISOVisaHeader.html#ISO8583Net_Header_ISOVisaHeader_SetValue_
-  commentId: Overload:ISO8583Net.Header.ISOVisaHeader.SetValue
+  href: site/api/ISO8583Net.Header.ISOHeaderVisa.html#ISO8583Net_Header_ISOHeaderVisa_SetValue_
+  commentId: Overload:ISO8583Net.Header.ISOHeaderVisa.SetValue
   isSpec: "True"
-  fullName: ISO8583Net.Header.ISOVisaHeader.SetValue
-  nameWithType: ISOVisaHeader.SetValue
-- uid: ISO8583Net.Header.ISOVisaHeader.UnPack(System.Byte[],System.Int32@)
+  fullName: ISO8583Net.Header.ISOHeaderVisa.SetValue
+  nameWithType: ISOHeaderVisa.SetValue
+- uid: ISO8583Net.Header.ISOHeaderVisa.UnPack(System.Byte[],System.Int32@)
   name: UnPack(Byte[], ref Int32)
-  href: site/api/ISO8583Net.Header.ISOVisaHeader.html#ISO8583Net_Header_ISOVisaHeader_UnPack_System_Byte___System_Int32__
-  commentId: M:ISO8583Net.Header.ISOVisaHeader.UnPack(System.Byte[],System.Int32@)
+  href: site/api/ISO8583Net.Header.ISOHeaderVisa.html#ISO8583Net_Header_ISOHeaderVisa_UnPack_System_Byte___System_Int32__
+  commentId: M:ISO8583Net.Header.ISOHeaderVisa.UnPack(System.Byte[],System.Int32@)
   name.vb: UnPack(Byte(), ByRef Int32)
-  fullName: ISO8583Net.Header.ISOVisaHeader.UnPack(System.Byte[], ref System.Int32)
-  fullName.vb: ISO8583Net.Header.ISOVisaHeader.UnPack(System.Byte(), ByRef System.Int32)
-  nameWithType: ISOVisaHeader.UnPack(Byte[], ref Int32)
-  nameWithType.vb: ISOVisaHeader.UnPack(Byte(), ByRef Int32)
-- uid: ISO8583Net.Header.ISOVisaHeader.UnPack*
+  fullName: ISO8583Net.Header.ISOHeaderVisa.UnPack(System.Byte[], ref System.Int32)
+  fullName.vb: ISO8583Net.Header.ISOHeaderVisa.UnPack(System.Byte(), ByRef System.Int32)
+  nameWithType: ISOHeaderVisa.UnPack(Byte[], ref Int32)
+  nameWithType.vb: ISOHeaderVisa.UnPack(Byte(), ByRef Int32)
+- uid: ISO8583Net.Header.ISOHeaderVisa.UnPack*
   name: UnPack
-  href: site/api/ISO8583Net.Header.ISOVisaHeader.html#ISO8583Net_Header_ISOVisaHeader_UnPack_
-  commentId: Overload:ISO8583Net.Header.ISOVisaHeader.UnPack
+  href: site/api/ISO8583Net.Header.ISOHeaderVisa.html#ISO8583Net_Header_ISOHeaderVisa_UnPack_
+  commentId: Overload:ISO8583Net.Header.ISOHeaderVisa.UnPack
   isSpec: "True"
-  fullName: ISO8583Net.Header.ISOVisaHeader.UnPack
-  nameWithType: ISOVisaHeader.UnPack
+  fullName: ISO8583Net.Header.ISOHeaderVisa.UnPack
+  nameWithType: ISOHeaderVisa.UnPack
 - uid: ISO8583Net.Interpreter
   name: ISO8583Net.Interpreter
   href: site/api/ISO8583Net.Interpreter.html
