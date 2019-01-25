@@ -822,6 +822,172 @@ references:
   isSpec: "True"
   fullName: ISO8583Net.Field.ISOFieldBitmap.Trace
   nameWithType: ISOFieldBitmap.Trace
+- uid: ISO8583Net.Field.ISOFieldBitmapSubFields
+  name: ISOFieldBitmapSubFields
+  href: site/api/ISO8583Net.Field.ISOFieldBitmapSubFields.html
+  commentId: T:ISO8583Net.Field.ISOFieldBitmapSubFields
+  fullName: ISO8583Net.Field.ISOFieldBitmapSubFields
+  nameWithType: ISOFieldBitmapSubFields
+- uid: ISO8583Net.Field.ISOFieldBitmapSubFields.#ctor(Microsoft.Extensions.Logging.ILogger,ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager,System.Int32)
+  name: ISOFieldBitmapSubFields(ILogger, ISOFieldBitmapSubFieldsPackager, Int32)
+  href: site/api/ISO8583Net.Field.ISOFieldBitmapSubFields.html#ISO8583Net_Field_ISOFieldBitmapSubFields__ctor_Microsoft_Extensions_Logging_ILogger_ISO8583Net_Packager_ISOFieldBitmapSubFieldsPackager_System_Int32_
+  commentId: M:ISO8583Net.Field.ISOFieldBitmapSubFields.#ctor(Microsoft.Extensions.Logging.ILogger,ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager,System.Int32)
+  fullName: ISO8583Net.Field.ISOFieldBitmapSubFields.ISOFieldBitmapSubFields(Microsoft.Extensions.Logging.ILogger, ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager, System.Int32)
+  nameWithType: ISOFieldBitmapSubFields.ISOFieldBitmapSubFields(ILogger, ISOFieldBitmapSubFieldsPackager, Int32)
+- uid: ISO8583Net.Field.ISOFieldBitmapSubFields.#ctor*
+  name: ISOFieldBitmapSubFields
+  href: site/api/ISO8583Net.Field.ISOFieldBitmapSubFields.html#ISO8583Net_Field_ISOFieldBitmapSubFields__ctor_
+  commentId: Overload:ISO8583Net.Field.ISOFieldBitmapSubFields.#ctor
+  isSpec: "True"
+  fullName: ISO8583Net.Field.ISOFieldBitmapSubFields.ISOFieldBitmapSubFields
+  nameWithType: ISOFieldBitmapSubFields.ISOFieldBitmapSubFields
+- uid: ISO8583Net.Field.ISOFieldBitmapSubFields.GetField(System.Int32)
+  name: GetField(Int32)
+  href: site/api/ISO8583Net.Field.ISOFieldBitmapSubFields.html#ISO8583Net_Field_ISOFieldBitmapSubFields_GetField_System_Int32_
+  commentId: M:ISO8583Net.Field.ISOFieldBitmapSubFields.GetField(System.Int32)
+  fullName: ISO8583Net.Field.ISOFieldBitmapSubFields.GetField(System.Int32)
+  nameWithType: ISOFieldBitmapSubFields.GetField(Int32)
+- uid: ISO8583Net.Field.ISOFieldBitmapSubFields.GetField*
+  name: GetField
+  href: site/api/ISO8583Net.Field.ISOFieldBitmapSubFields.html#ISO8583Net_Field_ISOFieldBitmapSubFields_GetField_
+  commentId: Overload:ISO8583Net.Field.ISOFieldBitmapSubFields.GetField
+  isSpec: "True"
+  fullName: ISO8583Net.Field.ISOFieldBitmapSubFields.GetField
+  nameWithType: ISOFieldBitmapSubFields.GetField
+- uid: ISO8583Net.Field.ISOFieldBitmapSubFields.GetFields
+  name: GetFields()
+  href: site/api/ISO8583Net.Field.ISOFieldBitmapSubFields.html#ISO8583Net_Field_ISOFieldBitmapSubFields_GetFields
+  commentId: M:ISO8583Net.Field.ISOFieldBitmapSubFields.GetFields
+  fullName: ISO8583Net.Field.ISOFieldBitmapSubFields.GetFields()
+  nameWithType: ISOFieldBitmapSubFields.GetFields()
+- uid: ISO8583Net.Field.ISOFieldBitmapSubFields.GetFields*
+  name: GetFields
+  href: site/api/ISO8583Net.Field.ISOFieldBitmapSubFields.html#ISO8583Net_Field_ISOFieldBitmapSubFields_GetFields_
+  commentId: Overload:ISO8583Net.Field.ISOFieldBitmapSubFields.GetFields
+  isSpec: "True"
+  fullName: ISO8583Net.Field.ISOFieldBitmapSubFields.GetFields
+  nameWithType: ISOFieldBitmapSubFields.GetFields
+- uid: ISO8583Net.Field.ISOFieldBitmapSubFields.GetFieldValue(System.Int32)
+  name: GetFieldValue(Int32)
+  href: site/api/ISO8583Net.Field.ISOFieldBitmapSubFields.html#ISO8583Net_Field_ISOFieldBitmapSubFields_GetFieldValue_System_Int32_
+  commentId: M:ISO8583Net.Field.ISOFieldBitmapSubFields.GetFieldValue(System.Int32)
+  fullName: ISO8583Net.Field.ISOFieldBitmapSubFields.GetFieldValue(System.Int32)
+  nameWithType: ISOFieldBitmapSubFields.GetFieldValue(Int32)
+- uid: ISO8583Net.Field.ISOFieldBitmapSubFields.GetFieldValue(System.Int32,System.Int32)
+  name: GetFieldValue(Int32, Int32)
+  href: site/api/ISO8583Net.Field.ISOFieldBitmapSubFields.html#ISO8583Net_Field_ISOFieldBitmapSubFields_GetFieldValue_System_Int32_System_Int32_
+  commentId: M:ISO8583Net.Field.ISOFieldBitmapSubFields.GetFieldValue(System.Int32,System.Int32)
+  fullName: ISO8583Net.Field.ISOFieldBitmapSubFields.GetFieldValue(System.Int32, System.Int32)
+  nameWithType: ISOFieldBitmapSubFields.GetFieldValue(Int32, Int32)
+- uid: ISO8583Net.Field.ISOFieldBitmapSubFields.GetFieldValue(System.Int32,System.String,System.String)
+  name: GetFieldValue(Int32, String, String)
+  href: site/api/ISO8583Net.Field.ISOFieldBitmapSubFields.html#ISO8583Net_Field_ISOFieldBitmapSubFields_GetFieldValue_System_Int32_System_String_System_String_
+  commentId: M:ISO8583Net.Field.ISOFieldBitmapSubFields.GetFieldValue(System.Int32,System.String,System.String)
+  fullName: ISO8583Net.Field.ISOFieldBitmapSubFields.GetFieldValue(System.Int32, System.String, System.String)
+  nameWithType: ISOFieldBitmapSubFields.GetFieldValue(Int32, String, String)
+- uid: ISO8583Net.Field.ISOFieldBitmapSubFields.GetFieldValue*
+  name: GetFieldValue
+  href: site/api/ISO8583Net.Field.ISOFieldBitmapSubFields.html#ISO8583Net_Field_ISOFieldBitmapSubFields_GetFieldValue_
+  commentId: Overload:ISO8583Net.Field.ISOFieldBitmapSubFields.GetFieldValue
+  isSpec: "True"
+  fullName: ISO8583Net.Field.ISOFieldBitmapSubFields.GetFieldValue
+  nameWithType: ISOFieldBitmapSubFields.GetFieldValue
+- uid: ISO8583Net.Field.ISOFieldBitmapSubFields.GetValue
+  name: GetValue()
+  href: site/api/ISO8583Net.Field.ISOFieldBitmapSubFields.html#ISO8583Net_Field_ISOFieldBitmapSubFields_GetValue
+  commentId: M:ISO8583Net.Field.ISOFieldBitmapSubFields.GetValue
+  fullName: ISO8583Net.Field.ISOFieldBitmapSubFields.GetValue()
+  nameWithType: ISOFieldBitmapSubFields.GetValue()
+- uid: ISO8583Net.Field.ISOFieldBitmapSubFields.GetValue*
+  name: GetValue
+  href: site/api/ISO8583Net.Field.ISOFieldBitmapSubFields.html#ISO8583Net_Field_ISOFieldBitmapSubFields_GetValue_
+  commentId: Overload:ISO8583Net.Field.ISOFieldBitmapSubFields.GetValue
+  isSpec: "True"
+  fullName: ISO8583Net.Field.ISOFieldBitmapSubFields.GetValue
+  nameWithType: ISOFieldBitmapSubFields.GetValue
+- uid: ISO8583Net.Field.ISOFieldBitmapSubFields.m_isoFields
+  name: m_isoFields
+  href: site/api/ISO8583Net.Field.ISOFieldBitmapSubFields.html#ISO8583Net_Field_ISOFieldBitmapSubFields_m_isoFields
+  commentId: F:ISO8583Net.Field.ISOFieldBitmapSubFields.m_isoFields
+  fullName: ISO8583Net.Field.ISOFieldBitmapSubFields.m_isoFields
+  nameWithType: ISOFieldBitmapSubFields.m_isoFields
+- uid: ISO8583Net.Field.ISOFieldBitmapSubFields.m_packager
+  name: m_packager
+  href: site/api/ISO8583Net.Field.ISOFieldBitmapSubFields.html#ISO8583Net_Field_ISOFieldBitmapSubFields_m_packager
+  commentId: F:ISO8583Net.Field.ISOFieldBitmapSubFields.m_packager
+  fullName: ISO8583Net.Field.ISOFieldBitmapSubFields.m_packager
+  nameWithType: ISOFieldBitmapSubFields.m_packager
+- uid: ISO8583Net.Field.ISOFieldBitmapSubFields.SetFieldPackager(System.Int32)
+  name: SetFieldPackager(Int32)
+  href: site/api/ISO8583Net.Field.ISOFieldBitmapSubFields.html#ISO8583Net_Field_ISOFieldBitmapSubFields_SetFieldPackager_System_Int32_
+  commentId: M:ISO8583Net.Field.ISOFieldBitmapSubFields.SetFieldPackager(System.Int32)
+  fullName: ISO8583Net.Field.ISOFieldBitmapSubFields.SetFieldPackager(System.Int32)
+  nameWithType: ISOFieldBitmapSubFields.SetFieldPackager(Int32)
+- uid: ISO8583Net.Field.ISOFieldBitmapSubFields.SetFieldPackager*
+  name: SetFieldPackager
+  href: site/api/ISO8583Net.Field.ISOFieldBitmapSubFields.html#ISO8583Net_Field_ISOFieldBitmapSubFields_SetFieldPackager_
+  commentId: Overload:ISO8583Net.Field.ISOFieldBitmapSubFields.SetFieldPackager
+  isSpec: "True"
+  fullName: ISO8583Net.Field.ISOFieldBitmapSubFields.SetFieldPackager
+  nameWithType: ISOFieldBitmapSubFields.SetFieldPackager
+- uid: ISO8583Net.Field.ISOFieldBitmapSubFields.SetFieldValue(System.Int32,System.String)
+  name: SetFieldValue(Int32, String)
+  href: site/api/ISO8583Net.Field.ISOFieldBitmapSubFields.html#ISO8583Net_Field_ISOFieldBitmapSubFields_SetFieldValue_System_Int32_System_String_
+  commentId: M:ISO8583Net.Field.ISOFieldBitmapSubFields.SetFieldValue(System.Int32,System.String)
+  fullName: ISO8583Net.Field.ISOFieldBitmapSubFields.SetFieldValue(System.Int32, System.String)
+  nameWithType: ISOFieldBitmapSubFields.SetFieldValue(Int32, String)
+- uid: ISO8583Net.Field.ISOFieldBitmapSubFields.SetFieldValue(System.Int32,System.String,System.String)
+  name: SetFieldValue(Int32, String, String)
+  href: site/api/ISO8583Net.Field.ISOFieldBitmapSubFields.html#ISO8583Net_Field_ISOFieldBitmapSubFields_SetFieldValue_System_Int32_System_String_System_String_
+  commentId: M:ISO8583Net.Field.ISOFieldBitmapSubFields.SetFieldValue(System.Int32,System.String,System.String)
+  fullName: ISO8583Net.Field.ISOFieldBitmapSubFields.SetFieldValue(System.Int32, System.String, System.String)
+  nameWithType: ISOFieldBitmapSubFields.SetFieldValue(Int32, String, String)
+- uid: ISO8583Net.Field.ISOFieldBitmapSubFields.SetFieldValue*
+  name: SetFieldValue
+  href: site/api/ISO8583Net.Field.ISOFieldBitmapSubFields.html#ISO8583Net_Field_ISOFieldBitmapSubFields_SetFieldValue_
+  commentId: Overload:ISO8583Net.Field.ISOFieldBitmapSubFields.SetFieldValue
+  isSpec: "True"
+  fullName: ISO8583Net.Field.ISOFieldBitmapSubFields.SetFieldValue
+  nameWithType: ISOFieldBitmapSubFields.SetFieldValue
+- uid: ISO8583Net.Field.ISOFieldBitmapSubFields.SetValue(System.String)
+  name: SetValue(String)
+  href: site/api/ISO8583Net.Field.ISOFieldBitmapSubFields.html#ISO8583Net_Field_ISOFieldBitmapSubFields_SetValue_System_String_
+  commentId: M:ISO8583Net.Field.ISOFieldBitmapSubFields.SetValue(System.String)
+  fullName: ISO8583Net.Field.ISOFieldBitmapSubFields.SetValue(System.String)
+  nameWithType: ISOFieldBitmapSubFields.SetValue(String)
+- uid: ISO8583Net.Field.ISOFieldBitmapSubFields.SetValue*
+  name: SetValue
+  href: site/api/ISO8583Net.Field.ISOFieldBitmapSubFields.html#ISO8583Net_Field_ISOFieldBitmapSubFields_SetValue_
+  commentId: Overload:ISO8583Net.Field.ISOFieldBitmapSubFields.SetValue
+  isSpec: "True"
+  fullName: ISO8583Net.Field.ISOFieldBitmapSubFields.SetValue
+  nameWithType: ISOFieldBitmapSubFields.SetValue
+- uid: ISO8583Net.Field.ISOFieldBitmapSubFields.ToString
+  name: ToString()
+  href: site/api/ISO8583Net.Field.ISOFieldBitmapSubFields.html#ISO8583Net_Field_ISOFieldBitmapSubFields_ToString
+  commentId: M:ISO8583Net.Field.ISOFieldBitmapSubFields.ToString
+  fullName: ISO8583Net.Field.ISOFieldBitmapSubFields.ToString()
+  nameWithType: ISOFieldBitmapSubFields.ToString()
+- uid: ISO8583Net.Field.ISOFieldBitmapSubFields.ToString*
+  name: ToString
+  href: site/api/ISO8583Net.Field.ISOFieldBitmapSubFields.html#ISO8583Net_Field_ISOFieldBitmapSubFields_ToString_
+  commentId: Overload:ISO8583Net.Field.ISOFieldBitmapSubFields.ToString
+  isSpec: "True"
+  fullName: ISO8583Net.Field.ISOFieldBitmapSubFields.ToString
+  nameWithType: ISOFieldBitmapSubFields.ToString
+- uid: ISO8583Net.Field.ISOFieldBitmapSubFields.Trace
+  name: Trace()
+  href: site/api/ISO8583Net.Field.ISOFieldBitmapSubFields.html#ISO8583Net_Field_ISOFieldBitmapSubFields_Trace
+  commentId: M:ISO8583Net.Field.ISOFieldBitmapSubFields.Trace
+  fullName: ISO8583Net.Field.ISOFieldBitmapSubFields.Trace()
+  nameWithType: ISOFieldBitmapSubFields.Trace()
+- uid: ISO8583Net.Field.ISOFieldBitmapSubFields.Trace*
+  name: Trace
+  href: site/api/ISO8583Net.Field.ISOFieldBitmapSubFields.html#ISO8583Net_Field_ISOFieldBitmapSubFields_Trace_
+  commentId: Overload:ISO8583Net.Field.ISOFieldBitmapSubFields.Trace
+  isSpec: "True"
+  fullName: ISO8583Net.Field.ISOFieldBitmapSubFields.Trace
+  nameWithType: ISOFieldBitmapSubFields.Trace
 - uid: ISO8583Net.Field.ISOMessageFields
   name: ISOMessageFields
   href: site/api/ISO8583Net.Field.ISOMessageFields.html
@@ -994,172 +1160,6 @@ references:
   isSpec: "True"
   fullName: ISO8583Net.Field.ISOMessageFields.Trace
   nameWithType: ISOMessageFields.Trace
-- uid: ISO8583Net.Field.ISOMessageSubFields
-  name: ISOMessageSubFields
-  href: site/api/ISO8583Net.Field.ISOMessageSubFields.html
-  commentId: T:ISO8583Net.Field.ISOMessageSubFields
-  fullName: ISO8583Net.Field.ISOMessageSubFields
-  nameWithType: ISOMessageSubFields
-- uid: ISO8583Net.Field.ISOMessageSubFields.#ctor(Microsoft.Extensions.Logging.ILogger,ISO8583Net.Packager.ISOMessageSubFieldsPackager,System.Int32)
-  name: ISOMessageSubFields(ILogger, ISOMessageSubFieldsPackager, Int32)
-  href: site/api/ISO8583Net.Field.ISOMessageSubFields.html#ISO8583Net_Field_ISOMessageSubFields__ctor_Microsoft_Extensions_Logging_ILogger_ISO8583Net_Packager_ISOMessageSubFieldsPackager_System_Int32_
-  commentId: M:ISO8583Net.Field.ISOMessageSubFields.#ctor(Microsoft.Extensions.Logging.ILogger,ISO8583Net.Packager.ISOMessageSubFieldsPackager,System.Int32)
-  fullName: ISO8583Net.Field.ISOMessageSubFields.ISOMessageSubFields(Microsoft.Extensions.Logging.ILogger, ISO8583Net.Packager.ISOMessageSubFieldsPackager, System.Int32)
-  nameWithType: ISOMessageSubFields.ISOMessageSubFields(ILogger, ISOMessageSubFieldsPackager, Int32)
-- uid: ISO8583Net.Field.ISOMessageSubFields.#ctor*
-  name: ISOMessageSubFields
-  href: site/api/ISO8583Net.Field.ISOMessageSubFields.html#ISO8583Net_Field_ISOMessageSubFields__ctor_
-  commentId: Overload:ISO8583Net.Field.ISOMessageSubFields.#ctor
-  isSpec: "True"
-  fullName: ISO8583Net.Field.ISOMessageSubFields.ISOMessageSubFields
-  nameWithType: ISOMessageSubFields.ISOMessageSubFields
-- uid: ISO8583Net.Field.ISOMessageSubFields.GetField(System.Int32)
-  name: GetField(Int32)
-  href: site/api/ISO8583Net.Field.ISOMessageSubFields.html#ISO8583Net_Field_ISOMessageSubFields_GetField_System_Int32_
-  commentId: M:ISO8583Net.Field.ISOMessageSubFields.GetField(System.Int32)
-  fullName: ISO8583Net.Field.ISOMessageSubFields.GetField(System.Int32)
-  nameWithType: ISOMessageSubFields.GetField(Int32)
-- uid: ISO8583Net.Field.ISOMessageSubFields.GetField*
-  name: GetField
-  href: site/api/ISO8583Net.Field.ISOMessageSubFields.html#ISO8583Net_Field_ISOMessageSubFields_GetField_
-  commentId: Overload:ISO8583Net.Field.ISOMessageSubFields.GetField
-  isSpec: "True"
-  fullName: ISO8583Net.Field.ISOMessageSubFields.GetField
-  nameWithType: ISOMessageSubFields.GetField
-- uid: ISO8583Net.Field.ISOMessageSubFields.GetFields
-  name: GetFields()
-  href: site/api/ISO8583Net.Field.ISOMessageSubFields.html#ISO8583Net_Field_ISOMessageSubFields_GetFields
-  commentId: M:ISO8583Net.Field.ISOMessageSubFields.GetFields
-  fullName: ISO8583Net.Field.ISOMessageSubFields.GetFields()
-  nameWithType: ISOMessageSubFields.GetFields()
-- uid: ISO8583Net.Field.ISOMessageSubFields.GetFields*
-  name: GetFields
-  href: site/api/ISO8583Net.Field.ISOMessageSubFields.html#ISO8583Net_Field_ISOMessageSubFields_GetFields_
-  commentId: Overload:ISO8583Net.Field.ISOMessageSubFields.GetFields
-  isSpec: "True"
-  fullName: ISO8583Net.Field.ISOMessageSubFields.GetFields
-  nameWithType: ISOMessageSubFields.GetFields
-- uid: ISO8583Net.Field.ISOMessageSubFields.GetFieldValue(System.Int32)
-  name: GetFieldValue(Int32)
-  href: site/api/ISO8583Net.Field.ISOMessageSubFields.html#ISO8583Net_Field_ISOMessageSubFields_GetFieldValue_System_Int32_
-  commentId: M:ISO8583Net.Field.ISOMessageSubFields.GetFieldValue(System.Int32)
-  fullName: ISO8583Net.Field.ISOMessageSubFields.GetFieldValue(System.Int32)
-  nameWithType: ISOMessageSubFields.GetFieldValue(Int32)
-- uid: ISO8583Net.Field.ISOMessageSubFields.GetFieldValue(System.Int32,System.Int32)
-  name: GetFieldValue(Int32, Int32)
-  href: site/api/ISO8583Net.Field.ISOMessageSubFields.html#ISO8583Net_Field_ISOMessageSubFields_GetFieldValue_System_Int32_System_Int32_
-  commentId: M:ISO8583Net.Field.ISOMessageSubFields.GetFieldValue(System.Int32,System.Int32)
-  fullName: ISO8583Net.Field.ISOMessageSubFields.GetFieldValue(System.Int32, System.Int32)
-  nameWithType: ISOMessageSubFields.GetFieldValue(Int32, Int32)
-- uid: ISO8583Net.Field.ISOMessageSubFields.GetFieldValue(System.Int32,System.String,System.String)
-  name: GetFieldValue(Int32, String, String)
-  href: site/api/ISO8583Net.Field.ISOMessageSubFields.html#ISO8583Net_Field_ISOMessageSubFields_GetFieldValue_System_Int32_System_String_System_String_
-  commentId: M:ISO8583Net.Field.ISOMessageSubFields.GetFieldValue(System.Int32,System.String,System.String)
-  fullName: ISO8583Net.Field.ISOMessageSubFields.GetFieldValue(System.Int32, System.String, System.String)
-  nameWithType: ISOMessageSubFields.GetFieldValue(Int32, String, String)
-- uid: ISO8583Net.Field.ISOMessageSubFields.GetFieldValue*
-  name: GetFieldValue
-  href: site/api/ISO8583Net.Field.ISOMessageSubFields.html#ISO8583Net_Field_ISOMessageSubFields_GetFieldValue_
-  commentId: Overload:ISO8583Net.Field.ISOMessageSubFields.GetFieldValue
-  isSpec: "True"
-  fullName: ISO8583Net.Field.ISOMessageSubFields.GetFieldValue
-  nameWithType: ISOMessageSubFields.GetFieldValue
-- uid: ISO8583Net.Field.ISOMessageSubFields.GetValue
-  name: GetValue()
-  href: site/api/ISO8583Net.Field.ISOMessageSubFields.html#ISO8583Net_Field_ISOMessageSubFields_GetValue
-  commentId: M:ISO8583Net.Field.ISOMessageSubFields.GetValue
-  fullName: ISO8583Net.Field.ISOMessageSubFields.GetValue()
-  nameWithType: ISOMessageSubFields.GetValue()
-- uid: ISO8583Net.Field.ISOMessageSubFields.GetValue*
-  name: GetValue
-  href: site/api/ISO8583Net.Field.ISOMessageSubFields.html#ISO8583Net_Field_ISOMessageSubFields_GetValue_
-  commentId: Overload:ISO8583Net.Field.ISOMessageSubFields.GetValue
-  isSpec: "True"
-  fullName: ISO8583Net.Field.ISOMessageSubFields.GetValue
-  nameWithType: ISOMessageSubFields.GetValue
-- uid: ISO8583Net.Field.ISOMessageSubFields.m_isoFields
-  name: m_isoFields
-  href: site/api/ISO8583Net.Field.ISOMessageSubFields.html#ISO8583Net_Field_ISOMessageSubFields_m_isoFields
-  commentId: F:ISO8583Net.Field.ISOMessageSubFields.m_isoFields
-  fullName: ISO8583Net.Field.ISOMessageSubFields.m_isoFields
-  nameWithType: ISOMessageSubFields.m_isoFields
-- uid: ISO8583Net.Field.ISOMessageSubFields.m_packager
-  name: m_packager
-  href: site/api/ISO8583Net.Field.ISOMessageSubFields.html#ISO8583Net_Field_ISOMessageSubFields_m_packager
-  commentId: F:ISO8583Net.Field.ISOMessageSubFields.m_packager
-  fullName: ISO8583Net.Field.ISOMessageSubFields.m_packager
-  nameWithType: ISOMessageSubFields.m_packager
-- uid: ISO8583Net.Field.ISOMessageSubFields.SetFieldPackager(System.Int32)
-  name: SetFieldPackager(Int32)
-  href: site/api/ISO8583Net.Field.ISOMessageSubFields.html#ISO8583Net_Field_ISOMessageSubFields_SetFieldPackager_System_Int32_
-  commentId: M:ISO8583Net.Field.ISOMessageSubFields.SetFieldPackager(System.Int32)
-  fullName: ISO8583Net.Field.ISOMessageSubFields.SetFieldPackager(System.Int32)
-  nameWithType: ISOMessageSubFields.SetFieldPackager(Int32)
-- uid: ISO8583Net.Field.ISOMessageSubFields.SetFieldPackager*
-  name: SetFieldPackager
-  href: site/api/ISO8583Net.Field.ISOMessageSubFields.html#ISO8583Net_Field_ISOMessageSubFields_SetFieldPackager_
-  commentId: Overload:ISO8583Net.Field.ISOMessageSubFields.SetFieldPackager
-  isSpec: "True"
-  fullName: ISO8583Net.Field.ISOMessageSubFields.SetFieldPackager
-  nameWithType: ISOMessageSubFields.SetFieldPackager
-- uid: ISO8583Net.Field.ISOMessageSubFields.SetFieldValue(System.Int32,System.String)
-  name: SetFieldValue(Int32, String)
-  href: site/api/ISO8583Net.Field.ISOMessageSubFields.html#ISO8583Net_Field_ISOMessageSubFields_SetFieldValue_System_Int32_System_String_
-  commentId: M:ISO8583Net.Field.ISOMessageSubFields.SetFieldValue(System.Int32,System.String)
-  fullName: ISO8583Net.Field.ISOMessageSubFields.SetFieldValue(System.Int32, System.String)
-  nameWithType: ISOMessageSubFields.SetFieldValue(Int32, String)
-- uid: ISO8583Net.Field.ISOMessageSubFields.SetFieldValue(System.Int32,System.String,System.String)
-  name: SetFieldValue(Int32, String, String)
-  href: site/api/ISO8583Net.Field.ISOMessageSubFields.html#ISO8583Net_Field_ISOMessageSubFields_SetFieldValue_System_Int32_System_String_System_String_
-  commentId: M:ISO8583Net.Field.ISOMessageSubFields.SetFieldValue(System.Int32,System.String,System.String)
-  fullName: ISO8583Net.Field.ISOMessageSubFields.SetFieldValue(System.Int32, System.String, System.String)
-  nameWithType: ISOMessageSubFields.SetFieldValue(Int32, String, String)
-- uid: ISO8583Net.Field.ISOMessageSubFields.SetFieldValue*
-  name: SetFieldValue
-  href: site/api/ISO8583Net.Field.ISOMessageSubFields.html#ISO8583Net_Field_ISOMessageSubFields_SetFieldValue_
-  commentId: Overload:ISO8583Net.Field.ISOMessageSubFields.SetFieldValue
-  isSpec: "True"
-  fullName: ISO8583Net.Field.ISOMessageSubFields.SetFieldValue
-  nameWithType: ISOMessageSubFields.SetFieldValue
-- uid: ISO8583Net.Field.ISOMessageSubFields.SetValue(System.String)
-  name: SetValue(String)
-  href: site/api/ISO8583Net.Field.ISOMessageSubFields.html#ISO8583Net_Field_ISOMessageSubFields_SetValue_System_String_
-  commentId: M:ISO8583Net.Field.ISOMessageSubFields.SetValue(System.String)
-  fullName: ISO8583Net.Field.ISOMessageSubFields.SetValue(System.String)
-  nameWithType: ISOMessageSubFields.SetValue(String)
-- uid: ISO8583Net.Field.ISOMessageSubFields.SetValue*
-  name: SetValue
-  href: site/api/ISO8583Net.Field.ISOMessageSubFields.html#ISO8583Net_Field_ISOMessageSubFields_SetValue_
-  commentId: Overload:ISO8583Net.Field.ISOMessageSubFields.SetValue
-  isSpec: "True"
-  fullName: ISO8583Net.Field.ISOMessageSubFields.SetValue
-  nameWithType: ISOMessageSubFields.SetValue
-- uid: ISO8583Net.Field.ISOMessageSubFields.ToString
-  name: ToString()
-  href: site/api/ISO8583Net.Field.ISOMessageSubFields.html#ISO8583Net_Field_ISOMessageSubFields_ToString
-  commentId: M:ISO8583Net.Field.ISOMessageSubFields.ToString
-  fullName: ISO8583Net.Field.ISOMessageSubFields.ToString()
-  nameWithType: ISOMessageSubFields.ToString()
-- uid: ISO8583Net.Field.ISOMessageSubFields.ToString*
-  name: ToString
-  href: site/api/ISO8583Net.Field.ISOMessageSubFields.html#ISO8583Net_Field_ISOMessageSubFields_ToString_
-  commentId: Overload:ISO8583Net.Field.ISOMessageSubFields.ToString
-  isSpec: "True"
-  fullName: ISO8583Net.Field.ISOMessageSubFields.ToString
-  nameWithType: ISOMessageSubFields.ToString
-- uid: ISO8583Net.Field.ISOMessageSubFields.Trace
-  name: Trace()
-  href: site/api/ISO8583Net.Field.ISOMessageSubFields.html#ISO8583Net_Field_ISOMessageSubFields_Trace
-  commentId: M:ISO8583Net.Field.ISOMessageSubFields.Trace
-  fullName: ISO8583Net.Field.ISOMessageSubFields.Trace()
-  nameWithType: ISOMessageSubFields.Trace()
-- uid: ISO8583Net.Field.ISOMessageSubFields.Trace*
-  name: Trace
-  href: site/api/ISO8583Net.Field.ISOMessageSubFields.html#ISO8583Net_Field_ISOMessageSubFields_Trace_
-  commentId: Overload:ISO8583Net.Field.ISOMessageSubFields.Trace
-  isSpec: "True"
-  fullName: ISO8583Net.Field.ISOMessageSubFields.Trace
-  nameWithType: ISOMessageSubFields.Trace
 - uid: ISO8583Net.Header
   name: ISO8583Net.Header
   href: site/api/ISO8583Net.Header.html
@@ -1882,6 +1882,128 @@ references:
   commentId: N:ISO8583Net.Packager
   fullName: ISO8583Net.Packager
   nameWithType: ISO8583Net.Packager
+- uid: ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager
+  name: ISOFieldBitmapSubFieldsPackager
+  href: site/api/ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.html
+  commentId: T:ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager
+  fullName: ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager
+  nameWithType: ISOFieldBitmapSubFieldsPackager
+- uid: ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.#ctor(Microsoft.Extensions.Logging.ILogger,System.Int32,System.Int32)
+  name: ISOFieldBitmapSubFieldsPackager(ILogger, Int32, Int32)
+  href: site/api/ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.html#ISO8583Net_Packager_ISOFieldBitmapSubFieldsPackager__ctor_Microsoft_Extensions_Logging_ILogger_System_Int32_System_Int32_
+  commentId: M:ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.#ctor(Microsoft.Extensions.Logging.ILogger,System.Int32,System.Int32)
+  fullName: ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.ISOFieldBitmapSubFieldsPackager(Microsoft.Extensions.Logging.ILogger, System.Int32, System.Int32)
+  nameWithType: ISOFieldBitmapSubFieldsPackager.ISOFieldBitmapSubFieldsPackager(ILogger, Int32, Int32)
+- uid: ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.#ctor(Microsoft.Extensions.Logging.ILogger,System.Int32,System.Int32,ISO8583Net.Packager.ISOFieldDefinition)
+  name: ISOFieldBitmapSubFieldsPackager(ILogger, Int32, Int32, ISOFieldDefinition)
+  href: site/api/ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.html#ISO8583Net_Packager_ISOFieldBitmapSubFieldsPackager__ctor_Microsoft_Extensions_Logging_ILogger_System_Int32_System_Int32_ISO8583Net_Packager_ISOFieldDefinition_
+  commentId: M:ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.#ctor(Microsoft.Extensions.Logging.ILogger,System.Int32,System.Int32,ISO8583Net.Packager.ISOFieldDefinition)
+  fullName: ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.ISOFieldBitmapSubFieldsPackager(Microsoft.Extensions.Logging.ILogger, System.Int32, System.Int32, ISO8583Net.Packager.ISOFieldDefinition)
+  nameWithType: ISOFieldBitmapSubFieldsPackager.ISOFieldBitmapSubFieldsPackager(ILogger, Int32, Int32, ISOFieldDefinition)
+- uid: ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.#ctor*
+  name: ISOFieldBitmapSubFieldsPackager
+  href: site/api/ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.html#ISO8583Net_Packager_ISOFieldBitmapSubFieldsPackager__ctor_
+  commentId: Overload:ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.#ctor
+  isSpec: "True"
+  fullName: ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.ISOFieldBitmapSubFieldsPackager
+  nameWithType: ISOFieldBitmapSubFieldsPackager.ISOFieldBitmapSubFieldsPackager
+- uid: ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.Add(ISO8583Net.Packager.ISOPackager,System.Int32)
+  name: Add(ISOPackager, Int32)
+  href: site/api/ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.html#ISO8583Net_Packager_ISOFieldBitmapSubFieldsPackager_Add_ISO8583Net_Packager_ISOPackager_System_Int32_
+  commentId: M:ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.Add(ISO8583Net.Packager.ISOPackager,System.Int32)
+  fullName: ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.Add(ISO8583Net.Packager.ISOPackager, System.Int32)
+  nameWithType: ISOFieldBitmapSubFieldsPackager.Add(ISOPackager, Int32)
+- uid: ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.Add*
+  name: Add
+  href: site/api/ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.html#ISO8583Net_Packager_ISOFieldBitmapSubFieldsPackager_Add_
+  commentId: Overload:ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.Add
+  isSpec: "True"
+  fullName: ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.Add
+  nameWithType: ISOFieldBitmapSubFieldsPackager.Add
+- uid: ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.GetFieldPackager(System.Int32)
+  name: GetFieldPackager(Int32)
+  href: site/api/ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.html#ISO8583Net_Packager_ISOFieldBitmapSubFieldsPackager_GetFieldPackager_System_Int32_
+  commentId: M:ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.GetFieldPackager(System.Int32)
+  fullName: ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.GetFieldPackager(System.Int32)
+  nameWithType: ISOFieldBitmapSubFieldsPackager.GetFieldPackager(Int32)
+- uid: ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.GetFieldPackager*
+  name: GetFieldPackager
+  href: site/api/ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.html#ISO8583Net_Packager_ISOFieldBitmapSubFieldsPackager_GetFieldPackager_
+  commentId: Overload:ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.GetFieldPackager
+  isSpec: "True"
+  fullName: ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.GetFieldPackager
+  nameWithType: ISOFieldBitmapSubFieldsPackager.GetFieldPackager
+- uid: ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.Pack(ISO8583Net.Field.ISOComponent,System.Byte[],System.Int32@)
+  name: Pack(ISOComponent, Byte[], ref Int32)
+  href: site/api/ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.html#ISO8583Net_Packager_ISOFieldBitmapSubFieldsPackager_Pack_ISO8583Net_Field_ISOComponent_System_Byte___System_Int32__
+  commentId: M:ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.Pack(ISO8583Net.Field.ISOComponent,System.Byte[],System.Int32@)
+  name.vb: Pack(ISOComponent, Byte(), ByRef Int32)
+  fullName: ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.Pack(ISO8583Net.Field.ISOComponent, System.Byte[], ref System.Int32)
+  fullName.vb: ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.Pack(ISO8583Net.Field.ISOComponent, System.Byte(), ByRef System.Int32)
+  nameWithType: ISOFieldBitmapSubFieldsPackager.Pack(ISOComponent, Byte[], ref Int32)
+  nameWithType.vb: ISOFieldBitmapSubFieldsPackager.Pack(ISOComponent, Byte(), ByRef Int32)
+- uid: ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.Pack*
+  name: Pack
+  href: site/api/ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.html#ISO8583Net_Packager_ISOFieldBitmapSubFieldsPackager_Pack_
+  commentId: Overload:ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.Pack
+  isSpec: "True"
+  fullName: ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.Pack
+  nameWithType: ISOFieldBitmapSubFieldsPackager.Pack
+- uid: ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.ToString
+  name: ToString()
+  href: site/api/ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.html#ISO8583Net_Packager_ISOFieldBitmapSubFieldsPackager_ToString
+  commentId: M:ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.ToString
+  fullName: ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.ToString()
+  nameWithType: ISOFieldBitmapSubFieldsPackager.ToString()
+- uid: ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.ToString*
+  name: ToString
+  href: site/api/ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.html#ISO8583Net_Packager_ISOFieldBitmapSubFieldsPackager_ToString_
+  commentId: Overload:ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.ToString
+  isSpec: "True"
+  fullName: ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.ToString
+  nameWithType: ISOFieldBitmapSubFieldsPackager.ToString
+- uid: ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.totalFields
+  name: totalFields
+  href: site/api/ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.html#ISO8583Net_Packager_ISOFieldBitmapSubFieldsPackager_totalFields
+  commentId: P:ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.totalFields
+  fullName: ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.totalFields
+  nameWithType: ISOFieldBitmapSubFieldsPackager.totalFields
+- uid: ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.totalFields*
+  name: totalFields
+  href: site/api/ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.html#ISO8583Net_Packager_ISOFieldBitmapSubFieldsPackager_totalFields_
+  commentId: Overload:ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.totalFields
+  isSpec: "True"
+  fullName: ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.totalFields
+  nameWithType: ISOFieldBitmapSubFieldsPackager.totalFields
+- uid: ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.Trace
+  name: Trace()
+  href: site/api/ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.html#ISO8583Net_Packager_ISOFieldBitmapSubFieldsPackager_Trace
+  commentId: M:ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.Trace
+  fullName: ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.Trace()
+  nameWithType: ISOFieldBitmapSubFieldsPackager.Trace()
+- uid: ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.Trace*
+  name: Trace
+  href: site/api/ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.html#ISO8583Net_Packager_ISOFieldBitmapSubFieldsPackager_Trace_
+  commentId: Overload:ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.Trace
+  isSpec: "True"
+  fullName: ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.Trace
+  nameWithType: ISOFieldBitmapSubFieldsPackager.Trace
+- uid: ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.UnPack(ISO8583Net.Field.ISOComponent,System.Byte[],System.Int32@)
+  name: UnPack(ISOComponent, Byte[], ref Int32)
+  href: site/api/ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.html#ISO8583Net_Packager_ISOFieldBitmapSubFieldsPackager_UnPack_ISO8583Net_Field_ISOComponent_System_Byte___System_Int32__
+  commentId: M:ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.UnPack(ISO8583Net.Field.ISOComponent,System.Byte[],System.Int32@)
+  name.vb: UnPack(ISOComponent, Byte(), ByRef Int32)
+  fullName: ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.UnPack(ISO8583Net.Field.ISOComponent, System.Byte[], ref System.Int32)
+  fullName.vb: ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.UnPack(ISO8583Net.Field.ISOComponent, System.Byte(), ByRef System.Int32)
+  nameWithType: ISOFieldBitmapSubFieldsPackager.UnPack(ISOComponent, Byte[], ref Int32)
+  nameWithType.vb: ISOFieldBitmapSubFieldsPackager.UnPack(ISOComponent, Byte(), ByRef Int32)
+- uid: ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.UnPack*
+  name: UnPack
+  href: site/api/ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.html#ISO8583Net_Packager_ISOFieldBitmapSubFieldsPackager_UnPack_
+  commentId: Overload:ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.UnPack
+  isSpec: "True"
+  fullName: ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.UnPack
+  nameWithType: ISOFieldBitmapSubFieldsPackager.UnPack
 - uid: ISO8583Net.Packager.ISOFieldDefinition
   name: ISOFieldDefinition
   href: site/api/ISO8583Net.Packager.ISOFieldDefinition.html
@@ -2620,128 +2742,6 @@ references:
   isSpec: "True"
   fullName: ISO8583Net.Packager.ISOMessagePackager.UnPack
   nameWithType: ISOMessagePackager.UnPack
-- uid: ISO8583Net.Packager.ISOMessageSubFieldsPackager
-  name: ISOMessageSubFieldsPackager
-  href: site/api/ISO8583Net.Packager.ISOMessageSubFieldsPackager.html
-  commentId: T:ISO8583Net.Packager.ISOMessageSubFieldsPackager
-  fullName: ISO8583Net.Packager.ISOMessageSubFieldsPackager
-  nameWithType: ISOMessageSubFieldsPackager
-- uid: ISO8583Net.Packager.ISOMessageSubFieldsPackager.#ctor(Microsoft.Extensions.Logging.ILogger,System.Int32,System.Int32)
-  name: ISOMessageSubFieldsPackager(ILogger, Int32, Int32)
-  href: site/api/ISO8583Net.Packager.ISOMessageSubFieldsPackager.html#ISO8583Net_Packager_ISOMessageSubFieldsPackager__ctor_Microsoft_Extensions_Logging_ILogger_System_Int32_System_Int32_
-  commentId: M:ISO8583Net.Packager.ISOMessageSubFieldsPackager.#ctor(Microsoft.Extensions.Logging.ILogger,System.Int32,System.Int32)
-  fullName: ISO8583Net.Packager.ISOMessageSubFieldsPackager.ISOMessageSubFieldsPackager(Microsoft.Extensions.Logging.ILogger, System.Int32, System.Int32)
-  nameWithType: ISOMessageSubFieldsPackager.ISOMessageSubFieldsPackager(ILogger, Int32, Int32)
-- uid: ISO8583Net.Packager.ISOMessageSubFieldsPackager.#ctor(Microsoft.Extensions.Logging.ILogger,System.Int32,System.Int32,ISO8583Net.Packager.ISOFieldDefinition)
-  name: ISOMessageSubFieldsPackager(ILogger, Int32, Int32, ISOFieldDefinition)
-  href: site/api/ISO8583Net.Packager.ISOMessageSubFieldsPackager.html#ISO8583Net_Packager_ISOMessageSubFieldsPackager__ctor_Microsoft_Extensions_Logging_ILogger_System_Int32_System_Int32_ISO8583Net_Packager_ISOFieldDefinition_
-  commentId: M:ISO8583Net.Packager.ISOMessageSubFieldsPackager.#ctor(Microsoft.Extensions.Logging.ILogger,System.Int32,System.Int32,ISO8583Net.Packager.ISOFieldDefinition)
-  fullName: ISO8583Net.Packager.ISOMessageSubFieldsPackager.ISOMessageSubFieldsPackager(Microsoft.Extensions.Logging.ILogger, System.Int32, System.Int32, ISO8583Net.Packager.ISOFieldDefinition)
-  nameWithType: ISOMessageSubFieldsPackager.ISOMessageSubFieldsPackager(ILogger, Int32, Int32, ISOFieldDefinition)
-- uid: ISO8583Net.Packager.ISOMessageSubFieldsPackager.#ctor*
-  name: ISOMessageSubFieldsPackager
-  href: site/api/ISO8583Net.Packager.ISOMessageSubFieldsPackager.html#ISO8583Net_Packager_ISOMessageSubFieldsPackager__ctor_
-  commentId: Overload:ISO8583Net.Packager.ISOMessageSubFieldsPackager.#ctor
-  isSpec: "True"
-  fullName: ISO8583Net.Packager.ISOMessageSubFieldsPackager.ISOMessageSubFieldsPackager
-  nameWithType: ISOMessageSubFieldsPackager.ISOMessageSubFieldsPackager
-- uid: ISO8583Net.Packager.ISOMessageSubFieldsPackager.Add(ISO8583Net.Packager.ISOPackager,System.Int32)
-  name: Add(ISOPackager, Int32)
-  href: site/api/ISO8583Net.Packager.ISOMessageSubFieldsPackager.html#ISO8583Net_Packager_ISOMessageSubFieldsPackager_Add_ISO8583Net_Packager_ISOPackager_System_Int32_
-  commentId: M:ISO8583Net.Packager.ISOMessageSubFieldsPackager.Add(ISO8583Net.Packager.ISOPackager,System.Int32)
-  fullName: ISO8583Net.Packager.ISOMessageSubFieldsPackager.Add(ISO8583Net.Packager.ISOPackager, System.Int32)
-  nameWithType: ISOMessageSubFieldsPackager.Add(ISOPackager, Int32)
-- uid: ISO8583Net.Packager.ISOMessageSubFieldsPackager.Add*
-  name: Add
-  href: site/api/ISO8583Net.Packager.ISOMessageSubFieldsPackager.html#ISO8583Net_Packager_ISOMessageSubFieldsPackager_Add_
-  commentId: Overload:ISO8583Net.Packager.ISOMessageSubFieldsPackager.Add
-  isSpec: "True"
-  fullName: ISO8583Net.Packager.ISOMessageSubFieldsPackager.Add
-  nameWithType: ISOMessageSubFieldsPackager.Add
-- uid: ISO8583Net.Packager.ISOMessageSubFieldsPackager.GetFieldPackager(System.Int32)
-  name: GetFieldPackager(Int32)
-  href: site/api/ISO8583Net.Packager.ISOMessageSubFieldsPackager.html#ISO8583Net_Packager_ISOMessageSubFieldsPackager_GetFieldPackager_System_Int32_
-  commentId: M:ISO8583Net.Packager.ISOMessageSubFieldsPackager.GetFieldPackager(System.Int32)
-  fullName: ISO8583Net.Packager.ISOMessageSubFieldsPackager.GetFieldPackager(System.Int32)
-  nameWithType: ISOMessageSubFieldsPackager.GetFieldPackager(Int32)
-- uid: ISO8583Net.Packager.ISOMessageSubFieldsPackager.GetFieldPackager*
-  name: GetFieldPackager
-  href: site/api/ISO8583Net.Packager.ISOMessageSubFieldsPackager.html#ISO8583Net_Packager_ISOMessageSubFieldsPackager_GetFieldPackager_
-  commentId: Overload:ISO8583Net.Packager.ISOMessageSubFieldsPackager.GetFieldPackager
-  isSpec: "True"
-  fullName: ISO8583Net.Packager.ISOMessageSubFieldsPackager.GetFieldPackager
-  nameWithType: ISOMessageSubFieldsPackager.GetFieldPackager
-- uid: ISO8583Net.Packager.ISOMessageSubFieldsPackager.Pack(ISO8583Net.Field.ISOComponent,System.Byte[],System.Int32@)
-  name: Pack(ISOComponent, Byte[], ref Int32)
-  href: site/api/ISO8583Net.Packager.ISOMessageSubFieldsPackager.html#ISO8583Net_Packager_ISOMessageSubFieldsPackager_Pack_ISO8583Net_Field_ISOComponent_System_Byte___System_Int32__
-  commentId: M:ISO8583Net.Packager.ISOMessageSubFieldsPackager.Pack(ISO8583Net.Field.ISOComponent,System.Byte[],System.Int32@)
-  name.vb: Pack(ISOComponent, Byte(), ByRef Int32)
-  fullName: ISO8583Net.Packager.ISOMessageSubFieldsPackager.Pack(ISO8583Net.Field.ISOComponent, System.Byte[], ref System.Int32)
-  fullName.vb: ISO8583Net.Packager.ISOMessageSubFieldsPackager.Pack(ISO8583Net.Field.ISOComponent, System.Byte(), ByRef System.Int32)
-  nameWithType: ISOMessageSubFieldsPackager.Pack(ISOComponent, Byte[], ref Int32)
-  nameWithType.vb: ISOMessageSubFieldsPackager.Pack(ISOComponent, Byte(), ByRef Int32)
-- uid: ISO8583Net.Packager.ISOMessageSubFieldsPackager.Pack*
-  name: Pack
-  href: site/api/ISO8583Net.Packager.ISOMessageSubFieldsPackager.html#ISO8583Net_Packager_ISOMessageSubFieldsPackager_Pack_
-  commentId: Overload:ISO8583Net.Packager.ISOMessageSubFieldsPackager.Pack
-  isSpec: "True"
-  fullName: ISO8583Net.Packager.ISOMessageSubFieldsPackager.Pack
-  nameWithType: ISOMessageSubFieldsPackager.Pack
-- uid: ISO8583Net.Packager.ISOMessageSubFieldsPackager.ToString
-  name: ToString()
-  href: site/api/ISO8583Net.Packager.ISOMessageSubFieldsPackager.html#ISO8583Net_Packager_ISOMessageSubFieldsPackager_ToString
-  commentId: M:ISO8583Net.Packager.ISOMessageSubFieldsPackager.ToString
-  fullName: ISO8583Net.Packager.ISOMessageSubFieldsPackager.ToString()
-  nameWithType: ISOMessageSubFieldsPackager.ToString()
-- uid: ISO8583Net.Packager.ISOMessageSubFieldsPackager.ToString*
-  name: ToString
-  href: site/api/ISO8583Net.Packager.ISOMessageSubFieldsPackager.html#ISO8583Net_Packager_ISOMessageSubFieldsPackager_ToString_
-  commentId: Overload:ISO8583Net.Packager.ISOMessageSubFieldsPackager.ToString
-  isSpec: "True"
-  fullName: ISO8583Net.Packager.ISOMessageSubFieldsPackager.ToString
-  nameWithType: ISOMessageSubFieldsPackager.ToString
-- uid: ISO8583Net.Packager.ISOMessageSubFieldsPackager.totalFields
-  name: totalFields
-  href: site/api/ISO8583Net.Packager.ISOMessageSubFieldsPackager.html#ISO8583Net_Packager_ISOMessageSubFieldsPackager_totalFields
-  commentId: P:ISO8583Net.Packager.ISOMessageSubFieldsPackager.totalFields
-  fullName: ISO8583Net.Packager.ISOMessageSubFieldsPackager.totalFields
-  nameWithType: ISOMessageSubFieldsPackager.totalFields
-- uid: ISO8583Net.Packager.ISOMessageSubFieldsPackager.totalFields*
-  name: totalFields
-  href: site/api/ISO8583Net.Packager.ISOMessageSubFieldsPackager.html#ISO8583Net_Packager_ISOMessageSubFieldsPackager_totalFields_
-  commentId: Overload:ISO8583Net.Packager.ISOMessageSubFieldsPackager.totalFields
-  isSpec: "True"
-  fullName: ISO8583Net.Packager.ISOMessageSubFieldsPackager.totalFields
-  nameWithType: ISOMessageSubFieldsPackager.totalFields
-- uid: ISO8583Net.Packager.ISOMessageSubFieldsPackager.Trace
-  name: Trace()
-  href: site/api/ISO8583Net.Packager.ISOMessageSubFieldsPackager.html#ISO8583Net_Packager_ISOMessageSubFieldsPackager_Trace
-  commentId: M:ISO8583Net.Packager.ISOMessageSubFieldsPackager.Trace
-  fullName: ISO8583Net.Packager.ISOMessageSubFieldsPackager.Trace()
-  nameWithType: ISOMessageSubFieldsPackager.Trace()
-- uid: ISO8583Net.Packager.ISOMessageSubFieldsPackager.Trace*
-  name: Trace
-  href: site/api/ISO8583Net.Packager.ISOMessageSubFieldsPackager.html#ISO8583Net_Packager_ISOMessageSubFieldsPackager_Trace_
-  commentId: Overload:ISO8583Net.Packager.ISOMessageSubFieldsPackager.Trace
-  isSpec: "True"
-  fullName: ISO8583Net.Packager.ISOMessageSubFieldsPackager.Trace
-  nameWithType: ISOMessageSubFieldsPackager.Trace
-- uid: ISO8583Net.Packager.ISOMessageSubFieldsPackager.UnPack(ISO8583Net.Field.ISOComponent,System.Byte[],System.Int32@)
-  name: UnPack(ISOComponent, Byte[], ref Int32)
-  href: site/api/ISO8583Net.Packager.ISOMessageSubFieldsPackager.html#ISO8583Net_Packager_ISOMessageSubFieldsPackager_UnPack_ISO8583Net_Field_ISOComponent_System_Byte___System_Int32__
-  commentId: M:ISO8583Net.Packager.ISOMessageSubFieldsPackager.UnPack(ISO8583Net.Field.ISOComponent,System.Byte[],System.Int32@)
-  name.vb: UnPack(ISOComponent, Byte(), ByRef Int32)
-  fullName: ISO8583Net.Packager.ISOMessageSubFieldsPackager.UnPack(ISO8583Net.Field.ISOComponent, System.Byte[], ref System.Int32)
-  fullName.vb: ISO8583Net.Packager.ISOMessageSubFieldsPackager.UnPack(ISO8583Net.Field.ISOComponent, System.Byte(), ByRef System.Int32)
-  nameWithType: ISOMessageSubFieldsPackager.UnPack(ISOComponent, Byte[], ref Int32)
-  nameWithType.vb: ISOMessageSubFieldsPackager.UnPack(ISOComponent, Byte(), ByRef Int32)
-- uid: ISO8583Net.Packager.ISOMessageSubFieldsPackager.UnPack*
-  name: UnPack
-  href: site/api/ISO8583Net.Packager.ISOMessageSubFieldsPackager.html#ISO8583Net_Packager_ISOMessageSubFieldsPackager_UnPack_
-  commentId: Overload:ISO8583Net.Packager.ISOMessageSubFieldsPackager.UnPack
-  isSpec: "True"
-  fullName: ISO8583Net.Packager.ISOMessageSubFieldsPackager.UnPack
-  nameWithType: ISOMessageSubFieldsPackager.UnPack
 - uid: ISO8583Net.Packager.ISOMessageTypesPackager
   name: ISOMessageTypesPackager
   href: site/api/ISO8583Net.Packager.ISOMessageTypesPackager.html

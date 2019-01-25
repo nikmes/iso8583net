@@ -63,10 +63,7 @@ namespace ISO8583Net.Field
                 {
                    ((ISOFieldBitmap)m_isoFields[1]).SetBit(fieldNumber);                    
 
-                   //if (m_packager.GetFieldPackager(fieldNumber).GetStorageClass() == "ISO8583Net.ISOMessageSubFields")
-                   //{
-                        m_isoFields[fieldNumber].SetFieldValue(subFieldNumber, fieldValue);
-                   //}
+                   m_isoFields[fieldNumber].SetFieldValue(subFieldNumber, fieldValue);
                 }
                 else
                 {
@@ -89,7 +86,8 @@ namespace ISO8583Net.Field
                 {
                     //if (Logger.IsEnabled(LogLevel.Trace)) Logger.LogTrace("Field [" + fieldNumber.ToString().PadLeft(3, '0') + "] is composite    , set ISOPackager = ISOMessageSubFields");
 
-                    m_isoFields[fieldNumber] = new ISOMessageSubFields(Logger, (ISOMessageSubFieldsPackager)fieldPackager, fieldNumber);
+                    m_isoFields[fieldNumber] = new ISOFieldBitmapSubFields(Logger, (ISOFieldBitmapSubFieldsPackager)fieldPackager, fieldNumber);
+
                     return true;
                 }
                 else

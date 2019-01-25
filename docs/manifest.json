@@ -1,6 +1,6 @@
 {
   "homepages": [],
-  "source_base_path": "C:/users/nikmes/source/repos/iso8583net/iso8583net",
+  "source_base_path": "C:/Users/nikmes/Source/Repos/iso8583net/iso8583net",
   "xrefmap": "xrefmap.yml",
   "files": [
     {
@@ -57,7 +57,7 @@
       "output": {
         ".html": {
           "relative_path": "site/api/ISO8583Net.Field.ISOComponent.html",
-          "hash": "hI70S8GtFpTAGyF082Rlqw=="
+          "hash": "MLJxPEcI1EqhyU73P4CgGA=="
         }
       },
       "is_incremental": true,
@@ -89,11 +89,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "site/api/ISO8583Net.Field.ISOMessageFields.yml",
+      "source_relative_path": "site/api/ISO8583Net.Field.ISOFieldBitmapSubFields.yml",
       "output": {
         ".html": {
-          "relative_path": "site/api/ISO8583Net.Field.ISOMessageFields.html",
-          "hash": "QxaqmcxFcQnNbgEgzY6wmA=="
+          "relative_path": "site/api/ISO8583Net.Field.ISOFieldBitmapSubFields.html",
+          "hash": "YLTtAC53T5uYIHsx5WrTSQ=="
         }
       },
       "is_incremental": true,
@@ -101,11 +101,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "site/api/ISO8583Net.Field.ISOMessageSubFields.yml",
+      "source_relative_path": "site/api/ISO8583Net.Field.ISOMessageFields.yml",
       "output": {
         ".html": {
-          "relative_path": "site/api/ISO8583Net.Field.ISOMessageSubFields.html",
-          "hash": "XW8YZDgvvPc+lwQwl8FcRQ=="
+          "relative_path": "site/api/ISO8583Net.Field.ISOMessageFields.html",
+          "hash": "xVCQ24lL2VqJfw14Vntvug=="
         }
       },
       "is_incremental": true,
@@ -117,7 +117,7 @@
       "output": {
         ".html": {
           "relative_path": "site/api/ISO8583Net.Field.html",
-          "hash": "ykgVsR0EuiUWW9yfb+zSaQ=="
+          "hash": "GLfBkghcpLS9M2G0UwPLOw=="
         }
       },
       "is_incremental": true,
@@ -221,6 +221,18 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "site/api/ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "site/api/ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.html",
+          "hash": "0KeE+d5stt8/dthKnucplg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "site/api/ISO8583Net.Packager.ISOFieldDefinition.yml",
       "output": {
         ".html": {
@@ -240,7 +252,7 @@
           "hash": "J4p4rZnBEBK70XRT+zkwPQ=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -276,7 +288,7 @@
           "hash": "EWwfthrV7aediISxOpS/iw=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -288,19 +300,7 @@
           "hash": "QMFb038O4GGRcfHAAjR/fQ=="
         }
       },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "site/api/ISO8583Net.Packager.ISOMessageSubFieldsPackager.yml",
-      "output": {
-        ".html": {
-          "relative_path": "site/api/ISO8583Net.Packager.ISOMessageSubFieldsPackager.html",
-          "hash": "mzhA4i8rGR2tJnpH+b2dLw=="
-        }
-      },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -312,7 +312,7 @@
           "hash": "L+DxfeQoKnzeJbxKjAZiSA=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -333,10 +333,10 @@
       "output": {
         ".html": {
           "relative_path": "site/api/ISO8583Net.Packager.ISOPackager.html",
-          "hash": "NMnBbHPh29/ut6vlrTHiBg=="
+          "hash": "uMGOI31A4pvAN2YHgQAkcw=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -357,10 +357,10 @@
       "output": {
         ".html": {
           "relative_path": "site/api/ISO8583Net.Packager.html",
-          "hash": "ICwrFtKTrYyupucz+MiPiw=="
+          "hash": "lwbzgaiV7gwh7r7LvSeHoA=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -477,7 +477,7 @@
       "output": {
         ".html": {
           "relative_path": "site/api/toc.html",
-          "hash": "GlP2Tbfng1mzhUO5GoQnXQ=="
+          "hash": "fBheAj6T9SVRnu/+xWi6XA=="
         }
       },
       "is_incremental": false,
@@ -586,12 +586,9 @@
         "incrementalPhase": "build"
       },
       "processors": {
-        "ConceptualDocumentProcessor": {
-          "can_incremental": true,
-          "incrementalPhase": "build"
-        },
-        "ManagedReferenceDocumentProcessor": {
-          "can_incremental": true,
+        "TocDocumentProcessor": {
+          "can_incremental": false,
+          "details": "Processor TocDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
           "incrementalPhase": "build"
         },
         "ResourceDocumentProcessor": {
@@ -599,9 +596,12 @@
           "details": "Processor ResourceDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
           "incrementalPhase": "build"
         },
-        "TocDocumentProcessor": {
-          "can_incremental": false,
-          "details": "Processor TocDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
+        "ConceptualDocumentProcessor": {
+          "can_incremental": true,
+          "incrementalPhase": "build"
+        },
+        "ManagedReferenceDocumentProcessor": {
+          "can_incremental": true,
           "incrementalPhase": "build"
         }
       }

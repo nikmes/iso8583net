@@ -163,7 +163,7 @@ namespace ISO8583Net.Packager
                             {
                                 //if (m_fieldPackagerList[fieldNumber].GetStorageClass() == "ISO8583Net.ISOMessageSubFields")
                                 //{
-                                    isoFields[fieldNumber] = new ISOMessageSubFields(Logger, (ISOMessageSubFieldsPackager)m_fieldPackagerList[fieldNumber], m_fieldPackagerList[fieldNumber].GetFieldNumber());
+                                    isoFields[fieldNumber] = new ISOFieldBitmapSubFields(Logger, (ISOFieldBitmapSubFieldsPackager)m_fieldPackagerList[fieldNumber], m_fieldPackagerList[fieldNumber].GetFieldNumber());
                                 //}
                             }
                             else
