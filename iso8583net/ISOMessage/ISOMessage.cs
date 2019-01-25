@@ -74,11 +74,6 @@ namespace ISO8583Net.Message
             }
         }
 
-        public override void SetFieldValue(int fieldNumber, String tag, String tagValue)
-        {
-            throw new NotImplementedException();
-        }
-
         public override string GetValue()
         {
             return m_isoMessageFields.GetValue();
@@ -99,10 +94,6 @@ namespace ISO8583Net.Message
             return m_isoMessageFields.GetFieldValue(subField);
         }
 
-        public override string GetFieldValue(int fieldNumber, string tag, string tagValue)
-        {
-            throw new NotImplementedException();
-        }
         public byte[] Pack()
         {
             byte[] packedBytes = new Byte[2048];
