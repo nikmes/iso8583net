@@ -28,11 +28,6 @@ namespace ISO8583Net.Field
             throw new NotImplementedException();
         }
 
-        public override void SetFieldValue(int fieldNumber, String tag, String tagValue)
-        {
-            throw new NotImplementedException();
-        }   
-
         public override String GetValue()
         {
             return m_value;
@@ -44,11 +39,6 @@ namespace ISO8583Net.Field
         }
 
         public override String GetFieldValue(int fieldNumber, int subField)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override String GetFieldValue(int fieldNumber, string tag, string tagValue)
         {
             throw new NotImplementedException();
         }
