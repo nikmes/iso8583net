@@ -1,7 +1,7 @@
 language: csharp
-mono: none
+mono: latest
 sudo: required
-dist: xenial
+dist: trustly
 dotnet: 2.2
 solution: iso8583net.sln
 before_script:
