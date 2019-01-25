@@ -1,6 +1,9 @@
 language: csharp
 mono: none
-dotnet: 2.1.502
+sudo: required
+dist: xenial
+dotnet: 2.2
 solution: iso8583net.sln
 script:    # the following commands are just examples, use whatever your build process requires
   - dotnet restore
+  - dotnet build
