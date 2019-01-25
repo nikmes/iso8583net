@@ -37,13 +37,9 @@ namespace ISO8583Net.Field
 
         public abstract void SetFieldValue(int fieldNumber, String fieldValue);
 
-        public abstract void SetFieldValue(int fieldNumber, String tag, String tagValue);
-
         public abstract String GetFieldValue(int fieldNumber);
 
         public abstract string GetFieldValue(int fieldNumber, int subField);
-
-        public abstract string GetFieldValue(int fieldNumber, String tag, String tagValue);
 
         public abstract void Trace();
        

@@ -107,11 +107,6 @@ namespace ISO8583Net.Field
             }
         }
 
-        public override void SetFieldValue(int fieldNumber, String tag, String tagValue)
-        {
-
-        }
-
         public ISOComponent GetField(int fieldNumber)
         {
             return m_isoFields[fieldNumber];
@@ -147,11 +142,6 @@ namespace ISO8583Net.Field
         }
 
         public override String GetFieldValue(int fieldNumber, int subField)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override String GetFieldValue(int fieldNumber, String tag, String tagValue)
         {
             throw new NotImplementedException();
         }
