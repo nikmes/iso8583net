@@ -24,6 +24,7 @@ namespace ISO8583Net.Field
         {
             throw new NotImplementedException();
         }
+        
         /// <summary>
         /// Assigns value to field <paramref name="fieldNumber"/>
         /// </summary>
@@ -51,11 +52,6 @@ namespace ISO8583Net.Field
                    if (Logger.IsEnabled(LogLevel.Error)) Logger.LogError("Trying to set SubField [" + fieldNumber + "] of Field [" + m_number + "] that dose not exist in packager definition file");
                 }
             }
-        }
-
-        public override void SetFieldValue(int fieldNumber, String tag, String tagValue)
-        {
-
         }
 
         public ISOComponent GetField(int fieldNumber)
@@ -95,11 +91,6 @@ namespace ISO8583Net.Field
             throw new NotImplementedException();
         }
 
-        public override String GetFieldValue(int fieldNumber, String tag, String tagValue)
-        {
-            throw new NotImplementedException();
-        }
-
         public bool SetFieldPackager(int fieldNumber)
         {
             ISOPackager fieldPackager = m_packager.GetFieldPackager(fieldNumber);
@@ -108,16 +99,12 @@ namespace ISO8583Net.Field
             {
                 if (fieldPackager.IsComposite())
                 {
-                    //if (Logger.IsEnabled(LogLevel.Trace)) Logger.LogTrace("Field [" + fieldNumber.ToString().PadLeft(3, '0') + "] is composite    , set ISOPackager = ISOMessageFields");
-
                     m_isoFields[fieldNumber] = new ISOFieldBitmapSubFields(Logger, (ISOFieldBitmapSubFieldsPackager)fieldPackager, fieldNumber);
              
                     return true;
                 }
                 else
                 {
-                    //if (Logger.IsEnabled(LogLevel.Trace)) Logger.LogTrace("Field [" + fieldNumber.ToString().PadLeft(3, '0') + "] is NOT composite, set ISOPackager = ISOField");
-
                     m_isoFields[fieldNumber] = new ISOField(Logger, fieldPackager, fieldNumber);
 
                     return true;
@@ -125,7 +112,8 @@ namespace ISO8583Net.Field
             }
             else
             {
-                if (Logger.IsEnabled(LogLevel.Error)) Logger.LogError("Field Packager was not initialized from XML Packager definition file");
+                Logger.LogError("Field Packager was not initialized from XML Packager definition file");
+
                 return false;
             }
         }
@@ -148,6 +136,7 @@ namespace ISO8583Net.Field
                     }
                 }
             }
+
             return msgFieldValues.ToString();
         }
 

@@ -8,8 +8,6 @@ before_script:
 - nuget install docfx.console -ExcludeVersion
 - export DOCFX_TOOL="mono docfx.console/tools/docfx.exe"
 script:    # the following commands are just examples, use whatever your build process requires
-- $DOCFX_TOOL metadata docfx.json
-- $DOCFX_TOOL build docfx.json
 - dotnet restore
 - dotnet build
   
