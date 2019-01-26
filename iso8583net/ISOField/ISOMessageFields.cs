@@ -25,7 +25,7 @@ namespace ISO8583Net.Field
             throw new NotImplementedException();
         }
 
-        public override void SetFieldValue(int fieldNumber, String fieldValue)
+        public override void SetValue(int fieldNumber, String fieldValue)
         {
             if (m_isoFields[fieldNumber] != null)
             {
@@ -49,7 +49,7 @@ namespace ISO8583Net.Field
             }
         }
 
-        public void SetFieldValue(int fieldNumber, int subFieldNumber, String fieldValue)
+        public void SetValue(int fieldNumber, int subFieldNumber, String fieldValue)
         {
             if (m_isoFields[fieldNumber] == null)
             {
@@ -59,7 +59,7 @@ namespace ISO8583Net.Field
                 {
                     ((ISOFieldBitmap)m_isoFields[1]).SetBit(fieldNumber);                    
 
-                    m_isoFields[fieldNumber].SetFieldValue(subFieldNumber, fieldValue);
+                    m_isoFields[fieldNumber].SetValue(subFieldNumber, fieldValue);
                 }
                 else
                 {
@@ -68,7 +68,7 @@ namespace ISO8583Net.Field
             }
             else
             {
-                m_isoFields[fieldNumber].SetFieldValue(subFieldNumber, fieldValue);
+                m_isoFields[fieldNumber].SetValue(subFieldNumber, fieldValue);
             }
         }
 

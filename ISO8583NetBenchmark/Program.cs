@@ -65,19 +65,19 @@ namespace ISO8583NetBenchmark
 
                 ISOMessage m = new ISOMessage(logger, mPackager);
 
-                m.SetFieldValue(000, "0100");
-                m.SetFieldValue(002, "40004000400040001");
-                m.SetFieldValue(003, "000000");
-                m.SetFieldValue(004, "000000002900");
-                m.SetFieldValue(007, "1231231233");
-                m.SetFieldValue(011, "123123");
-                m.SetFieldValue(012, "193012");
-                m.SetFieldValue(014, "1219");
-                m.SetFieldValue(018, "5999");
-                m.SetFieldValue(019, "196");
-                m.SetFieldValue(022, "9010");
-                m.SetFieldValue(025, "23");
-                m.SetFieldValue(037, "123123123123");
+                m.SetValue(000, "0100");
+                m.SetValue(002, "40004000400040001");
+                m.SetValue(003, "000000");
+                m.SetValue(004, "000000002900");
+                m.SetValue(007, "1231231233");
+                m.SetValue(011, "123123");
+                m.SetValue(012, "193012");
+                m.SetValue(014, "1219");
+                m.SetValue(018, "5999");
+                m.SetValue(019, "196");
+                m.SetValue(022, "9010");
+                m.SetValue(025, "23");
+                m.SetValue(037, "123123123123");
 
                 packedBytes = m.Pack();
 
@@ -91,20 +91,20 @@ namespace ISO8583NetBenchmark
             {
                 ISOMessage m = new ISOMessage(logger, mPackager);
 
-                m.SetFieldValue(000, "0100");
-                m.SetFieldValue(002, "40004000400040001");
-                m.SetFieldValue(003, "000000");
-                m.SetFieldValue(004, "000000002900");
-                m.SetFieldValue(007, "1231231233");
-                m.SetFieldValue(011, "123123");
-                m.SetFieldValue(012, "193012");
-                m.SetFieldValue(014, "1219");
-                m.SetFieldValue(018, "5999");
-                m.SetFieldValue(019, "196");
-                m.SetFieldValue(022, "9010");
-                m.SetFieldValue(025, "23");
-                m.SetFieldValue(037, "123123123123");
-                m.SetFieldValue(070, "123");
+                m.SetValue(000, "0100");
+                m.SetValue(002, "40004000400040001");
+                m.SetValue(003, "000000");
+                m.SetValue(004, "000000002900");
+                m.SetValue(007, "1231231233");
+                m.SetValue(011, "123123");
+                m.SetValue(012, "193012");
+                m.SetValue(014, "1219");
+                m.SetValue(018, "5999");
+                m.SetValue(019, "196");
+                m.SetValue(022, "9010");
+                m.SetValue(025, "23");
+                m.SetValue(037, "123123123123");
+                m.SetValue(070, "123");
 
                 packedBytes = m.Pack();
 
@@ -118,23 +118,23 @@ namespace ISO8583NetBenchmark
             public void PU2NDBS()
             {
                 ISOMessage m = new ISOMessage(logger, mPackager);
-                m.SetFieldValue(000, "0100");
-                m.SetFieldValue(002, "40004000400040001");
-                m.SetFieldValue(003, "000000");
-                m.SetFieldValue(004, "000000002900");
-                m.SetFieldValue(007, "1231231233");
-                m.SetFieldValue(011, "123123");
-                m.SetFieldValue(012, "193012");
-                m.SetFieldValue(014, "1219");
-                m.SetFieldValue(018, "5999");
-                m.SetFieldValue(019, "196");
-                m.SetFieldValue(022, "9010");
-                m.SetFieldValue(025, "23");
-                m.SetFieldValue(037, "123123123123");
-                m.SetFieldValue(062, 01, "Y");
-                m.SetFieldValue(063, 01, "1222");
-                m.SetFieldValue(063, 03, "9999");
-                m.SetFieldValue(070, "123");
+                m.SetValue(000, "0100");
+                m.SetValue(002, "40004000400040001");
+                m.SetValue(003, "000000");
+                m.SetValue(004, "000000002900");
+                m.SetValue(007, "1231231233");
+                m.SetValue(011, "123123");
+                m.SetValue(012, "193012");
+                m.SetValue(014, "1219");
+                m.SetValue(018, "5999");
+                m.SetValue(019, "196");
+                m.SetValue(022, "9010");
+                m.SetValue(025, "23");
+                m.SetValue(037, "123123123123");
+                m.SetValue(062, 01, "Y");
+                m.SetValue(063, 01, "1222");
+                m.SetValue(063, 03, "9999");
+                m.SetValue(070, "123");
 
                 // byte[] packedBytes = m.Pack();
                 m.Pack();

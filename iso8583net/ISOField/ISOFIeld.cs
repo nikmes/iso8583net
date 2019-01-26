@@ -23,7 +23,7 @@ namespace ISO8583Net.Field
             m_value = value;
         }
 
-        public override void SetFieldValue(int fieldNumber, string fieldValue)
+        public override void SetValue(int fieldNumber, string fieldValue)
         {
             throw new NotImplementedException();
         }
