@@ -22,11 +22,11 @@ namespace ISO8583NetSimpleTest
 
         static void Main(string[] args)
         {
-            ISOMessagePackager p = new ISOMessagePackager(Program.logger);
+            ISOMessagePackager p = new ISOMessagePackager(logger);
 
             byte[] packedBytes = new byte[2048];
 
-            ISOMessage m = new ISOMessage(Program.logger, p);
+            ISOMessage m = new ISOMessage(logger, p);
 
             m.SetFieldValue(000, "0100");
             m.SetFieldValue(002, "4000400040004001");
