@@ -11,6 +11,28 @@ namespace ISO8583Net.Field
 
         protected ISOMessageFieldsPackager m_packager;
 
+        public override String value
+        {
+            get
+            {
+                StringBuilder strBuilder = new StringBuilder();
+
+                int totalFields = m_packager.GetTotalFields();
+
+                for (int i = 0; i < totalFields; i++)
+                {
+                    if (m_isoFields[i] != null)
+                    {
+                        String str = m_isoFields[i].value;
+
+                        strBuilder.Append(str);
+                    }
+                }
+
+                return strBuilder.ToString();
+            }
+        }
+
         public ISOMessageFields(ILogger logger, ISOMessageFieldsPackager packager, int fieldNumber) : base(logger, fieldNumber)
         {
             m_packager = packager;
@@ -20,22 +42,17 @@ namespace ISO8583Net.Field
             m_isoFields[1] = new ISOFieldBitmap(Logger, (ISOFieldPackager)packager.GetFieldPackager(1), 1);
         }
 
-        public override void SetValue(string value)
-        {
-            throw new NotImplementedException();
-        }
-
         public override void SetValue(int fieldNumber, String fieldValue)
         {
             if (m_isoFields[fieldNumber] != null)
             {
-                m_isoFields[fieldNumber].SetValue(fieldValue);
+                m_isoFields[fieldNumber].value=fieldValue; // SetValue(fieldValue);
             }
             else
             {
                 if (SetFieldPackager(fieldNumber))
                 {
-                    m_isoFields[fieldNumber].SetValue(fieldValue);
+                    m_isoFields[fieldNumber].value = fieldValue; // SetValue(fieldValue);
 
                     if (fieldNumber > 0) 
                     {
@@ -113,28 +130,9 @@ namespace ISO8583Net.Field
             return m_isoFields;
         }
 
-        public override String GetValue()
-        {
-            StringBuilder strBuilder = new StringBuilder();
-
-            int totalFields = m_packager.GetTotalFields();
-
-            for (int i = 0; i < totalFields; i++)
-            {
-                if (m_isoFields[i] != null)
-                {
-                    String str = m_isoFields[i].GetValue();
-
-                    strBuilder.Append(str);
-                }
-            }
-
-            return strBuilder.ToString();
-        }
-
         public override String GetFieldValue(int fieldNumber)
         {
-            return m_isoFields[fieldNumber].GetValue();
+            return m_isoFields[fieldNumber].value; 
         }
 
         public override String GetFieldValue(int fieldNumber, int subField)

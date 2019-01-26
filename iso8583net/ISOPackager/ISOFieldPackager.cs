@@ -80,7 +80,7 @@ namespace ISO8583Net.Packager
             // 24. When Encoding is EBCDIC Length is expressed in characters          For Example: if len=16 it means 16 EBCDIC characters (8bytes)
             // 25. When Encoding is Z      Length is expressed in niples (1/2Bytes) plus 1 byte for HEXADECIMAL 0x0D those 0x0D is accounted for two nibbles 
 
-            string fldValue = isoField.GetValue();
+            string fldValue = isoField.value;
 
             string fldNumber = m_number.ToString().PadLeft(3, '0');
 
@@ -248,7 +248,7 @@ namespace ISO8583Net.Packager
 
             // handle length type, size and coding
 
-            string isoFieldValue = isoField.GetValue(); // value that user assigned
+            string isoFieldValue = isoField.value;// GetValue(); // value that user assigned
 
             if (m_isoFieldDefinition.lengthFormat == ISOFieldLengthFormat.FIXED)
             {
@@ -306,15 +306,15 @@ namespace ISO8583Net.Packager
                         break;
 
                     case ISOFieldCoding.ASCII:
-                        ISOUtils.ascii2bytes(isoField.GetValue(), packedBytes, ref index);
+                        ISOUtils.ascii2bytes(isoField.value, packedBytes, ref index);
                         break;
 
                     case ISOFieldCoding.BIN:
-                        ISOUtils.hex2bytes(isoField.GetValue(), packedBytes, ref index);
+                        ISOUtils.hex2bytes(isoField.value, packedBytes, ref index);
                         break;
 
                     case ISOFieldCoding.EBCDIC:
-                        ISOUtils.ascii2ebcdic(isoField.GetValue(), packedBytes, ref index);
+                        ISOUtils.ascii2ebcdic(isoField.value, packedBytes, ref index);
                         break;
 
                     //case ISOFieldCoding.Z:
@@ -326,7 +326,7 @@ namespace ISO8583Net.Packager
                     default:
                        //if (Logger.IsEnabled(LogLevel.Critical)) Logger.LogCritical("Unknown content coding for Field [" + m_number.ToString().PadLeft(3, '0') + "]. Fallback to ASCII Packager");
 
-                        ISOUtils.ascii2bytes(isoField.GetValue(), packedBytes, ref index);
+                        ISOUtils.ascii2bytes(isoField.value, packedBytes, ref index);
 
                         break;
                 }
@@ -393,13 +393,13 @@ namespace ISO8583Net.Packager
             {
                 if (m_isoFieldDefinition.contentCoding == ISOFieldCoding.BCD)
                 {
-                    isoField.SetValue(ISOUtils.bcd2ascii(packedBytes, ref index, m_isoFieldDefinition.contentPadding, lengthToRead));
+                    isoField.value=(ISOUtils.bcd2ascii(packedBytes, ref index, m_isoFieldDefinition.contentPadding, lengthToRead));
 
                     //if (Logger.IsEnabled(LogLevel.Information)) Logger.LogInformation("Field  [" + m_number + "] [" + isoField.GetValue() + "]");
                 }
                 else if (m_isoFieldDefinition.contentCoding == ISOFieldCoding.ASCII)
                 {
-                    isoField.SetValue(ISOUtils.bytes2ascii(packedBytes, ref index, lengthToRead));
+                    isoField.value=(ISOUtils.bytes2ascii(packedBytes, ref index, lengthToRead));
 
                     //if (Logger.IsEnabled(LogLevel.Information)) Logger.LogInformation("Field  [" + m_number + "] [" + isoField.GetValue() + "]");
                 }
@@ -417,12 +417,12 @@ namespace ISO8583Net.Packager
                     }
                     else
                     {
-                        isoField.SetValue(ISOUtils.bytes2hex(packedBytes, ref index, lengthToRead / 2)); // Number of hex digits so convert to number of bytes
+                        isoField.value=(ISOUtils.bytes2hex(packedBytes, ref index, lengthToRead / 2)); // Number of hex digits so convert to number of bytes
                     }
                 }
                 else if (m_isoFieldDefinition.contentCoding == ISOFieldCoding.EBCDIC)
                 {
-                    isoField.SetValue(ISOUtils.ebcdic2ascii(packedBytes, ref index, lengthToRead));
+                    isoField.value=(ISOUtils.ebcdic2ascii(packedBytes, ref index, lengthToRead));
 
                     //if (Logger.IsEnabled(LogLevel.Information)) Logger.LogInformation("Field  [" + m_number + "] [" + isoField.GetValue() + "]");
 
@@ -524,14 +524,17 @@ namespace ISO8583Net.Packager
                     break;
             }
 
-            if (Logger.IsEnabled(LogLevel.Trace)) Logger.LogTrace("  Length Length: " + m_isoFieldDefinition.lengthLength.ToString());
-            if (Logger.IsEnabled(LogLevel.Trace)) Logger.LogTrace("  Length Format: " + m_isoFieldDefinition.lengthFormat);
-            if (Logger.IsEnabled(LogLevel.Trace)) Logger.LogTrace("  Length Coding: " + m_isoFieldDefinition.lengthCoding);
-            if (Logger.IsEnabled(LogLevel.Trace)) Logger.LogTrace(" Length Padding: " + m_isoFieldDefinition.lengthPadding);
-            if (Logger.IsEnabled(LogLevel.Trace)) Logger.LogTrace(" Content Format: " + m_isoFieldDefinition.content);
-            if (Logger.IsEnabled(LogLevel.Trace)) Logger.LogTrace(" Content Coding: " + m_isoFieldDefinition.contentCoding);
-            if (Logger.IsEnabled(LogLevel.Trace)) Logger.LogTrace("Content Padding: " + m_isoFieldDefinition.contentPadding);
-            if (Logger.IsEnabled(LogLevel.Trace)) Logger.LogTrace("    Description: " + m_isoFieldDefinition.description);
+            if (Logger.IsEnabled(LogLevel.Trace))
+            {
+                Logger.LogTrace("  Length Length: " + m_isoFieldDefinition.lengthLength.ToString());
+                Logger.LogTrace("  Length Format: " + m_isoFieldDefinition.lengthFormat);
+                Logger.LogTrace("  Length Coding: " + m_isoFieldDefinition.lengthCoding);
+                Logger.LogTrace(" Length Padding: " + m_isoFieldDefinition.lengthPadding);
+                Logger.LogTrace(" Content Format: " + m_isoFieldDefinition.content);
+                Logger.LogTrace(" Content Coding: " + m_isoFieldDefinition.contentCoding);
+                Logger.LogTrace("Content Padding: " + m_isoFieldDefinition.contentPadding);
+                Logger.LogTrace("    Description: " + m_isoFieldDefinition.description);
+            }
         }
     }
 }

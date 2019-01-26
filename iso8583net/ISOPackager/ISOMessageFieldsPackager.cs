@@ -128,7 +128,7 @@ namespace ISO8583Net.Packager
 
             m_fieldPackagerList[0].UnPack(isoFields[0], packedBytes, ref index);
 
-            String msgType = isoFields[0].GetValue();
+            String msgType = isoFields[0].value;// GetValue();
 
             // If the Message Type is supported from the packager definition then do the below else Log an Error and return a 0 byte array
 

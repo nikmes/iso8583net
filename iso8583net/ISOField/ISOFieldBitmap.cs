@@ -16,6 +16,14 @@ namespace ISO8583Net.Field
 
         private int m_length;
 
+        public override String value
+        {
+            get
+            {
+                return ISOUtils.bytes2hex(m_bitmap).Substring(0, this.GetLengthInBytes() * 2);
+            }
+        }
+
         public bool secondaryBitmapIsSet { get; set; }  = false;
 
         public bool thirdBitmapIsSet { get; set; }  = false;
@@ -287,19 +295,9 @@ namespace ISO8583Net.Field
             }          
         }
 
-        public override String GetValue()
-        {
-             return ISOUtils.bytes2hex(m_bitmap).Substring(0,this.GetLengthInBytes()*2);
-        }
-
         public override void Trace()
         {
-            if (Logger.IsEnabled(LogLevel.Information))
-            {
-                Logger.LogInformation("Field [" + m_number.ToString().PadLeft(3, '0') + "]".PadRight(5, ' ') + "[" + ToHexString() + "]\n" + ToHumanReadable("               "));
-            }
+            Logger.LogInformation("Field [" + m_number.ToString().PadLeft(3, '0') + "]".PadRight(5, ' ') + "[" + ToHexString() + "]\n" + ToHumanReadable("               "));
         }
-
     }
-
 }

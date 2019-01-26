@@ -11,7 +11,13 @@ namespace ISO8583Net.Field
 
         protected int m_number;
 
-        public String m_value { get; set; } 
+        private String m_value;
+
+        public virtual String value
+        {
+            get { return m_value; }
+            set { m_value = value; }
+        }
 
         public ISOComponent(ILogger logger, int number)
         {
@@ -28,10 +34,6 @@ namespace ISO8583Net.Field
 
             m_number = number;
         }
-
-        public abstract String GetValue();
-
-        public abstract void SetValue(String value);
 
         public abstract override String ToString();
 
