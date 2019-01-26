@@ -35,7 +35,7 @@ namespace ISO8583Net.Field
 
         public abstract override String ToString();
 
-        public abstract void SetFieldValue(int fieldNumber, String fieldValue);
+        public abstract void SetValue(int fieldNumber, String fieldValue);
 
         public abstract String GetFieldValue(int fieldNumber);
 

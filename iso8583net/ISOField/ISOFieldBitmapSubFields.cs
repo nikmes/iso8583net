@@ -31,7 +31,7 @@ namespace ISO8583Net.Field
         /// <param name="fieldNumber">The numeric value of the iso field</param>
         /// <param name="fieldValue">The value (as string) to be assigned to the iso field</param>
         /// <example>SetFieldValue(2,"4000XXXXXXXX4000")</example>
-        public override void SetFieldValue(int fieldNumber, String fieldValue)
+        public override void SetValue(int fieldNumber, String fieldValue)
         {
             if (m_isoFields[fieldNumber] != null)
             {

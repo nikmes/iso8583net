@@ -97,7 +97,7 @@
         <member name="F:ISO8583Net.Types.ISOFieldContent.Z">
             <summary>Tracks 2 and 3 code set as defined in ISO/IEC 7813 and ISO/IEC 4909 respectively</summary>
         </member>
-        <member name="M:ISO8583Net.Field.ISOFieldBitmapSubFields.SetFieldValue(System.Int32,System.String)">
+        <member name="M:ISO8583Net.Field.ISOFieldBitmapSubFields.SetValue(System.Int32,System.String)">
             <summary>
             Assigns value to field <paramref name="fieldNumber"/>
             </summary>

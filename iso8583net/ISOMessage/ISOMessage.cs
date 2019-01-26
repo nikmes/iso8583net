@@ -55,11 +55,11 @@ namespace ISO8583Net.Message
             throw new NotImplementedException();
         }
 
-        public override void SetFieldValue(int fieldNumber, String fieldValue)
+        public override void SetValue(int fieldNumber, String fieldValue)
         {
             if (fieldNumber >= 0 && fieldNumber <= m_totalFields) 
             {
-                m_isoMessageFields.SetFieldValue(fieldNumber, fieldValue);
+                m_isoMessageFields.SetValue(fieldNumber, fieldValue);
             }
             else
             {
@@ -67,11 +67,11 @@ namespace ISO8583Net.Message
             }
         }
 
-        public void SetFieldValue(int fieldNumber, int subFieldNumber, String fieldValue)
+        public void SetValue(int fieldNumber, int subFieldNumber, String fieldValue)
         {
             if (fieldNumber >= 0 && fieldNumber <= m_totalFields && fieldNumber != 65 && fieldNumber != 129)
             {
-                m_isoMessageFields.SetFieldValue(fieldNumber, subFieldNumber, fieldValue);                
+                m_isoMessageFields.SetValue(fieldNumber, subFieldNumber, fieldValue);                
             }
             else
             {
