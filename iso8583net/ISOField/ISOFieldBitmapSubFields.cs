@@ -113,7 +113,6 @@ namespace ISO8583Net.Field
             else
             {
                 Logger.LogError("Field Packager was not initialized from XML Packager definition file");
-
                 return false;
             }
         }
@@ -136,7 +135,6 @@ namespace ISO8583Net.Field
                     }
                 }
             }
-
             return msgFieldValues.ToString();
         }
 

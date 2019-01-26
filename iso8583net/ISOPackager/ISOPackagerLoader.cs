@@ -77,7 +77,7 @@ namespace ISO8583Net.Packager
 
             // load from embeded resource visa.xml
 
-            Stream stream = typeof(ISOPackagerLoader).GetTypeInfo().Assembly.GetManifestResourceStream("iso8583net.Resources.visa.xml");
+            Stream stream = typeof(ISOPackagerLoader).GetTypeInfo().Assembly.GetManifestResourceStream("ISO8583Net.ISODialects.visa.xml");
 
             reader = XmlReader.Create(stream);
 
@@ -101,7 +101,7 @@ namespace ISO8583Net.Packager
                         case "isofields":
                             msgFieldPackager = LoadISOMessageFieldsPackager(reader, 0);
                             msgFieldPackager.SetMessageTypesPackager(isoMessageTypesPackager);
-                            msgFieldPackager.SetStorageClass(Type.GetType("ISO8583Net.ISOMessageFields"));
+                            msgFieldPackager.SetStorageClass(Type.GetType("ISO8583Net.Field.ISOMessageFields"));
                             break;
                     }
                 }
@@ -412,7 +412,7 @@ namespace ISO8583Net.Packager
                                                                                                 
                     switch (packager)
                     {
-                        case "ISOMessageSubFieldsPackager":
+                        case "ISOFieldBitmapSubFieldsPackager":
 
                             int totalFields = Int32.Parse(reader["totalfields"]);
 
@@ -426,7 +426,7 @@ namespace ISO8583Net.Packager
 
                             newMsgFieldPackager.SetISOFieldDefinition(fPackager.GetISOFieldDefinition());
 
-                            newMsgFieldPackager.SetStorageClass(Type.GetType("ISO8583Net.ISOMessageSubFields"));
+                            newMsgFieldPackager.SetStorageClass(Type.GetType("ISO8583Net.Field.ISOFieldBitmapSubFields"));
 
                             msgFieldPackager.Add(newMsgFieldPackager, newMsgFieldPackager.GetFieldNumber());
 
@@ -440,7 +440,7 @@ namespace ISO8583Net.Packager
 
                             if (storageclass == null)
                             {
-                                fieldPackager.SetStorageClass(Type.GetType("ISO8583Net.ISOField"));
+                                fieldPackager.SetStorageClass(Type.GetType("ISO8583Net.Field.ISOField"));
                             }
                             else
                             {
@@ -497,7 +497,7 @@ namespace ISO8583Net.Packager
 
                     switch (packager)
                     {
-                        case "ISOMessageSubFieldsPackager":
+                        case "ISOFieldBitmapSubFieldsPackager":
 
                             int totalFields = Int32.Parse(reader["totalfields"]);
 
@@ -511,7 +511,7 @@ namespace ISO8583Net.Packager
 
                             newMsgFieldPackager.SetISOFieldDefinition(fPackager.GetISOFieldDefinition());
 
-                            newMsgFieldPackager.SetStorageClass(Type.GetType("ISO8583Net.ISOMessageSubFields"));
+                            newMsgFieldPackager.SetStorageClass(Type.GetType("ISO8583Net.Field.ISOFieldBitmapSubFields"));
 
                             msgFieldPackager.Add(newMsgFieldPackager, newMsgFieldPackager.GetFieldNumber());
 
@@ -525,7 +525,7 @@ namespace ISO8583Net.Packager
 
                             if (storageclass == null)
                             {
-                                fieldPackager.SetStorageClass(Type.GetType("ISO8583Net.ISOField"));
+                                fieldPackager.SetStorageClass(Type.GetType("ISO8583Net.Field.ISOField"));
                             }
                             else
                             {

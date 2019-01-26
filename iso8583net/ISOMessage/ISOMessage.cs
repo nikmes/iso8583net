@@ -81,7 +81,7 @@ namespace ISO8583Net.Message
 
         public override string GetValue()
         {
-            return m_isoMessageFields.GetValue();
+            return m_isoMessageFields.m_value; // GetValue();
         }
 
         public override string GetFieldValue(int fieldNumber)
