@@ -18,19 +18,9 @@ namespace ISO8583Net.Field
             m_packager = packager;
         }
 
-        public override void SetValue(string value)
-        {
-            m_value = value;
-        }
-
         public override void SetValue(int fieldNumber, string fieldValue)
         {
             throw new NotImplementedException();
-        }
-
-        public override String GetValue()
-        {
-            return m_value;
         }
 
         public override String GetFieldValue(int fieldNumber)
@@ -45,12 +35,12 @@ namespace ISO8583Net.Field
 
         public override void Trace()
         {
-            Logger.LogInformation("Field [" + m_number.ToString().PadLeft(3, '0') + "]".PadRight(5, ' ') + "[" + m_value + "]");
+            Logger.LogInformation("Field [" + m_number.ToString().PadLeft(3, '0') + "]".PadRight(5, ' ') + "[" + value + "]");
         }
 
         public override String ToString()
         {
-            return (String.Format("Field [{0}]{1}[{2}]\n{3}", m_number.ToString().PadLeft(3, '0')," ".PadRight(4, ' '), m_value, m_packager.InterpretField(m_value)));
+            return (String.Format("Field [{0}]{1}[{2}]\n{3}", m_number.ToString().PadLeft(3, '0')," ".PadRight(4, ' '), value, m_packager.InterpretField(value)));
         }
     }
 }

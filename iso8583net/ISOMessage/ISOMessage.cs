@@ -48,13 +48,6 @@ namespace ISO8583Net.Message
             m_totalFields = ((ISOMessagePackager)m_isoMesssagePackager).GetTotalFields();
         }
 
-        public override void SetValue(string value)
-        {
-            if (Logger.IsEnabled(LogLevel.Error)) Logger.LogError("ISOMessage setValue is not implemented yet!");
-
-            throw new NotImplementedException();
-        }
-
         public override void SetValue(int fieldNumber, String fieldValue)
         {
             if (fieldNumber >= 0 && fieldNumber <= m_totalFields) 
@@ -77,11 +70,6 @@ namespace ISO8583Net.Message
             {
                 Logger.LogError("Attempt to set value for an out of range field[", fieldNumber.ToString().PadLeft(3, ' ') + "]");
             }
-        }
-
-        public override string GetValue()
-        {
-            return m_isoMessageFields.m_value; // GetValue();
         }
 
         public override string GetFieldValue(int fieldNumber)
