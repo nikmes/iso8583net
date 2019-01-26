@@ -20,18 +20,18 @@ namespace ISO8583Net.Field
 
         public bool thirdBitmapIsSet { get; set; }  = false;
 
-        public string m_value
-        {
-            get
-            {
-                return ISOUtils.bytes2hex(m_bitmap).Substring(0, this.GetLengthInBytes() * 2);
-            }
-            set
-            {
+        //public string m_value
+        //{
+        //    get
+        //    {
+        //        return ISOUtils.bytes2hex(m_bitmap).Substring(0, this.GetLengthInBytes() * 2);
+        //    }
+        //    set
+        //    {
 
-            }
+        //    }
 
-        }
+        //}
 
         public ISOFieldBitmap(ILogger logger) : base(logger, null, 0)
         {
