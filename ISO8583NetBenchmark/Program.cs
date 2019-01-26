@@ -46,7 +46,7 @@ namespace ISO8583NetBenchmark
 
             public ISOUtilsTest()
             {
-                packedBytes = new byte[22048];
+                packedBytes = new byte[2048];
 
                 Log = new LoggerConfiguration().MinimumLevel.Fatal().
                                                 //WriteTo.RollingFile("out.log", outputTemplate: "{Timestamp:HH:mm:ss.fff} [{Level}] {Message}{NewLine}{Exception}").
@@ -79,14 +79,14 @@ namespace ISO8583NetBenchmark
                 m.SetFieldValue(025, "23");
                 m.SetFieldValue(037, "123123123123");
 
-                byte[] pBytes = m.Pack();
+                packedBytes = m.Pack();
 
                 ISOMessage uM = new ISOMessage(logger, mPackager);
 
-                uM.UnPack(pBytes);
+                uM.UnPack(packedBytes);
             }
 
-            // [Benchmark]
+            [Benchmark]
             public void PU2NDB()
             {
                 ISOMessage m = new ISOMessage(logger, mPackager);
@@ -106,9 +106,7 @@ namespace ISO8583NetBenchmark
                 m.SetFieldValue(037, "123123123123");
                 m.SetFieldValue(070, "123");
 
-                //byte[] packedBytes = 
-
-                m.Pack();
+                packedBytes = m.Pack();
 
                 ISOMessage uM = new ISOMessage(logger, mPackager);
 

@@ -5,9 +5,9 @@ VisualStudioVersion = 15.0.28307.271
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISO8583Net", "iso8583net\ISO8583Net.csproj", "{A5543DF9-9B55-4D55-BC22-9B528E762048}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISO8583NetBenchmark", "ISO8583NetBenchmark\ISO8583NetBenchmark.csproj", "{01BE8BFB-0D8C-403F-A7A2-3443454E6E84}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISO8583NetBenchmark", "ISO8583NetBenchmark\ISO8583NetBenchmark.csproj", "{01BE8BFB-0D8C-403F-A7A2-3443454E6E84}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISO8583NetSimpleTest", "ISO8583NetSimpleTest\ISO8583NetSimpleTest.csproj", "{D4D24B36-B4CB-44B1-8BF3-F28DE2FD266E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISO8583NetSimpleTest", "ISO8583NetSimpleTest\ISO8583NetSimpleTest.csproj", "{D4D24B36-B4CB-44B1-8BF3-F28DE2FD266E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

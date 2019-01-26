@@ -10,22 +10,18 @@ namespace ISO8583NetSimpleTest
 {
     class Program
     {
-        static private ILoggerFactory loggerFactory;
+        static public Serilog.Core.Logger Log = new LoggerConfiguration().MinimumLevel.Verbose().WriteTo.Console(outputTemplate: "{Timestamp:HH:mm:ss.fff} [{Level}] {Message}{NewLine}{Exception}").
+                                            WriteTo.RollingFile("out.log", outputTemplate: "{Timestamp:HH:mm:ss.fff} [{Level}] {Message}{NewLine}{Exception}").
+                                            CreateLogger();
 
-        static public Microsoft.Extensions.Logging.ILogger logger;
+        static private ILoggerFactory loggerFactory = new LoggerFactory().AddSerilog(Log);
 
-        static public Serilog.Core.Logger Log;
+        static public Microsoft.Extensions.Logging.ILogger logger = loggerFactory.CreateLogger<Program>();
+
+
 
         static void Main(string[] args)
         {
-            Log = new LoggerConfiguration().MinimumLevel.Verbose().WriteTo.Console(outputTemplate: "{Timestamp:HH:mm:ss.fff} [{Level}] {Message}{NewLine}{Exception}").
-                                WriteTo.RollingFile("out.log", outputTemplate: "{Timestamp:HH:mm:ss.fff} [{Level}] {Message}{NewLine}{Exception}").
-                                CreateLogger();
-
-            loggerFactory = new LoggerFactory().AddSerilog(Log);
-
-            logger = loggerFactory.CreateLogger<Program>();
-
             ISOMessagePackager p = new ISOMessagePackager(Program.logger);
 
             byte[] packedBytes = new byte[2048];
@@ -52,17 +48,17 @@ namespace ISO8583NetSimpleTest
             m.SetFieldValue(070, "123");
             m.SetFieldValue(132, "ABABABAB");
 
-            Program.Log.Debug(m.ToString());
+            Log.Debug(m.ToString());
 
             byte[] pBytes = m.Pack();
 
-            Program.Log.Information("Bytes: \n" + ISOUtils.PrintHex(pBytes, pBytes.Length));
+            Log.Information("Bytes: \n" + ISOUtils.PrintHex(pBytes, pBytes.Length));
 
-            ISOMessage u = new ISOMessage(Program.logger, p);
+            ISOMessage u = new ISOMessage(logger, p);
 
             u.UnPack(pBytes);
 
-            Program.Log.Debug(u.ToString());
+            Log.Debug(u.ToString());
         }
     }
 }

@@ -659,19 +659,6 @@ references:
   isSpec: "True"
   fullName: ISO8583Net.Field.ISOFieldBitmap.GetValue
   nameWithType: ISOFieldBitmap.GetValue
-- uid: ISO8583Net.Field.ISOFieldBitmap.m_value
-  name: m_value
-  href: site/api/ISO8583Net.Field.ISOFieldBitmap.html#ISO8583Net_Field_ISOFieldBitmap_m_value
-  commentId: P:ISO8583Net.Field.ISOFieldBitmap.m_value
-  fullName: ISO8583Net.Field.ISOFieldBitmap.m_value
-  nameWithType: ISOFieldBitmap.m_value
-- uid: ISO8583Net.Field.ISOFieldBitmap.m_value*
-  name: m_value
-  href: site/api/ISO8583Net.Field.ISOFieldBitmap.html#ISO8583Net_Field_ISOFieldBitmap_m_value_
-  commentId: Overload:ISO8583Net.Field.ISOFieldBitmap.m_value
-  isSpec: "True"
-  fullName: ISO8583Net.Field.ISOFieldBitmap.m_value
-  nameWithType: ISOFieldBitmap.m_value
 - uid: ISO8583Net.Field.ISOFieldBitmap.secondaryBitmapIsSet
   name: secondaryBitmapIsSet
   href: site/api/ISO8583Net.Field.ISOFieldBitmap.html#ISO8583Net_Field_ISOFieldBitmap_secondaryBitmapIsSet
