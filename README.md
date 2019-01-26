@@ -4,7 +4,7 @@ A .net library for building and parsing iso8583 financial messages
 
 The project home page can be found [here](https://nikmes.github.io/iso8583net/)
 
-## Useage Example
+## Usage Example
 ``` csharp
         static void Main(string[] args)
         {
