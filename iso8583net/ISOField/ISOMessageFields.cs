@@ -80,7 +80,7 @@ namespace ISO8583Net.Field
             {
                 if (fieldPackager.IsComposite())
                 {
-                    //if (Logger.IsEnabled(LogLevel.Trace)) Logger.LogTrace("Field [" + fieldNumber.ToString().PadLeft(3, '0') + "] is composite    , set ISOPackager = ISOMessageSubFields");
+                    // Logger.LogTrace("Field [" + fieldNumber.ToString().PadLeft(3, '0') + "] is composite    , set ISOPackager = ISOMessageSubFields");
 
                     m_isoFields[fieldNumber] = new ISOFieldBitmapSubFields(Logger, (ISOFieldBitmapSubFieldsPackager)fieldPackager, fieldNumber);
 
@@ -88,7 +88,7 @@ namespace ISO8583Net.Field
                 }
                 else
                 {
-                    //if (Logger.IsEnabled(LogLevel.Trace)) Logger.LogTrace("Field [" + fieldNumber.ToString().PadLeft(3, '0') + "] is NOT composite, set ISOPackager = ISOField");
+                    // Logger.LogTrace("Field [" + fieldNumber.ToString().PadLeft(3, '0') + "] is NOT composite, set ISOPackager = ISOField");
 
                     m_isoFields[fieldNumber] = new ISOField(Logger, fieldPackager, fieldNumber);
 

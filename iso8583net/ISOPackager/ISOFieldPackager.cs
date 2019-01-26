@@ -407,7 +407,7 @@ namespace ISO8583Net.Packager
                 {
                     // handle the ISOMessage Bitmap differently than other Bitmaps
 
-                    if (m_isoFieldDefinition.lengthFormat == ISOFieldLengthFormat.FIXED && m_storeClass == "ISO8583Net.ISOFieldBitmap")
+                    if (m_isoFieldDefinition.lengthFormat == ISOFieldLengthFormat.FIXED && m_storeClass == "ISO8583Net.Field.ISOFieldBitmap")
                     {
                         //if (Logger.IsEnabled(LogLevel.Debug)) Logger.LogDebug("ISO field [" + m_number + "] is ISOFieldBitmap and is FIXED Length but special handling needed based on 2nd and 3rd Bitmap Indicator.");
 

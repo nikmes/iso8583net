@@ -9,6 +9,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="ISODialects\visa.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="ISODialects\visa.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="docfx.console" Version="2.40.8">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
@@ -19,7 +27,6 @@
   <ItemGroup>
     <Folder Include="ISOMessage\" />
     <Folder Include="ISOInterpreter\" />
-    <Folder Include="ISODialects\" />
   </ItemGroup>
 
 </Project>

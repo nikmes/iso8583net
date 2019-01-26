@@ -11,7 +11,7 @@ namespace ISO8583Net.Field
 
         protected int m_number;
 
-        protected String m_value;
+        public String m_value { get; set; } 
 
         public ISOComponent(ILogger logger, int number)
         {
