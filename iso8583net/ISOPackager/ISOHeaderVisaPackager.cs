@@ -17,29 +17,29 @@ namespace ISO8583Net.Packager
         {
             ISOHeaderVisa visaHeader = (ISOHeaderVisa)isoHeader;
 
-            ISOUtils.hex2bytes(isoHeader.Length().ToString("X2"), packedBytes, ref index);
+            ISOUtils.Hex2Bytes(isoHeader.Length().ToString("X2"), packedBytes, ref index);
 
-            ISOUtils.hex2bytes(visaHeader.h02_HeaderFlagAndFormat, packedBytes, ref index);
+            ISOUtils.Hex2Bytes(visaHeader.h02_HeaderFlagAndFormat, packedBytes, ref index);
 
-            ISOUtils.hex2bytes(visaHeader.h03_TextFormat, packedBytes, ref index);
+            ISOUtils.Hex2Bytes(visaHeader.h03_TextFormat, packedBytes, ref index);
 
-            ISOUtils.hex2bytes(visaHeader.h04_TotalMessageLength, packedBytes, ref index);
+            ISOUtils.Hex2Bytes(visaHeader.h04_TotalMessageLength, packedBytes, ref index);
 
-            ISOUtils.ascii2bcd(visaHeader.h05_DestinationStationId, packedBytes, ref index, ISOFieldPadding.LEFT);
+            ISOUtils.Ascii2Bcd(visaHeader.h05_DestinationStationId, packedBytes, ref index, ISOFieldPadding.LEFT);
 
-            ISOUtils.ascii2bcd(visaHeader.h06_SourceStationId, packedBytes, ref index, ISOFieldPadding.LEFT);
+            ISOUtils.Ascii2Bcd(visaHeader.h06_SourceStationId, packedBytes, ref index, ISOFieldPadding.LEFT);
 
-            ISOUtils.hex2bytes(visaHeader.h07_RoundTripControlInformation, packedBytes, ref index);
+            ISOUtils.Hex2Bytes(visaHeader.h07_RoundTripControlInformation, packedBytes, ref index);
 
-            ISOUtils.hex2bytes(visaHeader.h08_BaseIFlag, packedBytes, ref index);
+            ISOUtils.Hex2Bytes(visaHeader.h08_BaseIFlag, packedBytes, ref index);
 
-            ISOUtils.hex2bytes(visaHeader.h09_MessageStatusFlag, packedBytes, ref index);
+            ISOUtils.Hex2Bytes(visaHeader.h09_MessageStatusFlag, packedBytes, ref index);
 
-            ISOUtils.hex2bytes(visaHeader.h10_BatchNumber, packedBytes, ref index);
+            ISOUtils.Hex2Bytes(visaHeader.h10_BatchNumber, packedBytes, ref index);
 
-            ISOUtils.hex2bytes(visaHeader.h11_Reserved, packedBytes, ref index);
+            ISOUtils.Hex2Bytes(visaHeader.h11_Reserved, packedBytes, ref index);
 
-            ISOUtils.hex2bytes(visaHeader.h12_UserInformation, packedBytes, ref index);
+            ISOUtils.Hex2Bytes(visaHeader.h12_UserInformation, packedBytes, ref index);
         }
 
         public override void Set(byte[] bytes)
@@ -65,34 +65,34 @@ namespace ISO8583Net.Packager
 
             if (Logger.IsEnabled(LogLevel.Information)) Logger.LogInformation("Unpacking VISA Header");
 
-            string lenHex = ISOUtils.bytes2hex(packedBytes, ref index, 1);
+            string lenHex = ISOUtils.Bytes2Hex(packedBytes, ref index, 1);
 
-            visaHeader.m_length = ISOUtils.hex2bytes(lenHex)[0]; 
+            visaHeader.m_length = ISOUtils.Hex2Bytes(lenHex)[0]; 
 
-            visaHeader.h02_HeaderFlagAndFormat = ISOUtils.bytes2hex(packedBytes, ref index, 1);
+            visaHeader.h02_HeaderFlagAndFormat = ISOUtils.Bytes2Hex(packedBytes, ref index, 1);
 
-            visaHeader.h03_TextFormat = ISOUtils.bytes2hex(packedBytes, ref index, 1);
-
-
-            visaHeader.h04_TotalMessageLength = ISOUtils.bytes2hex(packedBytes, ref index, 2);
+            visaHeader.h03_TextFormat = ISOUtils.Bytes2Hex(packedBytes, ref index, 1);
 
 
-            visaHeader.h05_DestinationStationId = ISOUtils.bcd2ascii(packedBytes, ref index, ISOFieldPadding.LEFT, 6);
-
-            visaHeader.h06_SourceStationId = ISOUtils.bcd2ascii(packedBytes, ref index, ISOFieldPadding.LEFT, 6);
+            visaHeader.h04_TotalMessageLength = ISOUtils.Bytes2Hex(packedBytes, ref index, 2);
 
 
-            visaHeader.h07_RoundTripControlInformation = ISOUtils.bytes2hex(packedBytes, ref index, 1);
+            visaHeader.h05_DestinationStationId = ISOUtils.Bcd2Ascii(packedBytes, ref index, ISOFieldPadding.LEFT, 6);
 
-            visaHeader.h08_BaseIFlag = ISOUtils.bytes2hex(packedBytes, ref index, 2);
+            visaHeader.h06_SourceStationId = ISOUtils.Bcd2Ascii(packedBytes, ref index, ISOFieldPadding.LEFT, 6);
 
-            visaHeader.h09_MessageStatusFlag = ISOUtils.bytes2hex(packedBytes, ref index, 3);
 
-            visaHeader.h10_BatchNumber = ISOUtils.bytes2hex(packedBytes, ref index, 1);
+            visaHeader.h07_RoundTripControlInformation = ISOUtils.Bytes2Hex(packedBytes, ref index, 1);
 
-            visaHeader.h11_Reserved = ISOUtils.bytes2hex(packedBytes, ref index, 3);
+            visaHeader.h08_BaseIFlag = ISOUtils.Bytes2Hex(packedBytes, ref index, 2);
 
-            visaHeader.h12_UserInformation = ISOUtils.bytes2hex(packedBytes, ref index, 1);
+            visaHeader.h09_MessageStatusFlag = ISOUtils.Bytes2Hex(packedBytes, ref index, 3);
+
+            visaHeader.h10_BatchNumber = ISOUtils.Bytes2Hex(packedBytes, ref index, 1);
+
+            visaHeader.h11_Reserved = ISOUtils.Bytes2Hex(packedBytes, ref index, 3);
+
+            visaHeader.h12_UserInformation = ISOUtils.Bytes2Hex(packedBytes, ref index, 1);
         }
     }
 }

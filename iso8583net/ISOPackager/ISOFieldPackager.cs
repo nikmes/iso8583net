@@ -241,18 +241,11 @@ namespace ISO8583Net.Packager
 
         public override void Pack(ISOComponent isoField, byte[] packedBytes, ref int index)
         {
-            //if (this.GetStorageClass() != "ISO8583Net.ISOMessageSubFields")
-            //{
-            //    //Validate(isoField);
-            //}
-
-            // handle length type, size and coding
-
-            string isoFieldValue = isoField.value;// GetValue(); // value that user assigned
+            string isoFieldValue = isoField.value;
 
             if (m_isoFieldDefinition.lengthFormat == ISOFieldLengthFormat.FIXED)
             {
-                //if (Logger.IsEnabled(LogLevel.Debug)) Logger.LogDebug("ISOField [" + m_number + "] is of FIXED length format");
+                // Logger.LogDebug("ISOField [" + m_number + "] is of FIXED length format");
                 // Do nothing, there is no length indicator
             }
             else if (m_isoFieldDefinition.lengthFormat == ISOFieldLengthFormat.VAR)
@@ -302,19 +295,19 @@ namespace ISO8583Net.Packager
                 switch (m_isoFieldDefinition.contentCoding)
                 {
                     case ISOFieldCoding.BCD:
-                        ISOUtils.ascii2bcd(isoFieldValue, packedBytes, ref index, m_isoFieldDefinition.contentPadding);
+                        ISOUtils.Ascii2Bcd(isoFieldValue, packedBytes, ref index, m_isoFieldDefinition.contentPadding);
                         break;
 
                     case ISOFieldCoding.ASCII:
-                        ISOUtils.ascii2bytes(isoField.value, packedBytes, ref index);
+                        ISOUtils.Ascii2Bytes(isoFieldValue, packedBytes, ref index);
                         break;
 
                     case ISOFieldCoding.BIN:
-                        ISOUtils.hex2bytes(isoField.value, packedBytes, ref index);
+                        ISOUtils.Hex2Bytes(isoFieldValue, packedBytes, ref index);
                         break;
 
                     case ISOFieldCoding.EBCDIC:
-                        ISOUtils.ascii2ebcdic(isoField.value, packedBytes, ref index);
+                        ISOUtils.Ascii2Ebcdic(isoFieldValue, packedBytes, ref index);
                         break;
 
                     //case ISOFieldCoding.Z:
@@ -324,9 +317,9 @@ namespace ISO8583Net.Packager
                     //    break;
 
                     default:
-                       //if (Logger.IsEnabled(LogLevel.Critical)) Logger.LogCritical("Unknown content coding for Field [" + m_number.ToString().PadLeft(3, '0') + "]. Fallback to ASCII Packager");
+                        // Logger.LogCritical("Unknown content coding for Field [" + m_number.ToString().PadLeft(3, '0') + "]. Fallback to ASCII Packager");
 
-                        ISOUtils.ascii2bytes(isoField.value, packedBytes, ref index);
+                        ISOUtils.Ascii2Bytes(isoField.value, packedBytes, ref index);
 
                         break;
                 }
@@ -393,13 +386,13 @@ namespace ISO8583Net.Packager
             {
                 if (m_isoFieldDefinition.contentCoding == ISOFieldCoding.BCD)
                 {
-                    isoField.value=(ISOUtils.bcd2ascii(packedBytes, ref index, m_isoFieldDefinition.contentPadding, lengthToRead));
+                    isoField.value=(ISOUtils.Bcd2Ascii(packedBytes, ref index, m_isoFieldDefinition.contentPadding, lengthToRead));
 
-                    //if (Logger.IsEnabled(LogLevel.Information)) Logger.LogInformation("Field  [" + m_number + "] [" + isoField.GetValue() + "]");
+                    // Logger.LogInformation("Field  [" + m_number + "] [" + isoField.GetValue() + "]");
                 }
                 else if (m_isoFieldDefinition.contentCoding == ISOFieldCoding.ASCII)
                 {
-                    isoField.value=(ISOUtils.bytes2ascii(packedBytes, ref index, lengthToRead));
+                    isoField.value=(ISOUtils.Bytes2Ascii(packedBytes, ref index, lengthToRead));
 
                     //if (Logger.IsEnabled(LogLevel.Information)) Logger.LogInformation("Field  [" + m_number + "] [" + isoField.GetValue() + "]");
                 }
@@ -417,12 +410,12 @@ namespace ISO8583Net.Packager
                     }
                     else
                     {
-                        isoField.value=(ISOUtils.bytes2hex(packedBytes, ref index, lengthToRead / 2)); // Number of hex digits so convert to number of bytes
+                        isoField.value=(ISOUtils.Bytes2Hex(packedBytes, ref index, lengthToRead / 2)); // Number of hex digits so convert to number of bytes
                     }
                 }
                 else if (m_isoFieldDefinition.contentCoding == ISOFieldCoding.EBCDIC)
                 {
-                    isoField.value=(ISOUtils.ebcdic2ascii(packedBytes, ref index, lengthToRead));
+                    isoField.value=(ISOUtils.Ebcdic2Ascii(packedBytes, ref index, lengthToRead));
 
                     //if (Logger.IsEnabled(LogLevel.Information)) Logger.LogInformation("Field  [" + m_number + "] [" + isoField.GetValue() + "]");
 

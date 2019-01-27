@@ -62,10 +62,6 @@ namespace ISO8583Net.Packager
 
             ISOComponent[] isoFields = ((ISOMessageFields)(isoMessageFields)).GetFields();
 
-            //String msgType = isoFields[0].GetValue(); // If the Message Type is supported from the packager definition then do the below else Log an Error and return a 0 byte array
-
-            //ISOFieldBitmap manBitmap = m_isoMsgTypePackager.GetMandatoryBitmap(msgType); // get the Bitmap of message type that indicates mandatory fields
-
             m_fieldPackagerList[0].Pack(isoFields[0], packedBytes, ref i); // pack the message type to the byteArray for transmission
 
             m_fieldPackagerList[1].Pack(isoFields[1], packedBytes, ref i); // pack the Bitmap to the byteArray for transmission
@@ -76,43 +72,13 @@ namespace ISO8583Net.Packager
             {
                 if (fieldNumber != 65 && fieldNumber != 129) // special bit fields indicating existance of second and tird bitmap (VISA BASE I Specifications)
                 {
-                    // check if current field number is present on message bitmap
-
-                    //if (manBitmap.BitIsSet(fieldNumber))
-                    //{
-                    // it is a mandatory field
-
                     if (((ISOFieldBitmap)isoFields[1]).BitIsSet(fieldNumber))
                     {
                         // the mandatory field is present so package it
 
-                        m_fieldPackagerList[fieldNumber].Pack(isoFields[fieldNumber], packedBytes, ref i);
-                        
-                        //((ISOField)(isoFields[fieldNumber])).Pack(packedBytes, ref i);
-
+                        m_fieldPackagerList[fieldNumber].Pack(isoFields[fieldNumber], packedBytes, ref i);                        
                     }
-                    //else
-                    //{
-                    // the madnatory field is not present in the iso message we have a problem
-
-                    //    allMandatoryExist = false;
-                    //}
-                    //}
-                    //else
-                    //{
-                    // if is not a mandatory field is an Optional or Conditional so package it if is set in the bitmap
-
-                    //if (((ISOFieldBitmap)isoFields[1]).BitIsSet(fieldNumber))
-                    //{
-                    //    m_fieldPackagerList[fieldNumber].Pack(isoFields[fieldNumber], packedBytes, ref i);
-                    //}
-                    //}
                 }
-            }
-
-            if (!allMandatoryExist)
-            {
-                //if (Logger.IsEnabled(LogLevel.Critical)) Logger.LogCritical("Mandatory Field is missing! Should I pack the message?");
             }
         }
 
@@ -128,21 +94,15 @@ namespace ISO8583Net.Packager
 
             m_fieldPackagerList[0].UnPack(isoFields[0], packedBytes, ref index);
 
-            String msgType = isoFields[0].value;// GetValue();
-
-            // If the Message Type is supported from the packager definition then do the below else Log an Error and return a 0 byte array
+            String msgType = isoFields[0].value;
 
             // Unpack the Bitmap from the byteArray for transmission
 
             isoFields[1] = new ISOFieldBitmap(Logger, m_fieldPackagerList[1], m_fieldPackagerList[1].GetFieldNumber());
 
             m_fieldPackagerList[1].UnPack(isoFields[1], packedBytes, ref index);
-
-            // once this is caleed then start traversing all m_msgFieldPackager items and if isoMessage.BitIsSet() then call their Pack()
-            
+           
             int totFields = ((ISOFieldBitmap)isoFields[1]).GetLengthInBits();
-
-            //ISOFieldBitmap manBitmap = m_isoMsgTypePackager.GetMandatoryBitmap(msgType);
 
             for (int fieldNumber = 2; fieldNumber <= totFields; fieldNumber++)
             {
@@ -152,59 +112,23 @@ namespace ISO8583Net.Packager
                 {
                     // check if current field number is present on message bitmap
 
-                    //if (manBitmap.BitIsSet(fieldNumber)) 
-                    //{
-                        // it is a mandatory field
-
-                        if (((ISOFieldBitmap)isoFields[1]).BitIsSet(fieldNumber)) 
+                    if (((ISOFieldBitmap)isoFields[1]).BitIsSet(fieldNumber)) 
+                    {
+                        if (m_fieldPackagerList[fieldNumber].IsComposite())
                         {
-                            // the mandatory field is present so package it, check if is ISOMessageFields Field
-                            if (m_fieldPackagerList[fieldNumber].IsComposite())
-                            {
-                                //if (m_fieldPackagerList[fieldNumber].GetStorageClass() == "ISO8583Net.ISOMessageSubFields")
-                                //{
-                                    isoFields[fieldNumber] = new ISOFieldBitmapSubFields(Logger, (ISOFieldBitmapSubFieldsPackager)m_fieldPackagerList[fieldNumber], m_fieldPackagerList[fieldNumber].GetFieldNumber());
-                                //}
-                            }
-                            else
-                            {
-                                isoFields[fieldNumber] = new ISOField(Logger, m_fieldPackagerList[fieldNumber], m_fieldPackagerList[fieldNumber].GetFieldNumber());
-                            }
-
-                            m_fieldPackagerList[fieldNumber].UnPack(isoFields[fieldNumber], packedBytes, ref index);
+                            //if (m_fieldPackagerList[fieldNumber].GetStorageClass() == "ISO8583Net.ISOMessageSubFields")
+                            //{
+                            isoFields[fieldNumber] = new ISOFieldBitmapSubFields(Logger, (ISOFieldBitmapSubFieldsPackager)m_fieldPackagerList[fieldNumber], m_fieldPackagerList[fieldNumber].GetFieldNumber());
+                            //}
                         }
-                        //else
-                        //{
-                            // the madnatory field is not present in the iso message we have a problem
+                        else
+                        {
+                                isoFields[fieldNumber] = new ISOField(Logger, m_fieldPackagerList[fieldNumber], m_fieldPackagerList[fieldNumber].GetFieldNumber());
+                        }
 
-                        //    allMandatoryExist = false;
-                        //}
-                    //}
-                    //else
-                    //{
-                    //    // if is not a mandatory field is an Optional or Conditional so package it
-
-                    //    if (((ISOFieldBitmap)isoFields[1]).BitIsSet(fieldNumber)) 
-                    //    {
-                    //        if (m_fieldPackagerList[fieldNumber].GetStorageClass() == "ISO8583Net.ISOMessageSubFields")
-                    //        {
-                    //            isoFields[fieldNumber] = new ISOMessageSubFields(Logger, (ISOMessageSubFieldsPackager)m_fieldPackagerList[fieldNumber], m_fieldPackagerList[fieldNumber].GetFieldNumber());
-                    //        }
-                    //        else
-                    //        {
-                    //            isoFields[fieldNumber] = new ISOField(Logger, m_fieldPackagerList[fieldNumber], m_fieldPackagerList[fieldNumber].GetFieldNumber());
-                    //        }
-
-                    //        m_fieldPackagerList[fieldNumber].UnPack(isoFields[fieldNumber], packedBytes, ref index);
-                    //    }
-                    //}
-
+                        m_fieldPackagerList[fieldNumber].UnPack(isoFields[fieldNumber], packedBytes, ref index);
+                    }
                 }
-            }
-
-            if (!allMandatoryExist)
-            {
-                //if (Logger.IsEnabled(LogLevel.Critical)) Logger.LogCritical("Mandatory Field is missing! Should we discard the Unpacked message?");
             }
         }
 

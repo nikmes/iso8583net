@@ -73,7 +73,7 @@
         NS,
         /// <summary>Data consist only of alphabetic and special characters</summary>
         AS,
-        /// <summary>Data consist only of hexadecimal valid characters and digits (A-B-C-D-E-F-0-1-2-3-4-5-6-7-8-9) only</summary>
+        /// <summary>Data consist only of hexadecimal valid characters and digits (ABCDEF0123456789) only</summary>
         HD,
         /// <summary>Tracks 2 and 3 code set as defined in ISO/IEC 7813 and ISO/IEC 4909 respectively</summary>
         Z
