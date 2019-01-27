@@ -276,7 +276,7 @@ namespace ISO8583Net.Utilities
         /// Adds two integers and returns the result.
         /// </summary>
         /// <param name="value">The integer to be convert to bytes</param>  
-        public static void int2Bcd(int value, byte[] packedBytes, ref int index, int numBytes)
+        public static void Int2Bcd(int value, byte[] packedBytes, ref int index, int numBytes)
         {
 
         }
@@ -284,7 +284,7 @@ namespace ISO8583Net.Utilities
         /// Adds two integers and returns the result.
         /// </summary>
         /// <param name="value">The integer to be convert to bytes</param>  
-        public static void int2ascii(int value, byte[] packedBytes, ref int index, int numBytes)
+        public static void Int2Ascii(int value, byte[] packedBytes, ref int index, int numBytes)
         {
 
         }
@@ -292,14 +292,14 @@ namespace ISO8583Net.Utilities
         /// Adds two integers and returns the result.
         /// </summary>
         /// <param name="value">The integer to be convert to bytes</param>  
-        public static void int2ebcdic(int value, byte[] packedBytes, ref int index, int numBytes)
+        public static void Int2Ebcdic(int value, byte[] packedBytes, ref int index, int numBytes)
         {
 
         }
         /// <summary>
         /// Adds two integers and returns the result.
         /// </summary>
-        public static void ascii2bcd(string value, byte[] packedBytes, ref int index, ISOFieldPadding padding)
+        public static void Ascii2Bcd(string value, byte[] packedBytes, ref int index, ISOFieldPadding padding)
         {
             int valueLength = value.Length;
 
@@ -342,7 +342,7 @@ namespace ISO8583Net.Utilities
         /// Adds two integers and returns the result.
         /// </summary>
         /// <param name="value">The integer to be convert to bytes</param>  
-        public static string bcd2ascii(byte[] packedBytes, ref int index, ISOFieldPadding padding, int valueLength)
+        public static string Bcd2Ascii(byte[] packedBytes, ref int index, ISOFieldPadding padding, int valueLength)
         {
             char[] value = null;
 
@@ -398,7 +398,7 @@ namespace ISO8583Net.Utilities
         /// Adds two integers and returns the result.
         /// </summary>
         /// <param name="value">The integer to be convert to bytes</param>  
-        public static void ascii2bytes(string strASCIIString, byte[] packedBytes, ref int index)
+        public static void Ascii2Bytes(string strASCIIString, byte[] packedBytes, ref int index)
         {
             int len = strASCIIString.Length;
 
@@ -412,7 +412,7 @@ namespace ISO8583Net.Utilities
         /// Adds two integers and returns the result.
         /// </summary>
         /// <param name="value">The integer to be convert to bytes</param>  
-        public static string bytes2ascii(byte[] packedBytes, ref int index, int numBytes)
+        public static string Bytes2Ascii(byte[] packedBytes, ref int index, int numBytes)
         {
             char[] ascii = new char[numBytes];
 
@@ -429,7 +429,7 @@ namespace ISO8583Net.Utilities
         /// Adds two integers and returns the result.
         /// </summary>
         /// <param name="value">The integer to be convert to bytes</param>  
-        public static void hex2bytes(string value, byte[] packedBytes, ref int index)
+        public static void Hex2Bytes(string value, byte[] packedBytes, ref int index)
         {
             int binlength = value.Length / 2;
 
@@ -452,7 +452,7 @@ namespace ISO8583Net.Utilities
         /// Adds two integers and returns the result.
         /// </summary>
         /// <param name="value">The integer to be convert to bytes</param>  
-        public static byte[] hex2bytes(string str)
+        public static byte[] Hex2Bytes(string str)
         {
             var HexNibble = _HexNibble;
 
@@ -472,7 +472,7 @@ namespace ISO8583Net.Utilities
         /// Adds two integers and returns the result.
         /// </summary>
         /// <param name="value">The integer to be convert to bytes</param>  
-        public static string bytes2hex(byte[] packedBytes, ref int index, int numBytes)
+        public static string Bytes2Hex(byte[] packedBytes, ref int index, int numBytes)
         {
             var lookup32 = _lookup32;
 
@@ -495,7 +495,7 @@ namespace ISO8583Net.Utilities
         /// Adds two integers and returns the result.
         /// </summary>
         /// <param name="value">The integer to be convert to bytes</param>  
-        public static string bytes2hex(byte[] bytes)
+        public static string Bytes2Hex(byte[] bytes)
         {
             var lookup32 = _lookup32;
 
@@ -516,7 +516,7 @@ namespace ISO8583Net.Utilities
         /// Adds two integers and returns the result.
         /// </summary>
         /// <param name="value">The integer to be convert to bytes</param>  
-        public static void ascii2ebcdic(string src, byte[] packedBytes, ref int index)
+        public static void Ascii2Ebcdic(string src, byte[] packedBytes, ref int index)
         {
             var os_toebcdic = _os_toebcdic;
 
@@ -533,7 +533,7 @@ namespace ISO8583Net.Utilities
         /// Adds two integers and returns the result.
         /// </summary>
         /// <param name="value">The integer to be convert to bytes</param>  
-        public static string ebcdic2ascii(byte[] packedBytes, ref int index, int numBytes)
+        public static string Ebcdic2Ascii(byte[] packedBytes, ref int index, int numBytes)
         {
             var os_toascii = _os_toascii;
 

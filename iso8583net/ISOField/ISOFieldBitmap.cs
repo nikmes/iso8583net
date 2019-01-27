@@ -20,7 +20,7 @@ namespace ISO8583Net.Field
         {
             get
             {
-                return ISOUtils.bytes2hex(m_bitmap).Substring(0, this.GetLengthInBytes() * 2);
+                return ISOUtils.Bytes2Hex(m_bitmap).Substring(0, this.GetLengthInBytes() * 2);
             }
         }
 
@@ -227,7 +227,7 @@ namespace ISO8583Net.Field
 
         public string ToHexString()
         {
-            return ISOUtils.bytes2hex(m_bitmap).Substring(0, this.GetLengthInBytes() * 2);
+            return ISOUtils.Bytes2Hex(m_bitmap).Substring(0, this.GetLengthInBytes() * 2);
         }
 
         public string ToDashedHexString()

@@ -92,31 +92,31 @@ namespace ISO8583Net.Header
 
             //if (Logger.IsEnabled(LogLevel.Information)) Logger.LogInformation("Unpacking VISA Header");
 
-            string lenHex = ISOUtils.bytes2hex(bytes, ref index, 1);
+            string lenHex = ISOUtils.Bytes2Hex(bytes, ref index, 1);
 
-            m_length = ISOUtils.hex2bytes(lenHex)[0]; 
+            m_length = ISOUtils.Hex2Bytes(lenHex)[0]; 
 
-            h02_HeaderFlagAndFormat = ISOUtils.bytes2hex(bytes, ref index, 1);
+            h02_HeaderFlagAndFormat = ISOUtils.Bytes2Hex(bytes, ref index, 1);
 
-            h03_TextFormat = ISOUtils.bytes2hex(bytes, ref index, 1);
+            h03_TextFormat = ISOUtils.Bytes2Hex(bytes, ref index, 1);
 
-            h04_TotalMessageLength = ISOUtils.bytes2hex(bytes, ref index, 2);
+            h04_TotalMessageLength = ISOUtils.Bytes2Hex(bytes, ref index, 2);
 
-            h05_DestinationStationId = ISOUtils.bcd2ascii(bytes, ref index, ISOFieldPadding.LEFT, 6);
+            h05_DestinationStationId = ISOUtils.Bcd2Ascii(bytes, ref index, ISOFieldPadding.LEFT, 6);
 
-            h06_SourceStationId = ISOUtils.bcd2ascii(bytes, ref index, ISOFieldPadding.LEFT, 6);
+            h06_SourceStationId = ISOUtils.Bcd2Ascii(bytes, ref index, ISOFieldPadding.LEFT, 6);
 
-            h07_RoundTripControlInformation = ISOUtils.bytes2hex(bytes, ref index, 1);
+            h07_RoundTripControlInformation = ISOUtils.Bytes2Hex(bytes, ref index, 1);
 
-            h08_BaseIFlag = ISOUtils.bytes2hex(bytes, ref index, 2);
+            h08_BaseIFlag = ISOUtils.Bytes2Hex(bytes, ref index, 2);
 
-            h09_MessageStatusFlag = ISOUtils.bytes2hex(bytes, ref index, 3);
+            h09_MessageStatusFlag = ISOUtils.Bytes2Hex(bytes, ref index, 3);
 
-            h10_BatchNumber = ISOUtils.bytes2hex(bytes, ref index, 1);
+            h10_BatchNumber = ISOUtils.Bytes2Hex(bytes, ref index, 1);
 
-            h11_Reserved = ISOUtils.bytes2hex(bytes, ref index, 3);
+            h11_Reserved = ISOUtils.Bytes2Hex(bytes, ref index, 3);
 
-            h12_UserInformation = ISOUtils.bytes2hex(bytes, ref index, 1);
+            h12_UserInformation = ISOUtils.Bytes2Hex(bytes, ref index, 1);
         }
 
         public override void Pack(byte[] packedData, ref int index)
