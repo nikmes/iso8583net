@@ -1,18 +1,15 @@
 # Getting Started with ISO8583Net Library
 
 ### ISO8583Net
+
 ## Get it
-# Windows
+Clone the repository using git.
+
+### Windows
 ``` bash
 $ git clone https://github.com/nikmes/iso8583net.git 
 ```
 ![image](../images/gitclone.png)
-
-# Linux
-
-
-# OSX
-
 
 ## Build it 
 ``` bash
