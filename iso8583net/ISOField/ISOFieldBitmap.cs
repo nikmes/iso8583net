@@ -8,6 +8,9 @@ using System.Text;
 
 namespace ISO8583Net.Field
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class ISOFieldBitmap : ISOField
     {
         private ISOFieldPackager m_packager;
@@ -15,7 +18,9 @@ namespace ISO8583Net.Field
         private byte[] m_bitmap;
 
         private int m_length;
-
+        /// <summary>
+        /// 
+        /// </summary>
         public override String value
         {
             get
@@ -23,18 +28,30 @@ namespace ISO8583Net.Field
                 return ISOUtils.Bytes2Hex(m_bitmap).Substring(0, this.GetLengthInBytes() * 2);
             }
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
         public bool secondaryBitmapIsSet { get; set; }  = false;
-
+        /// <summary>
+        /// 
+        /// </summary>
         public bool thirdBitmapIsSet { get; set; }  = false;
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="logger"></param>
         public ISOFieldBitmap(ILogger logger) : base(logger, null, 0)
         {
             m_bitmap = new byte[25];
 
             m_length = 25;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="logger"></param>
+        /// <param name="packager"></param>
+        /// <param name="number"></param>
         public ISOFieldBitmap(ILogger logger, ISOPackager packager, int number) : base(logger, packager, number)
         {
             //!!! Problem here, what if the content coding is not BIN ? !!! //
@@ -45,7 +62,11 @@ namespace ISO8583Net.Field
 
             m_bitmap = new byte[25];
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="packedBytes"></param>
+        /// <param name="index"></param>
         public void Set(byte[] packedBytes, ref int index)
         {
             bool bitmap3rd = false;
@@ -111,7 +132,10 @@ namespace ISO8583Net.Field
                 }
             }
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public int GetLengthInBytes()
         {
             if (m_length < 9)
@@ -132,7 +156,10 @@ namespace ISO8583Net.Field
                 return 16;
             }
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public int GetLengthInBits()
         {
             if (m_length < 9)
@@ -152,7 +179,10 @@ namespace ISO8583Net.Field
                 return 128;
             }
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="index"></param>
         public void SetBit(int index)
         {
             if (index == 1)
@@ -192,7 +222,10 @@ namespace ISO8583Net.Field
 
             m_bitmap[byteIndex] = (byte)(true ? (m_bitmap[byteIndex] | ((byte)(128 >> bitIndex))) : (m_bitmap[byteIndex] & ~((byte)(128 >> bitIndex))));
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="index"></param>
         public void ToggleBit(int index)
         {
             if (index == 1)
@@ -208,7 +241,11 @@ namespace ISO8583Net.Field
 
             m_bitmap[(index / 8)] ^= mask;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
         public bool BitIsSet(int index)
         {
             if (index == 1)
@@ -224,22 +261,35 @@ namespace ISO8583Net.Field
 
             return (m_bitmap[(index / 8)] & mask) != 0;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public string ToHexString()
         {
             return ISOUtils.Bytes2Hex(m_bitmap).Substring(0, this.GetLengthInBytes() * 2);
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public string ToDashedHexString()
         {
             return BitConverter.ToString(m_bitmap, 0, this.GetLengthInBytes());
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public string ToBinaryString()
         {
             return String.Join(String.Empty, ToHexString().Select(c => Convert.ToString(Convert.ToInt32(c.ToString(), 16), 2).PadLeft(4, '0')));
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="padString"></param>
+        /// <returns></returns>
         public string ToHumanReadable(String padString)
         {
             StringBuilder humanReadableSring = new StringBuilder(1024);
@@ -267,14 +317,20 @@ namespace ISO8583Net.Field
 
             return humanReadableSring.ToString();
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             string retStr = "Field [" + m_number.ToString().PadLeft(3, '0') + "]".PadRight(5, ' ') + "[" + ToHexString() + "]\n" + ToHumanReadable("               ") + '\n';
  
             return retStr;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public byte[] GetByteArray()
         {
             if (this.BitIsSet(65))
@@ -294,7 +350,9 @@ namespace ISO8583Net.Field
                 return m_bitmap.AsSpan(0, m_length).ToArray();
             }          
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
         public override void Trace()
         {
             Logger.LogInformation("Field [" + m_number.ToString().PadLeft(3, '0') + "]".PadRight(5, ' ') + "[" + ToHexString() + "]\n" + ToHumanReadable("               "));
