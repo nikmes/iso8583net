@@ -57,7 +57,7 @@
       "output": {
         ".html": {
           "relative_path": "site/api/ISO8583Net.Field.ISOComponent.html",
-          "hash": "AIMlBIbYo93DGM1D38c7ZA=="
+          "hash": "t6zANO0Y2qZqxOXxPt1kXg=="
         }
       },
       "is_incremental": false,
@@ -69,7 +69,7 @@
       "output": {
         ".html": {
           "relative_path": "site/api/ISO8583Net.Field.ISOField.html",
-          "hash": "I65QLE6TXV4mSUUZ+r4FxQ=="
+          "hash": "OUKThz5cWYxRkRJsQp8JaQ=="
         }
       },
       "is_incremental": false,
@@ -81,7 +81,7 @@
       "output": {
         ".html": {
           "relative_path": "site/api/ISO8583Net.Field.ISOFieldBitmap.html",
-          "hash": "yOK+AxsZzKPb5HNyOr6ZCw=="
+          "hash": "/FnAGtS4Fctzoba8iw6kqQ=="
         }
       },
       "is_incremental": false,
@@ -93,7 +93,7 @@
       "output": {
         ".html": {
           "relative_path": "site/api/ISO8583Net.Field.ISOFieldBitmapSubFields.html",
-          "hash": "CV8PiqLcOPVYJzd11Tluzw=="
+          "hash": "BYPChj3nIcroaO1Mb5Exfw=="
         }
       },
       "is_incremental": false,
@@ -105,7 +105,7 @@
       "output": {
         ".html": {
           "relative_path": "site/api/ISO8583Net.Field.ISOMessageFields.html",
-          "hash": "JqFQUOFkQXhcyFfxcM9CZA=="
+          "hash": "PICiPxkMxtrOc/iCEk3pIg=="
         }
       },
       "is_incremental": false,
@@ -605,19 +605,12 @@
     {
       "status": {
         "can_incremental": false,
-        "details": "Cannot build incrementally because docfx version changed from 2.40.7.0 to 2.40.8.0.",
+        "details": "Disable incremental build by force rebuild option.",
         "incrementalPhase": "build",
         "total_file_count": 0,
         "skipped_file_count": 0
       },
       "processors": {
-        "ResourceDocumentProcessor": {
-          "can_incremental": false,
-          "details": "Processor ResourceDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
-          "incrementalPhase": "build",
-          "total_file_count": 0,
-          "skipped_file_count": 0
-        },
         "TocDocumentProcessor": {
           "can_incremental": false,
           "details": "Processor TocDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
@@ -636,13 +629,20 @@
           "incrementalPhase": "build",
           "total_file_count": 6,
           "skipped_file_count": 0
+        },
+        "ResourceDocumentProcessor": {
+          "can_incremental": false,
+          "details": "Processor ResourceDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
+          "incrementalPhase": "build",
+          "total_file_count": 0,
+          "skipped_file_count": 0
         }
       }
     },
     {
       "status": {
-        "can_incremental": true,
-        "details": "Can support incremental post processing.",
+        "can_incremental": false,
+        "details": "Cannot support incremental post processing, the reason is: it's disabled.",
         "incrementalPhase": "postProcessing",
         "total_file_count": 0,
         "skipped_file_count": 0

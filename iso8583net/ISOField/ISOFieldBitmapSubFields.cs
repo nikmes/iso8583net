@@ -5,12 +5,20 @@ using System.Text;
 
 namespace ISO8583Net.Field
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class ISOFieldBitmapSubFields : ISOComponent
     {
         protected ISOComponent[] m_isoFields;
 
         protected ISOFieldBitmapSubFieldsPackager m_packager;
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="logger"></param>
+        /// <param name="packager"></param>
+        /// <param name="fieldNumber"></param>
         public ISOFieldBitmapSubFields(ILogger logger, ISOFieldBitmapSubFieldsPackager packager, int fieldNumber) : base(logger, fieldNumber)
         {
             m_packager = packager;
@@ -48,17 +56,26 @@ namespace ISO8583Net.Field
                 }
             }
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldNumber"></param>
+        /// <returns></returns>
         public ISOComponent GetField(int fieldNumber)
         {
             return m_isoFields[fieldNumber];
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public ISOComponent[] GetFields()
         {
             return m_isoFields;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
         public override String value
         {
             get
@@ -78,17 +95,30 @@ namespace ISO8583Net.Field
                 return strBuilder.ToString();
             }
         }
- 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldNumber"></param>
+        /// <returns></returns>
         public override String GetFieldValue(int fieldNumber)
         {
             return m_isoFields[fieldNumber].value; 
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldNumber"></param>
+        /// <param name="subField"></param>
+        /// <returns></returns>
         public override String GetFieldValue(int fieldNumber, int subField)
         {
             throw new NotImplementedException();
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldNumber"></param>
+        /// <returns></returns>
         public bool SetFieldPackager(int fieldNumber)
         {
             ISOPackager fieldPackager = m_packager.GetFieldPackager(fieldNumber);
@@ -114,7 +144,10 @@ namespace ISO8583Net.Field
                 return false;
             }
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public override String ToString()
         {
             StringBuilder msgFieldValues = new StringBuilder();
@@ -135,7 +168,9 @@ namespace ISO8583Net.Field
             }
             return msgFieldValues.ToString();
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
         public override void Trace()
         {
             throw new NotImplementedException();
