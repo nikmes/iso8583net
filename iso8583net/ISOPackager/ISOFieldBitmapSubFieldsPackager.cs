@@ -14,7 +14,12 @@ namespace ISO8583Net.Packager
         /// Total number of subfields  
         /// </summary>
         public int totalFields { get; set; }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="logger"></param>
+        /// <param name="fieldNumber"></param>
+        /// <param name="totalFields"></param>
         public ISOFieldBitmapSubFieldsPackager(ILogger logger, int fieldNumber, int totalFields) : base(logger)
         {
             this.totalFields = totalFields;
@@ -25,10 +30,11 @@ namespace ISO8583Net.Packager
 
             m_fieldPackagerList = new ISOPackager[totalFields + 1];
         }
-
         /// <summary>
-        /// Adds packager of subfield to the array of sub field packagers
+        /// Adds packager of subfield to the array of sub field packagers 
         /// </summary>
+        /// <param name="fieldPackager"></param>
+        /// <param name="number"></param>
         public void Add(ISOPackager fieldPackager, int number)
         {
             m_fieldPackagerList[number] = fieldPackager;
@@ -36,10 +42,12 @@ namespace ISO8583Net.Packager
         /// <summary>
         /// Packs all subfields of field 
         /// </summary>
+        /// <param name="isoMessageFields"></param>
+        /// <param name="packedBytes"></param>
+        /// <param name="index"></param>
         /// <remarks>
         /// The way the length is handled is completely wrong, needs to be coded correctly
         /// </remarks>
-
         public override void Pack(ISOComponent isoMessageFields, byte[] packedBytes, ref int index)
         {
             ISOComponent[] isoFields = ((ISOFieldBitmapSubFields)(isoMessageFields)).GetFields();
@@ -69,7 +77,12 @@ namespace ISO8583Net.Packager
 
             ISOUtils.Int2Bytes((index - (indexStarts - (m_isoFieldDefinition.lengthLength / 2))), packedBytes, ref indexStarts, m_isoFieldDefinition.lengthLength);
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="isoField"></param>
+        /// <param name="packedBytes"></param>
+        /// <param name="index"></param>
         public override void UnPack(ISOComponent isoField, byte[] packedBytes, ref int index)
         {
             /*!!! Hack Special Field - First Unpack my length (and ignore it for now) !!! */
@@ -94,7 +107,10 @@ namespace ISO8583Net.Packager
                 }
             }
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public override String ToString()
         {
             StringBuilder strBuilder = new StringBuilder();
@@ -113,7 +129,9 @@ namespace ISO8583Net.Packager
 
             return strBuilder.ToString();
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
         public override void Trace()
         {
             if (Logger.IsEnabled(LogLevel.Trace)) Logger.LogTrace("ISOMessageSubFieldPackager: ");
@@ -126,7 +144,11 @@ namespace ISO8583Net.Packager
                 }
             }
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldNumber"></param>
+        /// <returns></returns>
         public ISOPackager GetFieldPackager(int fieldNumber)
         {
             return m_fieldPackagerList[fieldNumber];

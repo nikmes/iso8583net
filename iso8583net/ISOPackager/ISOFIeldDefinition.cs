@@ -3,6 +3,9 @@ using System;
 
 namespace ISO8583Net.Packager
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public struct ISOFieldDefinition
     {
         /// <value>The length format indicator</value>

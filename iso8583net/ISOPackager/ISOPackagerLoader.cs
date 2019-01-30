@@ -16,7 +16,12 @@ namespace ISO8583Net.Packager
         private readonly ILogger _logger;
 
         internal ILogger Logger { get { return _logger; } }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="logger"></param>
+        /// <param name="fileName"></param>
+        /// <param name="msgFieldPackager"></param>
         public ISOPackagerLoader(ILogger logger, string fileName, ref ISOMessageFieldsPackager msgFieldPackager)
         {
             _logger = logger;
@@ -64,7 +69,11 @@ namespace ISO8583Net.Packager
                 }
             }
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="logger"></param>
+        /// <param name="msgFieldPackager"></param>
         public ISOPackagerLoader(ILogger logger, ref ISOMessageFieldsPackager msgFieldPackager)
         {
             _logger = logger;
@@ -107,7 +116,11 @@ namespace ISO8583Net.Packager
                 }
             }
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <returns></returns>
         private ISOMessageTypesPackager LoadMessageTypes(XmlReader reader)
         {
             ISOMessageTypesPackager msgTypesPackager = new ISOMessageTypesPackager(Logger, m_totalFields);
@@ -178,7 +191,11 @@ namespace ISO8583Net.Packager
 
             return msgTypesPackager;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <returns></returns>
         private ISOFieldPackager LoadISOFieldPackager(XmlReader reader)
         {
             ISOFieldDefinition fieldDefinition = new ISOFieldDefinition();
@@ -392,7 +409,12 @@ namespace ISO8583Net.Packager
             fieldPackager.SetFieldDefinition(fieldDefinition);
             return fieldPackager;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <param name="fieldNumber"></param>
+        /// <returns></returns>
         private ISOMessageFieldsPackager LoadISOMessageFieldsPackager(XmlReader reader, int fieldNumber)
         {
             ISOMessageFieldsPackager msgFieldPackager = new ISOMessageFieldsPackager(Logger, fieldNumber, m_totalFields); 
@@ -477,7 +499,12 @@ namespace ISO8583Net.Packager
             }
             return msgFieldPackager;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <param name="fieldNumber"></param>
+        /// <returns></returns>
         private ISOFieldBitmapSubFieldsPackager LoadISOMessageSubFieldsPackager(XmlReader reader, int fieldNumber)
         {
             ISOFieldBitmapSubFieldsPackager msgFieldPackager = new ISOFieldBitmapSubFieldsPackager(Logger, fieldNumber, m_totalFields);
@@ -562,7 +589,11 @@ namespace ISO8583Net.Packager
             }
             return msgFieldPackager;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <returns></returns>
         private ISOIndexedValueInterpreter LoadISOIndexedValueInterpreter(XmlReader reader)
         {
             ISOIndexedValueInterpreter isoIndexedValueInterpreter = new ISOIndexedValueInterpreter(Logger);

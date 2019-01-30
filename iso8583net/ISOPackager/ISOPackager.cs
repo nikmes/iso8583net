@@ -5,6 +5,9 @@ using System;
 
 namespace ISO8583Net.Packager
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public abstract class ISOPackager
     {
         private readonly ILogger _logger;
@@ -21,54 +24,86 @@ namespace ISO8583Net.Packager
 
         public ISOFieldDefinition m_isoFieldDefinition;
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="logger"></param>
         public ISOPackager(ILogger logger)
         {
             _logger = logger;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="logger"></param>
+        /// <param name="isoFieldDefinition"></param>
         public ISOPackager(ILogger logger, ISOFieldDefinition isoFieldDefinition)
         {
             _logger = logger;
 
             m_isoFieldDefinition = isoFieldDefinition;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="isoInterpreter"></param>
         public void SetISOInterpreter(ISOInterpreter isoInterpreter)
         {
             m_isoInterpreter = isoInterpreter;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="storageClass"></param>
         public void SetStorageClass(Type storageClass)
         {
             m_storeClass = storageClass.ToString();
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="compositeIndicator"></param>
         public void SetComposite(bool compositeIndicator)
         {
             m_composite = compositeIndicator;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public bool IsComposite()
         {
             return m_composite;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public int GetFieldNumber()
         {
             return m_number;
         }
-        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public ISOFieldDefinition GetISOFieldDefinition()
         {
             return m_isoFieldDefinition;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="isoFieldDefinition"></param>
         public void SetISOFieldDefinition(ISOFieldDefinition isoFieldDefinition)
         {
             m_isoFieldDefinition = isoFieldDefinition;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldValue"></param>
+        /// <returns></returns>
         public string InterpretField(String fieldValue)
         {
             if (m_isoInterpreter != null)
@@ -80,13 +115,28 @@ namespace ISO8583Net.Packager
                 return String.Empty;
             }
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="isoField"></param>
+        /// <param name="packedBytes"></param>
+        /// <param name="index"></param>
         public abstract void Pack(ISOComponent isoField, byte[] packedBytes, ref int index);
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="isoField"></param>
+        /// <param name="packedBytes"></param>
+        /// <param name="index"></param>
         public abstract void UnPack(ISOComponent isoField, byte[] packedBytes, ref int index);
-
+        /// <summary>
+        /// 
+        /// </summary>
         public abstract void Trace();
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public abstract override String ToString();
     }
 }

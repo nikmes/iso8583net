@@ -6,27 +6,43 @@ using System.Text;
 
 namespace ISO8583Net.Packager
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class ISOFieldPackager : ISOPackager
     {
         public ISOFieldPackager(ILogger logger) : base(logger) { }
 
         public ISOFieldPackager(ILogger logger, ISOFieldDefinition isoFieldDefinition) : base(logger, isoFieldDefinition) { }
-
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="isoFieldDefinition"></param>
         public void SetFieldDefinition(ISOFieldDefinition isoFieldDefinition)
         {
             m_isoFieldDefinition = isoFieldDefinition;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="number"></param>
         public void SetFieldNumber(int number)
         {
             m_number = number;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public int GetFieldLength()
         {
            return m_isoFieldDefinition.length;      
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="isoField"></param>
         public void Validate(ISOComponent isoField)
         {
             // Check field length limitation
@@ -238,7 +254,12 @@ namespace ISO8583Net.Packager
                     break;
             }
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="isoField"></param>
+        /// <param name="packedBytes"></param>
+        /// <param name="index"></param>
         public override void Pack(ISOComponent isoField, byte[] packedBytes, ref int index)
         {
             string isoFieldValue = isoField.value;
@@ -325,7 +346,12 @@ namespace ISO8583Net.Packager
                 }
             }
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="isoField"></param>
+        /// <param name="packedBytes"></param>
+        /// <param name="index"></param>
         public override void UnPack(ISOComponent isoField, byte[] packedBytes, ref int index)
         {
             //if (Logger.IsEnabled(LogLevel.Debug)) Logger.LogDebug("Trying to Unpack Field [" + m_number.ToString().PadLeft(3, '0') + "]");
@@ -426,7 +452,10 @@ namespace ISO8583Net.Packager
                 }
             }
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             StringBuilder strBuilder = new StringBuilder("");
@@ -477,7 +506,9 @@ namespace ISO8583Net.Packager
 
             return strBuilder.ToString();
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
         public override void Trace()
         {
             if (Logger.IsEnabled(LogLevel.Trace)) Logger.LogTrace("ISOFieldPackager Definition:");
