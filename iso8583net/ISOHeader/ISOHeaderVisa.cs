@@ -6,6 +6,9 @@ using System;
 
 namespace ISO8583Net.Header
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class ISOHeaderVisa : ISOHeader
     {
         public int m_length = 22;
@@ -37,7 +40,10 @@ namespace ISO8583Net.Header
         public string h13_Bitmap { get; set; }                           // Byyte 23-24    2B Binary          -   4HD
 
         public string h14_RejectedGroupData { get; set; }                // Byyte 25-26    2B Binary          -   4HD
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="logger"></param>
         public ISOHeaderVisa(ILogger logger) : base (logger)
         {
             h01_HeaderLength = "00";
@@ -55,7 +61,11 @@ namespace ISO8583Net.Header
             h13_Bitmap = "0000";
             h14_RejectedGroupData = "0000";
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="logger"></param>
+        /// <param name="isoHeaderPackager"></param>
         public ISOHeaderVisa(ILogger logger, ISOHeaderPackager isoHeaderPackager) : base (logger)
         {
             h01_HeaderLength = "00";
@@ -73,18 +83,27 @@ namespace ISO8583Net.Header
             h13_Bitmap = "0000";
             h14_RejectedGroupData = "0000";
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public override int Length()
         {
             return m_length;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="length"></param>
         public override void SetMessageLength(int length)
         {
             // provision for leading zeros during conversion of length indicator
             h04_TotalMessageLength = (length).ToString("X4");
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="bytes"></param>
         public override void SetValue(byte[] bytes)
         {
             // Unpack should check for existense of Header Field 13 always
@@ -118,13 +137,21 @@ namespace ISO8583Net.Header
 
             h12_UserInformation = ISOUtils.Bytes2Hex(bytes, ref index, 1);
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="packedData"></param>
+        /// <param name="index"></param>
         public override void Pack(byte[] packedData, ref int index)
         {
             // should never be called, I ll deal with it later
             throw new NotImplementedException();
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="packedBytes"></param>
+        /// <param name="index"></param>
         public override void UnPack(byte[] packedBytes, ref int index)
         {
             // should never be called, I ll deal with it later

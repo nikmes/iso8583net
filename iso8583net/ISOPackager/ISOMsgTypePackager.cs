@@ -4,6 +4,9 @@ using System.Text;
 
 namespace ISO8583Net.Packager
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class ISOMsgTypePackager
     {
         private readonly ILogger _logger;
@@ -26,7 +29,11 @@ namespace ISO8583Net.Packager
 
         public ISOFieldBitmap m_optBitmap;
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="logger"></param>
+        /// <param name="totalFields"></param>
         public ISOMsgTypePackager(ILogger logger, int totalFields)
         {
             _logger = logger;
@@ -39,7 +46,10 @@ namespace ISO8583Net.Packager
 
             m_optBitmap = new ISOFieldBitmap(Logger);
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             StringBuilder strBuilder = new StringBuilder("");
@@ -55,7 +65,9 @@ namespace ISO8583Net.Packager
 
             return strBuilder.ToString();
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
         public void Trace()
         {
             if (Logger.IsEnabled(LogLevel.Information)) Logger.LogInformation("\nMessage Type Definition:");
@@ -63,38 +75,60 @@ namespace ISO8583Net.Packager
             if (Logger.IsEnabled(LogLevel.Information)) Logger.LogInformation("        Name : [" + messageTypeName + "]");
             if (Logger.IsEnabled(LogLevel.Information)) Logger.LogInformation(" Description : [" + messageTypeDescription + "]");
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="isoMsgBitmap"></param>
+        /// <returns></returns>
         public bool ValidateBitmap(ISOFieldBitmap isoMsgBitmap)
         {
             // copmare iso message bitmap with packagerSupportedFields bitmap and log the findings
             return false;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public byte[] GetMandatoryByteArray()
         {
             return m_manBitmap.GetByteArray();
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public byte[] GetOptionalByteArray()
         {
             return m_optBitmap.GetByteArray();
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public byte[] GetConditionalByteArray()
         {
             return m_conBitmap.GetByteArray();
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public ISOFieldBitmap GetMandatoryBitmap()
         {
             return m_manBitmap;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public ISOFieldBitmap GetOptionalBitmap()
         {
             return m_optBitmap;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public ISOFieldBitmap GetConditionalBitmap()
         {
             return m_conBitmap;

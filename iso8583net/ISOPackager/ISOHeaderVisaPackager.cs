@@ -6,13 +6,25 @@ using System;
 
 namespace ISO8583Net.Packager
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class ISOHeaderVisaPackager : ISOHeaderPackager
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="logger"></param>
         public ISOHeaderVisaPackager(ILogger logger) : base (logger)
         {
 
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="isoHeader"></param>
+        /// <param name="packedBytes"></param>
+        /// <param name="index"></param>
         public override void Pack(ISOHeader isoHeader, byte[] packedBytes, ref int index)
         {
             ISOHeaderVisa visaHeader = (ISOHeaderVisa)isoHeader;
@@ -41,22 +53,35 @@ namespace ISO8583Net.Packager
 
             ISOUtils.Hex2Bytes(visaHeader.h12_UserInformation, packedBytes, ref index);
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="bytes"></param>
         public override void Set(byte[] bytes)
         {
             throw new NotImplementedException();
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
         public override void Trace()
         {
             throw new NotImplementedException();
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return base.ToString();
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="isoHeader"></param>
+        /// <param name="packedBytes"></param>
+        /// <param name="index"></param>
         public override void UnPack(ISOHeader isoHeader, byte[] packedBytes, ref int index)
         {
             // Unpack should check for existense of Header Field 13 always

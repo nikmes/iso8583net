@@ -5,6 +5,9 @@ using System.Text;
 
 namespace ISO8583Net.Packager
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class ISOMessageFieldsPackager : ISOPackager
     {
         private ISOMessageTypesPackager m_isoMsgTypePackager;
@@ -14,7 +17,13 @@ namespace ISO8583Net.Packager
         private int m_totalFields;
 
         private bool m_fieldParticipationValidations = false;
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="logger"></param>
+        /// <param name="fieldNumber"></param>
+        /// <param name="totalFields"></param>
+        /// <param name="isoFieldDefinition"></param>
         public ISOMessageFieldsPackager(ILogger logger, int fieldNumber, int totalFields, ISOFieldDefinition isoFieldDefinition) : base (logger, isoFieldDefinition)
         {
             m_totalFields = totalFields;
@@ -27,7 +36,12 @@ namespace ISO8583Net.Packager
 
             m_fieldPackagerList = new ISOPackager[totalFields+1];
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="logger"></param>
+        /// <param name="fieldNumber"></param>
+        /// <param name="totalFields"></param>
         public ISOMessageFieldsPackager(ILogger logger, int fieldNumber, int totalFields) : base(logger)
         {
             m_totalFields = totalFields;
@@ -40,22 +54,37 @@ namespace ISO8583Net.Packager
 
             m_fieldPackagerList = new ISOPackager[totalFields + 1];
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="isoMessageTypesPackager"></param>
         public void SetMessageTypesPackager(ISOMessageTypesPackager isoMessageTypesPackager)
         {
             m_isoMsgTypePackager = isoMessageTypesPackager;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldPackager"></param>
+        /// <param name="number"></param>
         public void Add(ISOPackager fieldPackager, int number)
         {
             m_fieldPackagerList[number]=fieldPackager;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="enabled"></param>
         public void EnableFieldParticipationValidations(bool enabled)
         {
             m_fieldParticipationValidations = enabled;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="isoMessageFields"></param>
+        /// <param name="packedBytes"></param>
+        /// <param name="i"></param>
         public override void Pack(ISOComponent isoMessageFields, byte[] packedBytes, ref int i)
         {
             bool allMandatoryExist = true;
@@ -81,7 +110,12 @@ namespace ISO8583Net.Packager
                 }
             }
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="isoField"></param>
+        /// <param name="packedBytes"></param>
+        /// <param name="index"></param>
         public override void UnPack(ISOComponent isoField, byte[] packedBytes, ref int index)
         {
             bool allMandatoryExist = true;
@@ -131,7 +165,10 @@ namespace ISO8583Net.Packager
                 }
             }
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public override String ToString()
         {
             StringBuilder strBuilder = new StringBuilder();
@@ -153,7 +190,9 @@ namespace ISO8583Net.Packager
 
             return strBuilder.ToString();
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
         public override void Trace()
         {
             if (Logger.IsEnabled(LogLevel.Trace)) Logger.LogTrace("ISOMessageFieldPackager: ");
@@ -166,16 +205,22 @@ namespace ISO8583Net.Packager
                 }
             }
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldNumber"></param>
+        /// <returns></returns>
         public ISOPackager GetFieldPackager(int fieldNumber)
         {
             return m_fieldPackagerList[fieldNumber];
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public int GetTotalFields()
         {
             return m_totalFields;
         }
-
     }
 }

@@ -12,22 +12,39 @@ namespace ISO8583Net.Packager
         private int m_totalFields;
 
         private Dictionary<String, ISOMsgTypePackager> m_msgTypes = new Dictionary<String, ISOMsgTypePackager>(); 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="logger"></param>
+        /// <param name="totalFields"></param>
         public ISOMessageTypesPackager(ILogger logger, int totalFields) : base (logger)
         {
             m_totalFields = totalFields;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="isoField"></param>
+        /// <param name="packedBytes"></param>
+        /// <param name="index"></param>
         public override void Pack(ISOComponent isoField, byte[] packedBytes, ref int index)
         {
             throw new NotImplementedException();
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="isoField"></param>
+        /// <param name="packedBytes"></param>
+        /// <param name="index"></param>
         public override void UnPack(ISOComponent isoField, byte[] packedBytes, ref int index)
         {
             throw new NotImplementedException();
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public override String ToString()
         {
             StringBuilder strBuilder = new StringBuilder("");
@@ -41,7 +58,9 @@ namespace ISO8583Net.Packager
 
             return strBuilder.ToString();
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
         public override void Trace()
         {
             if (Logger.IsEnabled(LogLevel.Information)) Logger.LogInformation("ISOMessageTypePackager Definition: ");
@@ -51,13 +70,22 @@ namespace ISO8583Net.Packager
                 msgTypePackager.Value.Trace();
             }
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="msgType"></param>
+        /// <param name="msgTypePackager"></param>
         public void Add(String msgType,ISOMsgTypePackager msgTypePackager)
         {
            
             m_msgTypes.Add(msgType, msgTypePackager);
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="bitMapField"></param>
+        /// <param name="msgType"></param>
+        /// <returns></returns>
         public bool ValidateBitmap(ISOFieldBitmap bitMapField, String msgType)
         {
             if (m_msgTypes.ContainsKey(msgType))
@@ -70,37 +98,64 @@ namespace ISO8583Net.Packager
                 return false;
             }
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public int GetTotalFields()
         {
             return m_totalFields;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="isoMsgType"></param>
+        /// <returns></returns>
         public byte[] GetMandatoryByteArray(String isoMsgType)
         {
             return m_msgTypes[isoMsgType].GetMandatoryByteArray();
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="isoMsgType"></param>
+        /// <returns></returns>
         public byte[] GetOptionalByteArray(String isoMsgType)
         {
             return m_msgTypes[isoMsgType].GetOptionalByteArray();
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="isoMsgType"></param>
+        /// <returns></returns>
         public byte[] GetConditionalByteArray(String isoMsgType)
         {
             return m_msgTypes[isoMsgType].GetConditionalByteArray();
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="isoMsgType"></param>
+        /// <returns></returns>
         public ISOFieldBitmap GetMandatoryBitmap(String isoMsgType)
         {
             return m_msgTypes[isoMsgType].GetMandatoryBitmap();
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="isoMsgType"></param>
+        /// <returns></returns>
         public ISOFieldBitmap GetOptionalBitmap(String isoMsgType)
         {
             return m_msgTypes[isoMsgType].GetOptionalBitmap();
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="isoMsgType"></param>
+        /// <returns></returns>
         public ISOFieldBitmap GetConditionalBitmap(String isoMsgType)
         {
             return m_msgTypes[isoMsgType].GetConditionalBitmap();
