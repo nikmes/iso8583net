@@ -34,3 +34,6 @@ $ dotnet run
 You should see something like below
 
 ![image](../images/benchmark.png)
+
+![image](../images/BenchmarkDotNetRGraph.png)
+
