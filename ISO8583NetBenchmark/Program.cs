@@ -26,7 +26,7 @@ namespace ISO8583NetBenchmark
                 //Add(HtmlExporter.Default);
             }
         }
-        [SimpleJob(RunStrategy.Throughput, targetCount: 20, id: "MonitoringJob")]
+        [SimpleJob(RunStrategy.Throughput, targetCount: 60, id: "MonitoringJob")]
         //[MinColumn, Q1Column, Q3Column, MaxColumn]
         public class ISOUtilsTest
         {
@@ -38,12 +38,8 @@ namespace ISO8583NetBenchmark
 
             static public Serilog.Core.Logger Log;
 
-            //[Params("NIKMES","NICHOLAS MESSARITIS")]
-            public string asciiString { get; set; }
-
             private ISOMessagePackager mPackager;
-
-
+        
             public ISOUtilsTest()
             {
                 packedBytes = new byte[2048];
@@ -60,24 +56,24 @@ namespace ISO8583NetBenchmark
             }
 
             [Benchmark]
-            public void PU1STB()
+            public void PackUnpack1StBitmapOnly()
             {
 
                 ISOMessage m = new ISOMessage(logger, mPackager);
 
-                m.SetValue(000, "0100");
-                m.SetValue(002, "40004000400040001");
-                m.SetValue(003, "000000");
-                m.SetValue(004, "000000002900");
-                m.SetValue(007, "1231231233");
-                m.SetValue(011, "123123");
-                m.SetValue(012, "193012");
-                m.SetValue(014, "1219");
-                m.SetValue(018, "5999");
-                m.SetValue(019, "196");
-                m.SetValue(022, "9010");
-                m.SetValue(025, "23");
-                m.SetValue(037, "123123123123");
+                m.Set(0, "0100");
+                m.Set(2, "40004000400040001");
+                m.Set(3, "000000");
+                m.Set(4, "000000002900");
+                m.Set(7, "1231231233");
+                m.Set(11, "123123");
+                m.Set(12, "193012");
+                m.Set(14, "1219");
+                m.Set(18, "5999");
+                m.Set(19, "196");
+                m.Set(22, "9010");
+                m.Set(25, "23");
+                m.Set(37, "123123123123");
 
                 packedBytes = m.Pack();
 
@@ -87,24 +83,24 @@ namespace ISO8583NetBenchmark
             }
 
             [Benchmark]
-            public void PU2NDB()
+            public void PackUnpack2ndBitmap()
             {
                 ISOMessage m = new ISOMessage(logger, mPackager);
 
-                m.SetValue(000, "0100");
-                m.SetValue(002, "40004000400040001");
-                m.SetValue(003, "000000");
-                m.SetValue(004, "000000002900");
-                m.SetValue(007, "1231231233");
-                m.SetValue(011, "123123");
-                m.SetValue(012, "193012");
-                m.SetValue(014, "1219");
-                m.SetValue(018, "5999");
-                m.SetValue(019, "196");
-                m.SetValue(022, "9010");
-                m.SetValue(025, "23");
-                m.SetValue(037, "123123123123");
-                m.SetValue(070, "123");
+                m.Set(0, "0100");
+                m.Set(2, "40004000400040001");
+                m.Set(3, "000000");
+                m.Set(4, "000000002900");
+                m.Set(7, "1231231233");
+                m.Set(11, "123123");
+                m.Set(12, "193012");
+                m.Set(14, "1219");
+                m.Set(18, "5999");
+                m.Set(19, "196");
+                m.Set(22, "9010");
+                m.Set(25, "23");
+                m.Set(37, "123123123123");
+                m.Set(70, "123");
 
                 packedBytes = m.Pack();
 
@@ -114,128 +110,35 @@ namespace ISO8583NetBenchmark
 
             }
 
-            //[Benchmark]
-            public void PU2NDBS()
+            [Benchmark]
+            public void PackUnpack2ndBitmapWithBitmapField()
             {
                 ISOMessage m = new ISOMessage(logger, mPackager);
-                m.SetValue(000, "0100");
-                m.SetValue(002, "40004000400040001");
-                m.SetValue(003, "000000");
-                m.SetValue(004, "000000002900");
-                m.SetValue(007, "1231231233");
-                m.SetValue(011, "123123");
-                m.SetValue(012, "193012");
-                m.SetValue(014, "1219");
-                m.SetValue(018, "5999");
-                m.SetValue(019, "196");
-                m.SetValue(022, "9010");
-                m.SetValue(025, "23");
-                m.SetValue(037, "123123123123");
-                m.SetValue(062, 01, "Y");
-                m.SetValue(063, 01, "1222");
-                m.SetValue(063, 03, "9999");
-                m.SetValue(070, "123");
 
-                // byte[] packedBytes = m.Pack();
-                m.Pack();
+                m.Set(0, "0100");
+                m.Set(2, "40004000400040001");
+                m.Set(3, "000000");
+                m.Set(4, "000000002900");
+                m.Set(7, "1231231233");
+                m.Set(11, "123123");
+                m.Set(12, "193012");
+                m.Set(14, "1219");
+                m.Set(18, "5999");
+                m.Set(19, "196");
+                m.Set(22, "9010");
+                m.Set(25, "23");
+                m.Set(37, "123123123123");
+                m.Set(62, 01, "Y");
+                m.Set(63, 01, "1222");
+                m.Set(63, 03, "9999");
+                m.Set(70, "123");
+
+                byte[] packedBytes = m.Pack();
+
                 ISOMessage uM = new ISOMessage(logger, mPackager);
+
                 uM.UnPack(packedBytes);
             }
-
-            //[Benchmark]
-            //public void P1STB()
-            //{
-            //    ISOMessage m = new ISOMessage(logger, mPackager);
-
-            //    m.SetFieldValue(000, "0100");
-            //    m.SetFieldValue(002, "40004000400040001");
-            //    m.SetFieldValue(003, "000000");
-            //    m.SetFieldValue(004, "000000002900");
-            //    m.SetFieldValue(007, "1231231233");
-            //    m.SetFieldValue(011, "123123");
-            //    m.SetFieldValue(012, "193012");
-            //    m.SetFieldValue(014, "1219");
-            //    m.SetFieldValue(018, "5999");
-            //    m.SetFieldValue(019, "196");
-            //    m.SetFieldValue(022, "9010");
-            //    m.SetFieldValue(025, "23");
-            //    m.SetFieldValue(037, "123123123123");
-            //    byte[] packedBytes = m.Pack();
-            //}
-
-            //[Benchmark]
-            //public void P2NDB()
-            //{
-            //    ISOMessage m = new ISOMessage(logger, mPackager);
-
-            //    m.SetFieldValue(000, "0100");
-            //    m.SetFieldValue(002, "40004000400040001");
-            //    m.SetFieldValue(003, "000000");
-            //    m.SetFieldValue(004, "000000002900");
-            //    m.SetFieldValue(007, "1231231233");
-            //    m.SetFieldValue(011, "123123");
-            //    m.SetFieldValue(012, "193012");
-            //    m.SetFieldValue(014, "1219");
-            //    m.SetFieldValue(018, "5999");
-            //    m.SetFieldValue(019, "196");
-            //    m.SetFieldValue(022, "9010");
-            //    m.SetFieldValue(025, "23");
-            //    m.SetFieldValue(037, "123123123123");
-            //    m.SetFieldValue(070, "123");
-            //    byte[] packedBytes = m.Pack();
-            //}
-
-            //[Benchmark]
-            //public void P2NDBS()
-            //{
-            //    ISOMessage m = new ISOMessage(logger, mPackager);
-            //    m.SetFieldValue(000, "0100");
-            //    m.SetFieldValue(002, "40004000400040001");
-            //    m.SetFieldValue(003, "000000");
-            //    m.SetFieldValue(004, "000000002900");
-            //    m.SetFieldValue(007, "1231231233");
-            //    m.SetFieldValue(011, "123123");
-            //    m.SetFieldValue(012, "193012");
-            //    m.SetFieldValue(014, "1219");
-            //    m.SetFieldValue(018, "5999");
-            //    m.SetFieldValue(019, "196");
-            //    m.SetFieldValue(022, "9010");
-            //    m.SetFieldValue(025, "23");
-            //    m.SetFieldValue(037, "123123123123");
-            //    m.SetFieldValue(062, 01, "Y");
-            //    m.SetFieldValue(063, 01, "1222");
-            //    m.SetFieldValue(063, 03, "9999");
-            //    m.SetFieldValue(070, "123");
-            //    byte[] packedBytes = m.Pack();
-            //}
-
-            public static void ascii2bytesv1(string strASCIIString, byte[] packedBytes)
-            {
-                int len = strASCIIString.Length;
-
-                for (int i = 0; i < len; i++)
-                {
-                    packedBytes[i] = (byte)strASCIIString[i];
-                }
-            }
-
-
-            public static void ascii2bytesv2(string strASCIIString, Span<byte> packedBytes)
-            {
-                int len = strASCIIString.Length;
-
-                for (int i = 0; i < len; i++)
-                {
-                    packedBytes[i] = (byte)strASCIIString[i];
-                }
-            }
-
-            //[Benchmark]
-            public void UsingSpan() => ascii2bytesv1(asciiString, packedBytes);
-
-            //[Benchmark]
-            public void UsingArray() => ascii2bytesv2(asciiString, packedBytes);
-
 
         }
 

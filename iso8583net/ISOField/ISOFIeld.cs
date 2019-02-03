@@ -36,7 +36,7 @@ namespace ISO8583Net.Field
         /// </summary>
         /// <param name="fieldNumber"></param>
         /// <param name="fieldValue"></param>
-        public override void SetValue(int fieldNumber, string fieldValue)
+        public override void Set(int fieldNumber, string fieldValue)
         {
             throw new NotImplementedException();
         }
@@ -64,7 +64,7 @@ namespace ISO8583Net.Field
         /// </summary>
         public override void Trace()
         {
-            Logger.LogInformation("Field [" + m_number.ToString().PadLeft(3, '0') + "]".PadRight(5, ' ') + "[" + value + "]");
+            Logger.LogInformation("F[" + m_number.ToString().PadLeft(3, '0') + "]".PadRight(1, ' ') + "[" + value + "]");
         }
         /// <summary>
         /// 
@@ -72,7 +72,7 @@ namespace ISO8583Net.Field
         /// <returns></returns>
         public override String ToString()
         {
-            return (String.Format("Field [{0}]{1}[{2}]\n{3}", m_number.ToString().PadLeft(3, '0')," ".PadRight(4, ' '), value, m_packager.InterpretField(value)));
+            return (String.Format("F[{0}]{1}[{2}]\n{3}", m_number.ToString().PadLeft(3, '0')," ".PadRight(1, ' '), value, m_packager.InterpretField(value)));
         }
     }
 }

@@ -34,7 +34,7 @@ namespace ISO8583Net.Field
         /// <param name="fieldNumber">The numeric value of the iso field</param>
         /// <param name="fieldValue">The value (as string) to be assigned to the iso field</param>
         /// <example>SetFieldValue(2,"4000XXXXXXXX4000")</example>
-        public override void SetValue(int fieldNumber, String fieldValue)
+        public override void Set(int fieldNumber, String fieldValue)
         {
             if (m_isoFields[fieldNumber] != null)
             {
@@ -152,17 +152,17 @@ namespace ISO8583Net.Field
         {
             StringBuilder msgFieldValues = new StringBuilder();
 
-            msgFieldValues.Append("Field [" + m_number.ToString().PadLeft(3, '0') + "]".PadRight(5, ' ') + "[" + this.value + "]\n");
+            msgFieldValues.Append("F[" + m_number.ToString().PadLeft(3, '0') + "]".PadRight(2, ' ') + "[" + this.value + "]\n");
 
             for (int i = 0; i < m_packager.totalFields; i++)
             {
                 if (m_isoFields[i] != null && (((ISOFieldBitmap)m_isoFields[0]).BitIsSet(i) || i==0))
                 {
-                    msgFieldValues.Append("      [" + m_number.ToString().PadLeft(3, '0') + "." + i.ToString().PadLeft(2, '0') + "]".PadRight(2, ' ') + "[" + m_isoFields[i].value + "]\n");
+                    msgFieldValues.Append("       [" + m_number.ToString().PadLeft(3, '0') + "." + i.ToString().PadLeft(2, '0') + "]".PadRight(2, ' ') + "[" + m_isoFields[i].value + "]\n");
 
                     if (i == 0)
                     {
-                        msgFieldValues.Append(((ISOFieldBitmap)m_isoFields[i]).ToHumanReadable("               ") + "\n");
+                        msgFieldValues.Append(((ISOFieldBitmap)m_isoFields[i]).ToHumanReadable("                ") + "\n");
                     }
                 }
             }

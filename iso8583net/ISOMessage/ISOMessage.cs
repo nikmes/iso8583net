@@ -64,11 +64,11 @@ namespace ISO8583Net.Message
         /// </summary>
         /// <param name="fieldNumber"></param>
         /// <param name="fieldValue"></param>
-        public override void SetValue(int fieldNumber, String fieldValue)
+        public override void Set(int fieldNumber, String fieldValue)
         {
             if (fieldNumber >= 0 && fieldNumber <= m_totalFields) 
             {
-                m_isoMessageFields.SetValue(fieldNumber, fieldValue);
+                m_isoMessageFields.Set(fieldNumber, fieldValue);
             }
             else
             {
@@ -81,7 +81,7 @@ namespace ISO8583Net.Message
         /// <param name="fieldNumber"></param>
         /// <param name="subFieldNumber"></param>
         /// <param name="fieldValue"></param>
-        public void SetValue(int fieldNumber, int subFieldNumber, String fieldValue)
+        public void Set(int fieldNumber, int subFieldNumber, String fieldValue)
         {
             if (fieldNumber >= 0 && fieldNumber <= m_totalFields && fieldNumber != 65 && fieldNumber != 129)
             {

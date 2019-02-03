@@ -382,19 +382,19 @@ references:
   commentId: F:ISO8583Net.Field.ISOComponent.m_number
   fullName: ISO8583Net.Field.ISOComponent.m_number
   nameWithType: ISOComponent.m_number
-- uid: ISO8583Net.Field.ISOComponent.SetValue(System.Int32,System.String)
-  name: SetValue(Int32, String)
-  href: site/api/ISO8583Net.Field.ISOComponent.html#ISO8583Net_Field_ISOComponent_SetValue_System_Int32_System_String_
-  commentId: M:ISO8583Net.Field.ISOComponent.SetValue(System.Int32,System.String)
-  fullName: ISO8583Net.Field.ISOComponent.SetValue(System.Int32, System.String)
-  nameWithType: ISOComponent.SetValue(Int32, String)
-- uid: ISO8583Net.Field.ISOComponent.SetValue*
-  name: SetValue
-  href: site/api/ISO8583Net.Field.ISOComponent.html#ISO8583Net_Field_ISOComponent_SetValue_
-  commentId: Overload:ISO8583Net.Field.ISOComponent.SetValue
+- uid: ISO8583Net.Field.ISOComponent.Set(System.Int32,System.String)
+  name: Set(Int32, String)
+  href: site/api/ISO8583Net.Field.ISOComponent.html#ISO8583Net_Field_ISOComponent_Set_System_Int32_System_String_
+  commentId: M:ISO8583Net.Field.ISOComponent.Set(System.Int32,System.String)
+  fullName: ISO8583Net.Field.ISOComponent.Set(System.Int32, System.String)
+  nameWithType: ISOComponent.Set(Int32, String)
+- uid: ISO8583Net.Field.ISOComponent.Set*
+  name: Set
+  href: site/api/ISO8583Net.Field.ISOComponent.html#ISO8583Net_Field_ISOComponent_Set_
+  commentId: Overload:ISO8583Net.Field.ISOComponent.Set
   isSpec: "True"
-  fullName: ISO8583Net.Field.ISOComponent.SetValue
-  nameWithType: ISOComponent.SetValue
+  fullName: ISO8583Net.Field.ISOComponent.Set
+  nameWithType: ISOComponent.Set
 - uid: ISO8583Net.Field.ISOComponent.ToString
   name: ToString()
   href: site/api/ISO8583Net.Field.ISOComponent.html#ISO8583Net_Field_ISOComponent_ToString
@@ -478,19 +478,19 @@ references:
   isSpec: "True"
   fullName: ISO8583Net.Field.ISOField.GetFieldValue
   nameWithType: ISOField.GetFieldValue
-- uid: ISO8583Net.Field.ISOField.SetValue(System.Int32,System.String)
-  name: SetValue(Int32, String)
-  href: site/api/ISO8583Net.Field.ISOField.html#ISO8583Net_Field_ISOField_SetValue_System_Int32_System_String_
-  commentId: M:ISO8583Net.Field.ISOField.SetValue(System.Int32,System.String)
-  fullName: ISO8583Net.Field.ISOField.SetValue(System.Int32, System.String)
-  nameWithType: ISOField.SetValue(Int32, String)
-- uid: ISO8583Net.Field.ISOField.SetValue*
-  name: SetValue
-  href: site/api/ISO8583Net.Field.ISOField.html#ISO8583Net_Field_ISOField_SetValue_
-  commentId: Overload:ISO8583Net.Field.ISOField.SetValue
+- uid: ISO8583Net.Field.ISOField.Set(System.Int32,System.String)
+  name: Set(Int32, String)
+  href: site/api/ISO8583Net.Field.ISOField.html#ISO8583Net_Field_ISOField_Set_System_Int32_System_String_
+  commentId: M:ISO8583Net.Field.ISOField.Set(System.Int32,System.String)
+  fullName: ISO8583Net.Field.ISOField.Set(System.Int32, System.String)
+  nameWithType: ISOField.Set(Int32, String)
+- uid: ISO8583Net.Field.ISOField.Set*
+  name: Set
+  href: site/api/ISO8583Net.Field.ISOField.html#ISO8583Net_Field_ISOField_Set_
+  commentId: Overload:ISO8583Net.Field.ISOField.Set
   isSpec: "True"
-  fullName: ISO8583Net.Field.ISOField.SetValue
-  nameWithType: ISOField.SetValue
+  fullName: ISO8583Net.Field.ISOField.Set
+  nameWithType: ISOField.Set
 - uid: ISO8583Net.Field.ISOField.ToString
   name: ToString()
   href: site/api/ISO8583Net.Field.ISOField.html#ISO8583Net_Field_ISOField_ToString
@@ -829,6 +829,19 @@ references:
   commentId: F:ISO8583Net.Field.ISOFieldBitmapSubFields.m_packager
   fullName: ISO8583Net.Field.ISOFieldBitmapSubFields.m_packager
   nameWithType: ISOFieldBitmapSubFields.m_packager
+- uid: ISO8583Net.Field.ISOFieldBitmapSubFields.Set(System.Int32,System.String)
+  name: Set(Int32, String)
+  href: site/api/ISO8583Net.Field.ISOFieldBitmapSubFields.html#ISO8583Net_Field_ISOFieldBitmapSubFields_Set_System_Int32_System_String_
+  commentId: M:ISO8583Net.Field.ISOFieldBitmapSubFields.Set(System.Int32,System.String)
+  fullName: ISO8583Net.Field.ISOFieldBitmapSubFields.Set(System.Int32, System.String)
+  nameWithType: ISOFieldBitmapSubFields.Set(Int32, String)
+- uid: ISO8583Net.Field.ISOFieldBitmapSubFields.Set*
+  name: Set
+  href: site/api/ISO8583Net.Field.ISOFieldBitmapSubFields.html#ISO8583Net_Field_ISOFieldBitmapSubFields_Set_
+  commentId: Overload:ISO8583Net.Field.ISOFieldBitmapSubFields.Set
+  isSpec: "True"
+  fullName: ISO8583Net.Field.ISOFieldBitmapSubFields.Set
+  nameWithType: ISOFieldBitmapSubFields.Set
 - uid: ISO8583Net.Field.ISOFieldBitmapSubFields.SetFieldPackager(System.Int32)
   name: SetFieldPackager(Int32)
   href: site/api/ISO8583Net.Field.ISOFieldBitmapSubFields.html#ISO8583Net_Field_ISOFieldBitmapSubFields_SetFieldPackager_System_Int32_
@@ -842,19 +855,6 @@ references:
   isSpec: "True"
   fullName: ISO8583Net.Field.ISOFieldBitmapSubFields.SetFieldPackager
   nameWithType: ISOFieldBitmapSubFields.SetFieldPackager
-- uid: ISO8583Net.Field.ISOFieldBitmapSubFields.SetValue(System.Int32,System.String)
-  name: SetValue(Int32, String)
-  href: site/api/ISO8583Net.Field.ISOFieldBitmapSubFields.html#ISO8583Net_Field_ISOFieldBitmapSubFields_SetValue_System_Int32_System_String_
-  commentId: M:ISO8583Net.Field.ISOFieldBitmapSubFields.SetValue(System.Int32,System.String)
-  fullName: ISO8583Net.Field.ISOFieldBitmapSubFields.SetValue(System.Int32, System.String)
-  nameWithType: ISOFieldBitmapSubFields.SetValue(Int32, String)
-- uid: ISO8583Net.Field.ISOFieldBitmapSubFields.SetValue*
-  name: SetValue
-  href: site/api/ISO8583Net.Field.ISOFieldBitmapSubFields.html#ISO8583Net_Field_ISOFieldBitmapSubFields_SetValue_
-  commentId: Overload:ISO8583Net.Field.ISOFieldBitmapSubFields.SetValue
-  isSpec: "True"
-  fullName: ISO8583Net.Field.ISOFieldBitmapSubFields.SetValue
-  nameWithType: ISOFieldBitmapSubFields.SetValue
 - uid: ISO8583Net.Field.ISOFieldBitmapSubFields.ToString
   name: ToString()
   href: site/api/ISO8583Net.Field.ISOFieldBitmapSubFields.html#ISO8583Net_Field_ISOFieldBitmapSubFields_ToString
@@ -970,6 +970,19 @@ references:
   commentId: F:ISO8583Net.Field.ISOMessageFields.m_packager
   fullName: ISO8583Net.Field.ISOMessageFields.m_packager
   nameWithType: ISOMessageFields.m_packager
+- uid: ISO8583Net.Field.ISOMessageFields.Set(System.Int32,System.String)
+  name: Set(Int32, String)
+  href: site/api/ISO8583Net.Field.ISOMessageFields.html#ISO8583Net_Field_ISOMessageFields_Set_System_Int32_System_String_
+  commentId: M:ISO8583Net.Field.ISOMessageFields.Set(System.Int32,System.String)
+  fullName: ISO8583Net.Field.ISOMessageFields.Set(System.Int32, System.String)
+  nameWithType: ISOMessageFields.Set(Int32, String)
+- uid: ISO8583Net.Field.ISOMessageFields.Set*
+  name: Set
+  href: site/api/ISO8583Net.Field.ISOMessageFields.html#ISO8583Net_Field_ISOMessageFields_Set_
+  commentId: Overload:ISO8583Net.Field.ISOMessageFields.Set
+  isSpec: "True"
+  fullName: ISO8583Net.Field.ISOMessageFields.Set
+  nameWithType: ISOMessageFields.Set
 - uid: ISO8583Net.Field.ISOMessageFields.SetFieldPackager(System.Int32)
   name: SetFieldPackager(Int32)
   href: site/api/ISO8583Net.Field.ISOMessageFields.html#ISO8583Net_Field_ISOMessageFields_SetFieldPackager_System_Int32_
@@ -989,12 +1002,6 @@ references:
   commentId: M:ISO8583Net.Field.ISOMessageFields.SetValue(System.Int32,System.Int32,System.String)
   fullName: ISO8583Net.Field.ISOMessageFields.SetValue(System.Int32, System.Int32, System.String)
   nameWithType: ISOMessageFields.SetValue(Int32, Int32, String)
-- uid: ISO8583Net.Field.ISOMessageFields.SetValue(System.Int32,System.String)
-  name: SetValue(Int32, String)
-  href: site/api/ISO8583Net.Field.ISOMessageFields.html#ISO8583Net_Field_ISOMessageFields_SetValue_System_Int32_System_String_
-  commentId: M:ISO8583Net.Field.ISOMessageFields.SetValue(System.Int32,System.String)
-  fullName: ISO8583Net.Field.ISOMessageFields.SetValue(System.Int32, System.String)
-  nameWithType: ISOMessageFields.SetValue(Int32, String)
 - uid: ISO8583Net.Field.ISOMessageFields.SetValue*
   name: SetValue
   href: site/api/ISO8583Net.Field.ISOMessageFields.html#ISO8583Net_Field_ISOMessageFields_SetValue_
@@ -1651,25 +1658,25 @@ references:
   isSpec: "True"
   fullName: ISO8583Net.Message.ISOMessage.Pack
   nameWithType: ISOMessage.Pack
-- uid: ISO8583Net.Message.ISOMessage.SetValue(System.Int32,System.Int32,System.String)
-  name: SetValue(Int32, Int32, String)
-  href: site/api/ISO8583Net.Message.ISOMessage.html#ISO8583Net_Message_ISOMessage_SetValue_System_Int32_System_Int32_System_String_
-  commentId: M:ISO8583Net.Message.ISOMessage.SetValue(System.Int32,System.Int32,System.String)
-  fullName: ISO8583Net.Message.ISOMessage.SetValue(System.Int32, System.Int32, System.String)
-  nameWithType: ISOMessage.SetValue(Int32, Int32, String)
-- uid: ISO8583Net.Message.ISOMessage.SetValue(System.Int32,System.String)
-  name: SetValue(Int32, String)
-  href: site/api/ISO8583Net.Message.ISOMessage.html#ISO8583Net_Message_ISOMessage_SetValue_System_Int32_System_String_
-  commentId: M:ISO8583Net.Message.ISOMessage.SetValue(System.Int32,System.String)
-  fullName: ISO8583Net.Message.ISOMessage.SetValue(System.Int32, System.String)
-  nameWithType: ISOMessage.SetValue(Int32, String)
-- uid: ISO8583Net.Message.ISOMessage.SetValue*
-  name: SetValue
-  href: site/api/ISO8583Net.Message.ISOMessage.html#ISO8583Net_Message_ISOMessage_SetValue_
-  commentId: Overload:ISO8583Net.Message.ISOMessage.SetValue
+- uid: ISO8583Net.Message.ISOMessage.Set(System.Int32,System.Int32,System.String)
+  name: Set(Int32, Int32, String)
+  href: site/api/ISO8583Net.Message.ISOMessage.html#ISO8583Net_Message_ISOMessage_Set_System_Int32_System_Int32_System_String_
+  commentId: M:ISO8583Net.Message.ISOMessage.Set(System.Int32,System.Int32,System.String)
+  fullName: ISO8583Net.Message.ISOMessage.Set(System.Int32, System.Int32, System.String)
+  nameWithType: ISOMessage.Set(Int32, Int32, String)
+- uid: ISO8583Net.Message.ISOMessage.Set(System.Int32,System.String)
+  name: Set(Int32, String)
+  href: site/api/ISO8583Net.Message.ISOMessage.html#ISO8583Net_Message_ISOMessage_Set_System_Int32_System_String_
+  commentId: M:ISO8583Net.Message.ISOMessage.Set(System.Int32,System.String)
+  fullName: ISO8583Net.Message.ISOMessage.Set(System.Int32, System.String)
+  nameWithType: ISOMessage.Set(Int32, String)
+- uid: ISO8583Net.Message.ISOMessage.Set*
+  name: Set
+  href: site/api/ISO8583Net.Message.ISOMessage.html#ISO8583Net_Message_ISOMessage_Set_
+  commentId: Overload:ISO8583Net.Message.ISOMessage.Set
   isSpec: "True"
-  fullName: ISO8583Net.Message.ISOMessage.SetValue
-  nameWithType: ISOMessage.SetValue
+  fullName: ISO8583Net.Message.ISOMessage.Set
+  nameWithType: ISOMessage.Set
 - uid: ISO8583Net.Message.ISOMessage.ToCommonISO
   name: ToCommonISO()
   href: site/api/ISO8583Net.Message.ISOMessage.html#ISO8583Net_Message_ISOMessage_ToCommonISO
