@@ -20,7 +20,7 @@ namespace ISO8583NetBenchmark
             {
                 Add(new ConsoleLogger());
                 Add(CsvMeasurementsExporter.Default);
-                //Add(RPlotExporter.Default);
+                Add(RPlotExporter.Default);
                 Add(DefaultConfig.Instance.GetColumnProviders().ToArray());
                 //Add(MarkdownExporter.Default);
                 //Add(HtmlExporter.Default);
@@ -56,7 +56,7 @@ namespace ISO8583NetBenchmark
             }
 
             [Benchmark]
-            public void PackUnpack1StBitmapOnly()
+            public void PackUnpack1StBmap()
             {
 
                 ISOMessage m = new ISOMessage(logger, mPackager);
@@ -83,7 +83,7 @@ namespace ISO8583NetBenchmark
             }
 
             [Benchmark]
-            public void PackUnpack2ndBitmap()
+            public void PackUnpack2ndBmap()
             {
                 ISOMessage m = new ISOMessage(logger, mPackager);
 
@@ -111,7 +111,7 @@ namespace ISO8583NetBenchmark
             }
 
             [Benchmark]
-            public void PackUnpack2ndBitmapWithBitmapField()
+            public void PackUnpack3rdBmap()
             {
                 ISOMessage m = new ISOMessage(logger, mPackager);
 
@@ -128,10 +128,11 @@ namespace ISO8583NetBenchmark
                 m.Set(22, "9010");
                 m.Set(25, "23");
                 m.Set(37, "123123123123");
-                m.Set(62, 01, "Y");
-                m.Set(63, 01, "1222");
-                m.Set(63, 03, "9999");
+                //m.Set(62, 01, "Y");
+                //m.Set(63, 01, "1222");
+                //m.Set(63, 03, "9999");
                 m.Set(70, "123");
+                m.Set(132, "ABABABAB");
 
                 byte[] packedBytes = m.Pack();
 
