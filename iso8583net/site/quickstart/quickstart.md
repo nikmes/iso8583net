@@ -4,8 +4,6 @@
 
 ## Get it
 Clone the repository using git.
-
-### Windows
 ``` bash
 $ git clone https://github.com/nikmes/iso8583net.git 
 ```
@@ -16,8 +14,9 @@ $ git clone https://github.com/nikmes/iso8583net.git
 $ cd iso8583net
 $ dotnet build
 ```
+## Run It
 
-## Run the simple sample
+### Run the simple sample
 ``` bash
 $ cd ISO8583NetSimpleTest
 $ dotnet run
@@ -26,7 +25,7 @@ You should see something like below
 
 ![image](../images/output.png)
 
-## Run the simple benchmark
+### Run the simple benchmark
 ``` bash
 $ cd ISO8583NetBenchmark
 $ dotnet run
