@@ -11,7 +11,7 @@ namespace ISO8583NetSimpleTest
     class Program
     {
         static public Serilog.Core.Logger Log = new LoggerConfiguration().MinimumLevel.Verbose().WriteTo.Console(outputTemplate: "{Timestamp:HH:mm:ss.fff} [{Level}] {Message}{NewLine}{Exception}").
-                                            WriteTo.RollingFile("out.log", outputTemplate: "{Timestamp:HH:mm:ss.fff} [{Level}] {Message}{NewLine}{Exception}").
+                                            //WriteTo.RollingFile("out.log", outputTemplate: "{Timestamp:HH:mm:ss.fff} [{Level}] {Message}{NewLine}{Exception}").
                                             CreateLogger();
 
         static private ILoggerFactory loggerFactory = new LoggerFactory().AddSerilog(Log);
@@ -22,31 +22,31 @@ namespace ISO8583NetSimpleTest
 
         static void Main(string[] args)
         {
-            ISOMessagePackager p = new ISOMessagePackager(logger);
+            ISOMessagePackager mPackager = new ISOMessagePackager(logger);
 
             byte[] packedBytes = new byte[2048];
 
-            ISOMessage m = new ISOMessage(logger, p);
+            ISOMessage m = new ISOMessage(logger, mPackager);
 
-            m.SetValue(000, "0100");
-            m.SetValue(002, "4000400040004001");
-            m.SetValue(003, "300000");
-            m.SetValue(004, "000000002900");
-            m.SetValue(007, "1234567890");
-            m.SetValue(011, "123456");
-            m.SetValue(012, "193012");
-            m.SetValue(014, "1219");
-            m.SetValue(018, "5999");
-            m.SetValue(019, "196");
-            m.SetValue(022, "9010");
-            m.SetValue(025, "23");
-            m.SetValue(037, "123456789012");
-            m.SetValue(062, 01, "Y");
-            m.SetValue(063, 01, "1222");
-            m.SetValue(063, 03, "9999");
-            m.SetValue(064, "ABCDEF1234567890");
-            m.SetValue(070, "123");
-            m.SetValue(132, "ABABABAB");
+            m.Set(0, "0100");
+            m.Set(2, "4000400040004001");
+            m.Set(3, "300000");
+            m.Set(4, "000000002900");
+            m.Set(7, "1234567890");
+            m.Set(11, "123456");
+            m.Set(12, "193012");
+            m.Set(14, "1219");
+            m.Set(18, "5999");
+            m.Set(19, "196");
+            m.Set(22, "9010");
+            m.Set(25, "23");
+            m.Set(37, "123456789012");
+            m.Set(62, 1, "Y");
+            m.Set(63, 1, "1222");
+            m.Set(63, 3, "9999");
+            m.Set(64, "ABCDEF1234567890");
+            m.Set(70, "123");
+            m.Set(132, "ABABABAB");
 
             Log.Debug(m.ToString());
 
@@ -54,7 +54,7 @@ namespace ISO8583NetSimpleTest
 
             Log.Information("Bytes: \n" + ISOUtils.PrintHex(pBytes, pBytes.Length));
 
-            ISOMessage u = new ISOMessage(logger, p);
+            ISOMessage u = new ISOMessage(logger, mPackager);
 
             u.UnPack(pBytes);
 

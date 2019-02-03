@@ -25,3 +25,12 @@ $ dotnet run
 You should see something like below
 
 ![image](../images/output.png)
+
+## Run the simple benchmark
+``` bash
+$ cd ISO8583NetBenchmark
+$ dotnet run
+```
+You should see something like below
+
+![image](../images/benchmark.png)

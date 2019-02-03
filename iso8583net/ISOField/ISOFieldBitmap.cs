@@ -323,7 +323,7 @@ namespace ISO8583Net.Field
         /// <returns></returns>
         public override string ToString()
         {
-            string retStr = "Field [" + m_number.ToString().PadLeft(3, '0') + "]".PadRight(5, ' ') + "[" + ToHexString() + "]\n" + ToHumanReadable("               ") + '\n';
+            string retStr = "F[" + m_number.ToString().PadLeft(3, '0') + "]".PadRight(2, ' ') + "[" + ToHexString() + "]\n" + ToHumanReadable("       ") + '\n';
  
             return retStr;
         }
@@ -355,7 +355,7 @@ namespace ISO8583Net.Field
         /// </summary>
         public override void Trace()
         {
-            Logger.LogInformation("Field [" + m_number.ToString().PadLeft(3, '0') + "]".PadRight(5, ' ') + "[" + ToHexString() + "]\n" + ToHumanReadable("               "));
+            Logger.LogInformation("F[" + m_number.ToString().PadLeft(3, '0') + "]".PadRight(2, ' ') + "[" + ToHexString() + "]\n" + ToHumanReadable("               "));
         }
     }
 }

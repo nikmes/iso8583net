@@ -123,7 +123,7 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:ISO8583Net.Field.ISOComponent.SetValue(System.Int32,System.String)">
+        <member name="M:ISO8583Net.Field.ISOComponent.Set(System.Int32,System.String)">
             <summary>
             
             </summary>
@@ -172,7 +172,7 @@
             <param name="packager"></param>
             <param name="number"></param>
         </member>
-        <member name="M:ISO8583Net.Field.ISOField.SetValue(System.Int32,System.String)">
+        <member name="M:ISO8583Net.Field.ISOField.Set(System.Int32,System.String)">
             <summary>
             
             </summary>
@@ -354,7 +354,7 @@
             <param name="packager"></param>
             <param name="fieldNumber"></param>
         </member>
-        <member name="M:ISO8583Net.Field.ISOFieldBitmapSubFields.SetValue(System.Int32,System.String)">
+        <member name="M:ISO8583Net.Field.ISOFieldBitmapSubFields.Set(System.Int32,System.String)">
             <summary>
             Assigns value to field <paramref name="fieldNumber"/>
             </summary>
@@ -426,7 +426,7 @@
             <param name="packager"></param>
             <param name="fieldNumber"></param>
         </member>
-        <member name="M:ISO8583Net.Field.ISOMessageFields.SetValue(System.Int32,System.String)">
+        <member name="M:ISO8583Net.Field.ISOMessageFields.Set(System.Int32,System.String)">
             <summary>
             
             </summary>
@@ -600,14 +600,14 @@
             <param name="logger"></param>
             <param name="isoMessagePackager"></param>
         </member>
-        <member name="M:ISO8583Net.Message.ISOMessage.SetValue(System.Int32,System.String)">
+        <member name="M:ISO8583Net.Message.ISOMessage.Set(System.Int32,System.String)">
             <summary>
             
             </summary>
             <param name="fieldNumber"></param>
             <param name="fieldValue"></param>
         </member>
-        <member name="M:ISO8583Net.Message.ISOMessage.SetValue(System.Int32,System.Int32,System.String)">
+        <member name="M:ISO8583Net.Message.ISOMessage.Set(System.Int32,System.Int32,System.String)">
             <summary>
             
             </summary>

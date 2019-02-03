@@ -31,7 +31,5 @@ namespace ISO8583Net.Field
         {
 
         }
-
-
     }
 }

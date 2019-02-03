@@ -32,7 +32,7 @@ namespace ISO8583Net.Interpreter
 
                     m_interpreter[indexLengthEntry.Key].TryGetValue("", out desc);
 
-                    strBuild.Append(" ".PadRight(15, ' ') + "[" + subStr.PadRight(2, ' ') + " - " + value + "] [" + desc + "]\n");
+                    strBuild.Append(" ".PadRight(7, ' ') + "[" + subStr.PadRight(2, ' ') + " - " + value + "] [" + desc + "]\n");
                 }
                 else
                 {

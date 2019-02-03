@@ -1,6 +1,6 @@
 {
   "homepages": [],
-  "source_base_path": "C:/Users/nikmes/Source/Repos/ISO8583Net/iso8583net",
+  "source_base_path": "C:/users/nikmes/source/repos/iso8583net/iso8583net",
   "xrefmap": "xrefmap.yml",
   "files": [
     {
@@ -9,10 +9,10 @@
       "output": {
         ".html": {
           "relative_path": "index.html",
-          "hash": "8OMFTBorxSI4GXEOIYWDJw=="
+          "hash": "XAwUczY65xW+bwfpFQbhCQ=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -21,10 +21,10 @@
       "output": {
         ".html": {
           "relative_path": "site/about/about.html",
-          "hash": "xcBANGFKdwxqaeuJ0/SavA=="
+          "hash": "C4Zij0F1dzuQDbY7yAXhyA=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -33,10 +33,10 @@
       "output": {
         ".html": {
           "relative_path": "site/api/ISO8583Net.Field.BerTLV.html",
-          "hash": "yzD9yJOWxYUAUh9xW2xEhQ=="
+          "hash": "xHCa3PWzHifDe5hMf8cJNA=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -45,10 +45,10 @@
       "output": {
         ".html": {
           "relative_path": "site/api/ISO8583Net.Field.BerTLVObject.html",
-          "hash": "r5C+Y9e11WZTo/PQmt/+Cw=="
+          "hash": "6vzgC5o5eHXmsKxFiyV+Hg=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -57,10 +57,10 @@
       "output": {
         ".html": {
           "relative_path": "site/api/ISO8583Net.Field.ISOComponent.html",
-          "hash": "t6zANO0Y2qZqxOXxPt1kXg=="
+          "hash": "BK6R330vuKktkvfTF0AQnA=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -69,10 +69,10 @@
       "output": {
         ".html": {
           "relative_path": "site/api/ISO8583Net.Field.ISOField.html",
-          "hash": "OUKThz5cWYxRkRJsQp8JaQ=="
+          "hash": "FQzxdlv3akt8MKnAWaVwkw=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -81,10 +81,10 @@
       "output": {
         ".html": {
           "relative_path": "site/api/ISO8583Net.Field.ISOFieldBitmap.html",
-          "hash": "/FnAGtS4Fctzoba8iw6kqQ=="
+          "hash": "oX69r3EuwhFdQS0jm8HORQ=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -93,10 +93,10 @@
       "output": {
         ".html": {
           "relative_path": "site/api/ISO8583Net.Field.ISOFieldBitmapSubFields.html",
-          "hash": "BYPChj3nIcroaO1Mb5Exfw=="
+          "hash": "g9L8V1hEmIyZdIOMGJGS+A=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -105,10 +105,10 @@
       "output": {
         ".html": {
           "relative_path": "site/api/ISO8583Net.Field.ISOMessageFields.html",
-          "hash": "PICiPxkMxtrOc/iCEk3pIg=="
+          "hash": "dMmlJeQmmPNnWnB/TNgdoQ=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -117,10 +117,10 @@
       "output": {
         ".html": {
           "relative_path": "site/api/ISO8583Net.Field.html",
-          "hash": "ik4PIzQirXzfiszaLQRllA=="
+          "hash": "GLfBkghcpLS9M2G0UwPLOw=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -129,10 +129,10 @@
       "output": {
         ".html": {
           "relative_path": "site/api/ISO8583Net.Header.ISOHeader.html",
-          "hash": "4MWj9bqsvLQuQpv9aIxCRA=="
+          "hash": "9cTdjrjH6pYEzJxvLfIX6Q=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -141,10 +141,10 @@
       "output": {
         ".html": {
           "relative_path": "site/api/ISO8583Net.Header.ISOHeaderVisa.html",
-          "hash": "DuBn1DxBIa24CA9OQfQm5w=="
+          "hash": "7jI6VwjrXu97P4/8pRFehQ=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -153,10 +153,10 @@
       "output": {
         ".html": {
           "relative_path": "site/api/ISO8583Net.Header.html",
-          "hash": "fs8f1AAJ9jSQuuNJaW5cEQ=="
+          "hash": "ypYgUPEmbKn8wJL4cC6yiQ=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -165,10 +165,10 @@
       "output": {
         ".html": {
           "relative_path": "site/api/ISO8583Net.Interpreter.ISOIndexedValueInterpreter.html",
-          "hash": "06MxLz9qf64l6OFHXjRLZg=="
+          "hash": "ysBNdC8EICmhRXoIBI6yhg=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -177,10 +177,10 @@
       "output": {
         ".html": {
           "relative_path": "site/api/ISO8583Net.Interpreter.ISOInterpreter.html",
-          "hash": "aD1CfAB8LJ6U9ZTpNQAX2w=="
+          "hash": "gsZArVxMireVnXnh+bbQGg=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -189,10 +189,10 @@
       "output": {
         ".html": {
           "relative_path": "site/api/ISO8583Net.Interpreter.html",
-          "hash": "O0o3OLYzv6pcCOB568JICA=="
+          "hash": "iTQpTnZ5kn9dRADjb0atZg=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -201,10 +201,10 @@
       "output": {
         ".html": {
           "relative_path": "site/api/ISO8583Net.Message.ISOMessage.html",
-          "hash": "kRvF1zycVERYmzUa/+hl6Q=="
+          "hash": "HqhnDXBXgYqmKeZtocfNBA=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -213,10 +213,10 @@
       "output": {
         ".html": {
           "relative_path": "site/api/ISO8583Net.Message.html",
-          "hash": "RGq+0xodta4vxlg6DSY6mg=="
+          "hash": "eXb9r84Z/1PXumUfmem9VQ=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -225,10 +225,10 @@
       "output": {
         ".html": {
           "relative_path": "site/api/ISO8583Net.Packager.ISOFieldBitmapSubFieldsPackager.html",
-          "hash": "hV+/zfevidgHWtdy5Wv76Q=="
+          "hash": "+CIu86X29sVs8Xg/J0YOWA=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -237,10 +237,10 @@
       "output": {
         ".html": {
           "relative_path": "site/api/ISO8583Net.Packager.ISOFieldDefinition.html",
-          "hash": "9JTQvyFQkQ1iqdN1Lz+93w=="
+          "hash": "ROz3oye+tLUB27BgsFoxzQ=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -249,10 +249,10 @@
       "output": {
         ".html": {
           "relative_path": "site/api/ISO8583Net.Packager.ISOFieldPackager.html",
-          "hash": "oj4irOxsnXPHb1dFd0fScw=="
+          "hash": "yPrLprVLvNGkCqy4bLXN+g=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -261,10 +261,10 @@
       "output": {
         ".html": {
           "relative_path": "site/api/ISO8583Net.Packager.ISOHeaderPackager.html",
-          "hash": "UtU4GsGnpbJflWbzPQgISg=="
+          "hash": "tJeX6WtUOJQCAZsPvpgc9A=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -273,10 +273,10 @@
       "output": {
         ".html": {
           "relative_path": "site/api/ISO8583Net.Packager.ISOHeaderVisaPackager.html",
-          "hash": "Kuw50KbbcJRH7JFBGnlFdg=="
+          "hash": "nAuMltiDjc/hbxfUFpubnA=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -285,10 +285,10 @@
       "output": {
         ".html": {
           "relative_path": "site/api/ISO8583Net.Packager.ISOMessageFieldsPackager.html",
-          "hash": "DKwlrwx+B8uGnbEBnYJ4Hg=="
+          "hash": "KZoSBkDWXfKEYLnxq9LwhA=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -297,10 +297,10 @@
       "output": {
         ".html": {
           "relative_path": "site/api/ISO8583Net.Packager.ISOMessagePackager.html",
-          "hash": "E8e5Ygjf4fZzGGIkaEvyGw=="
+          "hash": "DrGo78NWEQH90rS+B6X92g=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -309,10 +309,10 @@
       "output": {
         ".html": {
           "relative_path": "site/api/ISO8583Net.Packager.ISOMessageTypesPackager.html",
-          "hash": "Y2Y7DygrvKTEktCp7Ieg5Q=="
+          "hash": "T/1dIQchUR2uCSIAht4s0g=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -321,10 +321,10 @@
       "output": {
         ".html": {
           "relative_path": "site/api/ISO8583Net.Packager.ISOMsgTypePackager.html",
-          "hash": "dCaA7Z94UkYfEF8o9gSKXA=="
+          "hash": "QHVlXqjXWaokue7D1PMS5w=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -333,10 +333,10 @@
       "output": {
         ".html": {
           "relative_path": "site/api/ISO8583Net.Packager.ISOPackager.html",
-          "hash": "22gQPuWjRcj9D2sonTyOPg=="
+          "hash": "0/R8oI2ZBmX1NJlHsnf4nQ=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -345,10 +345,10 @@
       "output": {
         ".html": {
           "relative_path": "site/api/ISO8583Net.Packager.ISOPackagerLoader.html",
-          "hash": "jJPALV5DwBgXfCri5FH4mw=="
+          "hash": "zjmcDkrIjnZ99VG7ZBGNSw=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -357,10 +357,10 @@
       "output": {
         ".html": {
           "relative_path": "site/api/ISO8583Net.Packager.html",
-          "hash": "cut4ZwNVutvKm5WgXRyTVQ=="
+          "hash": "lwbzgaiV7gwh7r7LvSeHoA=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -369,10 +369,10 @@
       "output": {
         ".html": {
           "relative_path": "site/api/ISO8583Net.Types.ISOFieldCoding.html",
-          "hash": "BtO2pe0+WTfTouMg7L/3HQ=="
+          "hash": "yDQk/NHbTD12zRfwEseIlQ=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -381,10 +381,10 @@
       "output": {
         ".html": {
           "relative_path": "site/api/ISO8583Net.Types.ISOFieldContent.html",
-          "hash": "V1RpJrhan7NrGFdAHF/c1w=="
+          "hash": "qZgtdZRbpUgJ/nRC6wPnmw=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -393,10 +393,10 @@
       "output": {
         ".html": {
           "relative_path": "site/api/ISO8583Net.Types.ISOFieldLengthFormat.html",
-          "hash": "q0OtzQZT02Uj4k0LJNHE1Q=="
+          "hash": "vilA5aUId4CuX/fJotll+Q=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -405,10 +405,10 @@
       "output": {
         ".html": {
           "relative_path": "site/api/ISO8583Net.Types.ISOFieldPadding.html",
-          "hash": "U+SNgMoCBo4Wf1BO3zMfaA=="
+          "hash": "12MCkeI3i8Pu40BMgv9qWw=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -417,10 +417,10 @@
       "output": {
         ".html": {
           "relative_path": "site/api/ISO8583Net.Types.ISOFieldParticipation.html",
-          "hash": "G3wf7cMiVrVikWi+GzGHhQ=="
+          "hash": "drtrrlApLsOJT0rX4k9lKQ=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -429,10 +429,10 @@
       "output": {
         ".html": {
           "relative_path": "site/api/ISO8583Net.Types.html",
-          "hash": "caDoRdsszQ5owSyszGE40g=="
+          "hash": "q9mpd5fPJjoG84Qg1UTLlA=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -441,10 +441,10 @@
       "output": {
         ".html": {
           "relative_path": "site/api/ISO8583Net.Utilities.ISOUtils.html",
-          "hash": "v5OA5xIxKIMlH4ky+3jD5w=="
+          "hash": "NPgIkYCavBlfThmda+QVpw=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -453,10 +453,10 @@
       "output": {
         ".html": {
           "relative_path": "site/api/ISO8583Net.Utilities.html",
-          "hash": "GEKyeLfGpGCTz3aVLn6MUw=="
+          "hash": "rFsvtSlFlisYrM1SMGWEGQ=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -465,10 +465,10 @@
       "output": {
         ".html": {
           "relative_path": "site/api/index.html",
-          "hash": "2ubJRoihFR48frw3zov2hw=="
+          "hash": "WP+UC5+uhkWMNANFDfh85A=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -489,10 +489,10 @@
       "output": {
         ".html": {
           "relative_path": "site/articles/intro.html",
-          "hash": "B8R+FHuYnjItP/QTK2SYLw=="
+          "hash": "vlbatXpRguFYjxKjJCf6UA=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -502,6 +502,17 @@
         ".html": {
           "relative_path": "site/articles/toc.html",
           "hash": "t7iiFrmuYmrKWisdq+lN6Q=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "site/images/benchmark.png",
+      "output": {
+        "resource": {
+          "relative_path": "site/images/benchmark.png"
         }
       },
       "is_incremental": false,
@@ -546,7 +557,7 @@
       "output": {
         ".html": {
           "relative_path": "site/quickstart/quickstart.html",
-          "hash": "dp9/uhS3MOY+NbT+d4y3pQ=="
+          "hash": "J+SxRohxygQiScB/4GpgOw=="
         }
       },
       "is_incremental": false,
@@ -582,10 +593,10 @@
       "output": {
         ".html": {
           "relative_path": "site/tutorials/tutorials.html",
-          "hash": "NR+yjiVIgKRrueJo93a6jg=="
+          "hash": "fZGKWzTz0+Q1AbtqADN6qw=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -604,48 +615,35 @@
   "incremental_info": [
     {
       "status": {
-        "can_incremental": false,
-        "details": "Disable incremental build by force rebuild option.",
-        "incrementalPhase": "build",
-        "total_file_count": 0,
-        "skipped_file_count": 0
+        "can_incremental": true,
+        "incrementalPhase": "build"
       },
       "processors": {
-        "ResourceDocumentProcessor": {
-          "can_incremental": false,
-          "details": "Processor ResourceDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
-          "incrementalPhase": "build",
-          "total_file_count": 0,
-          "skipped_file_count": 0
-        },
         "TocDocumentProcessor": {
           "can_incremental": false,
           "details": "Processor TocDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
-          "incrementalPhase": "build",
-          "total_file_count": 0,
-          "skipped_file_count": 0
-        },
-        "ConceptualDocumentProcessor": {
-          "can_incremental": false,
-          "incrementalPhase": "build",
-          "total_file_count": 6,
-          "skipped_file_count": 0
+          "incrementalPhase": "build"
         },
         "ManagedReferenceDocumentProcessor": {
+          "can_incremental": true,
+          "incrementalPhase": "build"
+        },
+        "ConceptualDocumentProcessor": {
+          "can_incremental": true,
+          "incrementalPhase": "build"
+        },
+        "ResourceDocumentProcessor": {
           "can_incremental": false,
-          "incrementalPhase": "build",
-          "total_file_count": 36,
-          "skipped_file_count": 0
+          "details": "Processor ResourceDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
+          "incrementalPhase": "build"
         }
       }
     },
     {
       "status": {
-        "can_incremental": false,
-        "details": "Cannot support incremental post processing, the reason is: it's disabled.",
-        "incrementalPhase": "postProcessing",
-        "total_file_count": 0,
-        "skipped_file_count": 0
+        "can_incremental": true,
+        "details": "Can support incremental post processing.",
+        "incrementalPhase": "postProcessing"
       },
       "processors": {}
     }

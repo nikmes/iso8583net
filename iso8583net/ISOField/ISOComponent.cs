@@ -56,7 +56,7 @@ namespace ISO8583Net.Field
         /// </summary>
         /// <param name="fieldNumber"></param>
         /// <param name="fieldValue"></param>
-        public abstract void SetValue(int fieldNumber, String fieldValue);
+        public abstract void Set(int fieldNumber, String fieldValue);
         /// <summary>
         /// 
         /// </summary>
