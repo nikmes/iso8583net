@@ -254,6 +254,12 @@ namespace ISO8583Net.Packager
                     break;
             }
         }
+
+        public void PackLengh(ISOComponent isoField, byte[] packedBytes, ref int index)
+        {
+
+        }
+        
         /// <summary>
         /// 
         /// </summary>
