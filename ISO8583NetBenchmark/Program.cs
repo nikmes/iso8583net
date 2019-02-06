@@ -38,7 +38,7 @@ namespace ISO8583NetBenchmark
 
             static public Serilog.Core.Logger Log;
 
-            private ISOMessagePackager mPackager;
+            static private ISOMessagePackager mPackager;
         
             public ISOUtilsTest()
             {
@@ -56,7 +56,7 @@ namespace ISO8583NetBenchmark
             }
 
             [Benchmark]
-            public void PackUnpack1StBmap()
+            public void PackUnpack1stBmap()
             {
 
                 ISOMessage m = new ISOMessage(logger, mPackager);

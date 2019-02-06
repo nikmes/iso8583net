@@ -2044,6 +2044,22 @@ references:
   isSpec: "True"
   fullName: ISO8583Net.Packager.ISOFieldPackager.Pack
   nameWithType: ISOFieldPackager.Pack
+- uid: ISO8583Net.Packager.ISOFieldPackager.PackLengh(ISO8583Net.Field.ISOComponent,System.Byte[],System.Int32@)
+  name: PackLengh(ISOComponent, Byte[], ref Int32)
+  href: site/api/ISO8583Net.Packager.ISOFieldPackager.html#ISO8583Net_Packager_ISOFieldPackager_PackLengh_ISO8583Net_Field_ISOComponent_System_Byte___System_Int32__
+  commentId: M:ISO8583Net.Packager.ISOFieldPackager.PackLengh(ISO8583Net.Field.ISOComponent,System.Byte[],System.Int32@)
+  name.vb: PackLengh(ISOComponent, Byte(), ByRef Int32)
+  fullName: ISO8583Net.Packager.ISOFieldPackager.PackLengh(ISO8583Net.Field.ISOComponent, System.Byte[], ref System.Int32)
+  fullName.vb: ISO8583Net.Packager.ISOFieldPackager.PackLengh(ISO8583Net.Field.ISOComponent, System.Byte(), ByRef System.Int32)
+  nameWithType: ISOFieldPackager.PackLengh(ISOComponent, Byte[], ref Int32)
+  nameWithType.vb: ISOFieldPackager.PackLengh(ISOComponent, Byte(), ByRef Int32)
+- uid: ISO8583Net.Packager.ISOFieldPackager.PackLengh*
+  name: PackLengh
+  href: site/api/ISO8583Net.Packager.ISOFieldPackager.html#ISO8583Net_Packager_ISOFieldPackager_PackLengh_
+  commentId: Overload:ISO8583Net.Packager.ISOFieldPackager.PackLengh
+  isSpec: "True"
+  fullName: ISO8583Net.Packager.ISOFieldPackager.PackLengh
+  nameWithType: ISOFieldPackager.PackLengh
 - uid: ISO8583Net.Packager.ISOFieldPackager.SetFieldDefinition(ISO8583Net.Packager.ISOFieldDefinition)
   name: SetFieldDefinition(ISOFieldDefinition)
   href: site/api/ISO8583Net.Packager.ISOFieldPackager.html#ISO8583Net_Packager_ISOFieldPackager_SetFieldDefinition_ISO8583Net_Packager_ISOFieldDefinition_
