@@ -1,6 +1,8 @@
 # iso8583net
 
 A highly configurable .net library for building and parsing iso8583 financial messages. 
+ISO8583 dialects can be configured using xml files. An example xml configuration file is provided
+in ISODialects folder of the source code.
 
 The project home page can be found [here](https://nikmes.github.io/iso8583net/)
 
