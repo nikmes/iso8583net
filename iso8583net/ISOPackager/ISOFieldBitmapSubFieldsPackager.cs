@@ -1,4 +1,5 @@
 ﻿using ISO8583Net.Field;
+using ISO8583Net.Types;
 using ISO8583Net.Utilities;
 using Microsoft.Extensions.Logging;
 using System;
@@ -55,8 +56,30 @@ namespace ISO8583Net.Packager
             // remember where to copy the length - once we know it
             int indexStarts = index;
 
-            // reserve enough bytes to store the length
-            index += (m_isoFieldDefinition.lengthLength/2);
+            // based on coding of length decide how many bytes to move on packedBytes
+            int advanceNumOfBytes = 0;
+
+            // reserve enough bytes to store the length !! ASUMES FOR NOW THAT IS ALWAYS BINARY !!
+            switch (m_isoFieldDefinition.lengthCoding)
+            {
+                case ISOFieldCoding.BIN:
+                    advanceNumOfBytes = (m_isoFieldDefinition.lengthLength / 2);
+                    break;
+
+                case ISOFieldCoding.ASCII:
+                    break;
+
+                case ISOFieldCoding.EBCDIC:
+                    break;
+
+                case ISOFieldCoding.BCD:
+                    break;
+
+                default:
+                    break;
+            }
+
+            index += advanceNumOfBytes; // (m_isoFieldDefinition.lengthLength / 2);
 
             m_fieldPackagerList[0].Pack(isoFields[0], packedBytes, ref index);
 
@@ -70,12 +93,12 @@ namespace ISO8583Net.Packager
                     m_fieldPackagerList[fieldNumber].Pack(isoFields[fieldNumber], packedBytes, ref index);
                 }
             }
-
            
             //!!! Hack always assumes length is in binary format !!!!
             //int bytesCopied = (i - (indexStarts - (m_isoFieldDefinition.m_lengthLength/2))); // bytes used for length not inclusive in length indicator
+            //!!! Assumes length is excluding the length indicator !!NEED TO INTRODUCE PARAM!!
 
-            ISOUtils.Int2Bytes((index - (indexStarts - (m_isoFieldDefinition.lengthLength / 2))), packedBytes, ref indexStarts, m_isoFieldDefinition.lengthLength);
+            ISOUtils.Int2Bytes(index - (indexStarts - advanceNumOfBytes), packedBytes, ref indexStarts, m_isoFieldDefinition.lengthLength);
         }
         /// <summary>
         /// 
@@ -85,7 +108,7 @@ namespace ISO8583Net.Packager
         /// <param name="index"></param>
         public override void UnPack(ISOComponent isoField, byte[] packedBytes, ref int index)
         {
-            /*!!! Hack Special Field - First Unpack my length (and ignore it for now) !!! */
+            /*!!! Hack Special Field - First Unpack my length (and ignore it for now) AND HERE CURRENTLY ASSUME IS ALWAYS BINARY!!! */
 
             index += m_isoFieldDefinition.lengthLength / 2;
 
