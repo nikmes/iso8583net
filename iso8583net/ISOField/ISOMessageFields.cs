@@ -8,7 +8,7 @@ namespace ISO8583Net.Field
     /// <summary>
     /// 
     /// </summary>
-    public class ISOMessageFields : ISOComponent
+    public class ISOMessageFields : ISOField
     {
         protected ISOComponent[] m_isoFields;
 
@@ -41,7 +41,7 @@ namespace ISO8583Net.Field
         /// <param name="logger"></param>
         /// <param name="packager"></param>
         /// <param name="fieldNumber"></param>
-        public ISOMessageFields(ILogger logger, ISOMessageFieldsPackager packager, int fieldNumber) : base(logger, fieldNumber)
+        public ISOMessageFields(ILogger logger, ISOMessageFieldsPackager packager, int fieldNumber) : base(logger, packager, fieldNumber)
         {
             m_packager = packager;
 

@@ -62,6 +62,7 @@ namespace ISO8583Net.Packager
         {
             m_isoMsgTypePackager = isoMessageTypesPackager;
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -79,6 +80,7 @@ namespace ISO8583Net.Packager
         {
             m_fieldParticipationValidations = enabled;
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -110,6 +112,7 @@ namespace ISO8583Net.Packager
                 }
             }
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -165,6 +168,7 @@ namespace ISO8583Net.Packager
                 }
             }
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -190,6 +194,7 @@ namespace ISO8583Net.Packager
 
             return strBuilder.ToString();
         }
+
         /// <summary>
         /// 
         /// </summary>
