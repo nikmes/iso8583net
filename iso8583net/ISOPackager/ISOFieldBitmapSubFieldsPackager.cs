@@ -67,12 +67,12 @@ namespace ISO8583Net.Packager
                     break;
 
                 case ISOFieldCoding.ASCII:
-                    break;
-
                 case ISOFieldCoding.EBCDIC:
+                    advanceNumOfBytes = m_isoFieldDefinition.lengthLength;
                     break;
 
                 case ISOFieldCoding.BCD:
+                    //!!! Special handling to handle BCD Length cause we need padding !!!!
                     break;
 
                 default:
@@ -108,9 +108,26 @@ namespace ISO8583Net.Packager
         /// <param name="index"></param>
         public override void UnPack(ISOComponent isoField, byte[] packedBytes, ref int index)
         {
-            /*!!! Hack Special Field - First Unpack my length (and ignore it for now) AND HERE CURRENTLY ASSUME IS ALWAYS BINARY!!! */
+            // reserve enough bytes to store the length !! ASUMES FOR NOW THAT IS ALWAYS BINARY !!
+            switch (m_isoFieldDefinition.lengthCoding)
+            {
+                case ISOFieldCoding.BIN:
+                    index += m_isoFieldDefinition.lengthLength / 2; // 2 HEXADECIMAL DIGITS represent 1 byte
+                    break;
 
-            index += m_isoFieldDefinition.lengthLength / 2;
+                case ISOFieldCoding.ASCII:
+                case ISOFieldCoding.EBCDIC:
+                    index += m_isoFieldDefinition.lengthLength; // 1 ASCII Character is 1 byte
+                    break;
+
+                case ISOFieldCoding.BCD:
+
+                    break;
+
+                default:
+                    break;
+            }
+
 
             ISOComponent[] isoFields = ((ISOFieldBitmapSubFields)(isoField)).GetFields();
 
