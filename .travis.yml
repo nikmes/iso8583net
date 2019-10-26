@@ -2,7 +2,7 @@ language: csharp
 mono: latest
 sudo: required
 dist: trustly
-dotnet: 2.2
+dotnet: 3.0
 solution: iso8583net.sln
 before_script:
 - nuget install docfx.console -ExcludeVersion
