@@ -14,7 +14,7 @@ namespace ISO8583NetSimpleTest
                                             //WriteTo.RollingFile("out.log", outputTemplate: "{Timestamp:HH:mm:ss.fff} [{Level}] {Message}{NewLine}{Exception}").
                                             CreateLogger();
 
-        static private ILoggerFactory loggerFactory = new LoggerFactory().AddSerilog(Log);
+        static private readonly ILoggerFactory loggerFactory = new LoggerFactory().AddSerilog(Log);
 
         static public Microsoft.Extensions.Logging.ILogger logger = loggerFactory.CreateLogger<Program>();
 
@@ -24,7 +24,6 @@ namespace ISO8583NetSimpleTest
         {
             ISOMessagePackager mPackager = new ISOMessagePackager(logger);
 
-            byte[] packedBytes = new byte[2048];
 
             ISOMessage m = new ISOMessage(logger, mPackager);
 
@@ -59,6 +58,7 @@ namespace ISO8583NetSimpleTest
             u.UnPack(pBytes);
 
             Log.Debug(u.ToString());
+
         }
     }
 }

@@ -61,7 +61,7 @@ namespace ISO8583Net.Field
 
             TLVTagBytes = new byte[TagSize];
             Array.Copy(encodedTLV, 0, TLVTagBytes, 0, TagSize);
-            TLVTag = ISOUtils.ToHexStr(TLVTagBytes, 0, TagSize);
+            TLVTag = ISOUtils.Bytes2Hex(TLVTagBytes, TagSize);
             int tlvLenOffset = TagSize;
 
             if (encodedTLV[TagSize] < 128)

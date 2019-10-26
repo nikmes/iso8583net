@@ -35,7 +35,7 @@ namespace ISO8583Net.Field
         {
             get
             {
-                return ISOUtils.ToHexStr(lenBytes, 0, lenBytes.Length);
+                return ISOUtils.Bytes2Hex(lenBytes, lenBytes.Length);
             }
         }
 
@@ -43,7 +43,7 @@ namespace ISO8583Net.Field
         {
             get
             {
-                return ISOUtils.ToHexStr(mValue, 0, mValue.Length);
+                return ISOUtils.Bytes2Hex(mValue, mValue.Length);
             }
         }
 
@@ -168,7 +168,7 @@ namespace ISO8583Net.Field
         {
             StringBuilder sb = new StringBuilder();
 
-            sb.Append("TAG:" + tagStr + " LEN:" + mLen.ToString() + ISOUtils.ToHexStr(" DATA:", mValue, mValue.Length));
+            sb.Append("TAG:").Append(tagStr).Append(" LEN:").Append(mLen.ToString()).Append(" DATA:").Append(ISOUtils.Bytes2Hex(mValue, mValue.Length));
             if (this.parent != null)
                 sb.Append(" Parent:" + this.parent.TagStr);
             else

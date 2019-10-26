@@ -27,7 +27,7 @@ namespace ISO8583Net.Field
         /// <param name="packager"></param>
         /// <param name="fieldNumber"></param>
         /// <param name="value"></param>
-        public ISOFieldBerTlv(ILogger logger, ISOFieldPackager packager, int fieldNumber, String value) : base(logger, packager, fieldNumber, value)
+        public ISOFieldBerTlv(ILogger logger, ISOFieldPackager packager, int fieldNumber, string value) : base(logger, packager, fieldNumber, value)
         {
 
         }
