@@ -84,16 +84,28 @@ namespace ISO8583Net.Packager
             m_fieldPackagerList[0].Pack(isoFields[0], packedBytes, ref index);
 
             // bitmap was packed so get the total length in bits to determine up to what field number it expands
-            int totFields = ((ISOFieldBitmap)(isoFields[0])).GetLengthInBits();
+            var bitmap = isoFields[0] as ISOFieldBitmap;
+            int[] setFields = bitmap.GetSetFields();
 
-            for (int fieldNumber = 1; fieldNumber <= totFields; fieldNumber++)
+            for (int k = 0; k < setFields.Length; k++)
             {
-                if (((ISOFieldBitmap)(isoFields[0])).BitIsSet(fieldNumber)) 
+                int fieldNumber = setFields[k];
+                if (fieldNumber != 0)
                 {
                     m_fieldPackagerList[fieldNumber].Pack(isoFields[fieldNumber], packedBytes, ref index);
-                }
+                }                
             }
-           
+
+            //int totFields = bitmap.GetLengthInBits();
+
+            //for (int fieldNumber = 1; fieldNumber <= totFields; fieldNumber++)
+            //{
+            //    if (bitmap.BitIsSet(fieldNumber)) 
+            //    {
+            //        m_fieldPackagerList[fieldNumber].Pack(isoFields[fieldNumber], packedBytes, ref index);
+            //    }
+            //}
+
             //!!! Hack always assumes length is in binary format !!!!
             //int bytesCopied = (i - (indexStarts - (m_isoFieldDefinition.m_lengthLength/2))); // bytes used for length not inclusive in length indicator
             //!!! Assumes length is excluding the length indicator !!NEED TO INTRODUCE PARAM!!
@@ -134,24 +146,35 @@ namespace ISO8583Net.Packager
             isoFields[0] = new ISOFieldBitmap(Logger, m_fieldPackagerList[0], m_fieldPackagerList[0].GetFieldNumber());
 
             m_fieldPackagerList[0].UnPack(isoFields[0], packedBytes, ref index);
+            var bitmap = isoFields[0] as ISOFieldBitmap;
+            int[] setFields = bitmap.GetSetFields();
 
-            int totFields = ((ISOFieldBitmap)(isoFields[0])).GetLengthInBits();
-
-            for (int fieldNumber = 1; fieldNumber <= totFields; fieldNumber++)
+            for (int k = 0; k < setFields.Length; k++)
             {
-                if (((ISOFieldBitmap)(isoFields[0])).BitIsSet(fieldNumber))
+                int fieldNumber = setFields[k];
+                if (fieldNumber != 0)
                 {
                     isoFields[fieldNumber] = new ISOField(Logger, m_fieldPackagerList[fieldNumber], m_fieldPackagerList[fieldNumber].GetFieldNumber());
-
-                    m_fieldPackagerList[fieldNumber].UnPack(isoFields[fieldNumber], packedBytes, ref index);
+                    m_fieldPackagerList[fieldNumber].UnPack(isoFields[fieldNumber], packedBytes, ref index);                    
                 }
             }
+            //int totFields = bitmap.GetLengthInBits();
+
+            //for (int fieldNumber = 1; fieldNumber <= totFields; fieldNumber++)
+            //{
+            //    if (bitmap.BitIsSet(fieldNumber))
+            //    {
+            //        isoFields[fieldNumber] = new ISOField(Logger, m_fieldPackagerList[fieldNumber], m_fieldPackagerList[fieldNumber].GetFieldNumber());
+
+            //        m_fieldPackagerList[fieldNumber].UnPack(isoFields[fieldNumber], packedBytes, ref index);
+            //    }
+            //}
         }
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-        public override String ToString()
+        public override string ToString()
         {
             StringBuilder strBuilder = new StringBuilder();
 

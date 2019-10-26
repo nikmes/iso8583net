@@ -15,7 +15,7 @@ namespace ISO8583Net.Header
 
         public string h01_HeaderLength { get; set; }                     // Byte 1         header len bytes   -   2HD
 
-        public string h02_HeaderFlagAndFormat { get; set; }              // Byte 2         1B 8N Bit String   -   2HD
+        public string h02_HeaderFlagAndFormat { get; set; }              // Byte 2         1B 8N Bit string   -   2HD
 
         public string h03_TextFormat { get; set; }                       // Byte 3         1B Binary          -   2HD
 
@@ -25,11 +25,11 @@ namespace ISO8583Net.Header
 
         public string h06_SourceStationId { get; set; }                  // Bytes 9-11     3B 6 Numeric BCD   -   6N
 
-        public string h07_RoundTripControlInformation { get; set; }      // Byte 12        1B 8Bit String     -   2HD
+        public string h07_RoundTripControlInformation { get; set; }      // Byte 12        1B 8Bit string     -   2HD
 
-        public string h08_BaseIFlag { get; set; }                        // Bytes 13-14    2B 16Bit String    -   4HD
+        public string h08_BaseIFlag { get; set; }                        // Bytes 13-14    2B 16Bit string    -   4HD
 
-        public string h09_MessageStatusFlag { get; set; }                // Bytes 15-17    3B 24Bit String    -   6HD
+        public string h09_MessageStatusFlag { get; set; }                // Bytes 15-17    3B 24Bit string    -   6HD
 
         public string h10_BatchNumber { get; set; }                      // Bytes 18       1B Binary          -   2HD
 

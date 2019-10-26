@@ -15,12 +15,24 @@ namespace ISO8583Net.Packager
         internal ILogger Logger { get { return _logger; } }
 
         private ISOInterpreter m_isoInterpreter;
+        /// <summary>
+        /// 
+        /// </summary>
 
         protected bool m_composite = false;
+        /// <summary>
+        /// 
+        /// </summary>
 
         protected int m_number;
+        /// <summary>
+        /// 
+        /// </summary>
 
         protected string m_storeClass;
+        /// <summary>
+        /// 
+        /// </summary>
 
         public ISOFieldDefinition m_isoFieldDefinition;
 
@@ -104,7 +116,7 @@ namespace ISO8583Net.Packager
         /// </summary>
         /// <param name="fieldValue"></param>
         /// <returns></returns>
-        public string InterpretField(String fieldValue)
+        public string InterpretField(string fieldValue)
         {
             if (m_isoInterpreter != null)
             {
@@ -112,7 +124,7 @@ namespace ISO8583Net.Packager
             }
             else
             {
-                return String.Empty;
+                return string.Empty;
             }
         }
         /// <summary>
@@ -137,6 +149,6 @@ namespace ISO8583Net.Packager
         /// 
         /// </summary>
         /// <returns></returns>
-        public abstract override String ToString();
+        public abstract override string ToString();
     }
 }

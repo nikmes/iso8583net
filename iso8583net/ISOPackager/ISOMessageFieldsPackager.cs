@@ -1,4 +1,5 @@
 ﻿using ISO8583Net.Field;
+using ISO8583Net.Utilities;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Text;
@@ -89,7 +90,7 @@ namespace ISO8583Net.Packager
         /// <param name="i"></param>
         public override void Pack(ISOComponent isoMessageFields, byte[] packedBytes, ref int i)
         {
-            bool allMandatoryExist = true;
+            //bool allMandatoryExist = true;
 
             ISOComponent[] isoFields = ((ISOMessageFields)(isoMessageFields)).GetFields();
 
@@ -97,20 +98,32 @@ namespace ISO8583Net.Packager
 
             m_fieldPackagerList[1].Pack(isoFields[1], packedBytes, ref i); // pack the Bitmap to the byteArray for transmission
 
-            int totFields = ((ISOFieldBitmap)isoFields[1]).GetLengthInBits(); // get max number of fields that this message can have            
+            var bitmap = isoFields[1] as ISOFieldBitmap;
+            int[] setFields = bitmap.GetSetFields(); //Get all the set fields
 
-            for (int fieldNumber = 2; fieldNumber <= totFields; fieldNumber++)
+            for (int k = 0; k < setFields.Length; k++)
             {
-                if (fieldNumber != 65 && fieldNumber != 129) // special bit fields indicating existance of second and tird bitmap (VISA BASE I Specifications)
+                int fieldNumber = setFields[k];
+                if (fieldNumber >= 2 && (fieldNumber != 65 && fieldNumber != 129)) // special bit fields indicating existance of second and tird bitmap (VISA BASE I Specifications)
                 {
-                    if (((ISOFieldBitmap)isoFields[1]).BitIsSet(fieldNumber))
-                    {
-                        // the mandatory field is present so package it
-
-                        m_fieldPackagerList[fieldNumber].Pack(isoFields[fieldNumber], packedBytes, ref i);                        
-                    }
+                    m_fieldPackagerList[fieldNumber].Pack(isoFields[fieldNumber], packedBytes, ref i);
                 }
+                
             }
+            //int totFields = bitmap.GetLengthInBits(); // get max number of fields that this message can have            
+
+            //for (int fieldNumber = 2; fieldNumber <= totFields; fieldNumber++)
+            //{
+            //    if (fieldNumber != 65 && fieldNumber != 129) // special bit fields indicating existance of second and tird bitmap (VISA BASE I Specifications)
+            //    {
+            //        if (bitmap.BitIsSet(fieldNumber))
+            //        {
+            //            // the mandatory field is present so package it
+
+            //            m_fieldPackagerList[fieldNumber].Pack(isoFields[fieldNumber], packedBytes, ref i);                        
+            //        }
+            //    }
+            //}
         }
 
         /// <summary>
@@ -131,49 +144,72 @@ namespace ISO8583Net.Packager
 
             m_fieldPackagerList[0].UnPack(isoFields[0], packedBytes, ref index);
 
-            String msgType = isoFields[0].value;
+            string msgType = isoFields[0].value;
 
             // Unpack the Bitmap from the byteArray for transmission
 
             isoFields[1] = new ISOFieldBitmap(Logger, m_fieldPackagerList[1], m_fieldPackagerList[1].GetFieldNumber());
 
             m_fieldPackagerList[1].UnPack(isoFields[1], packedBytes, ref index);
-           
-            int totFields = ((ISOFieldBitmap)isoFields[1]).GetLengthInBits();
 
-            for (int fieldNumber = 2; fieldNumber <= totFields; fieldNumber++)
+            var bitmap = isoFields[1] as ISOFieldBitmap;
+            int[] setFields = bitmap.GetSetFields();
+
+            for (int k = 0; k < setFields.Length; k++)
             {
                 // special bit fields indicating existance of third and fourth bitmap should not try to pack them
-
-                if (fieldNumber != 65 && fieldNumber != 129)
+                int fieldNumber = setFields[k];
+                if (fieldNumber >= 2 && fieldNumber != 65 && fieldNumber != 129)
                 {
-                    // check if current field number is present on message bitmap
-
-                    if (((ISOFieldBitmap)isoFields[1]).BitIsSet(fieldNumber)) 
-                    {
-                        if (m_fieldPackagerList[fieldNumber].IsComposite())
-                        {
-                            //if (m_fieldPackagerList[fieldNumber].GetStorageClass() == "ISO8583Net.ISOMessageSubFields")
-                            //{
-                            isoFields[fieldNumber] = new ISOFieldBitmapSubFields(Logger, (ISOFieldBitmapSubFieldsPackager)m_fieldPackagerList[fieldNumber], m_fieldPackagerList[fieldNumber].GetFieldNumber());
-                            //}
-                        }
-                        else
-                        {
-                                isoFields[fieldNumber] = new ISOField(Logger, m_fieldPackagerList[fieldNumber], m_fieldPackagerList[fieldNumber].GetFieldNumber());
-                        }
-
-                        m_fieldPackagerList[fieldNumber].UnPack(isoFields[fieldNumber], packedBytes, ref index);
+                   
+                    if (m_fieldPackagerList[fieldNumber].IsComposite())
+                    {                       
+                        isoFields[fieldNumber] = new ISOFieldBitmapSubFields(Logger, (ISOFieldBitmapSubFieldsPackager)m_fieldPackagerList[fieldNumber], m_fieldPackagerList[fieldNumber].GetFieldNumber());                     
                     }
+                    else
+                    {
+                        isoFields[fieldNumber] = new ISOField(Logger, m_fieldPackagerList[fieldNumber], m_fieldPackagerList[fieldNumber].GetFieldNumber());
+                    }
+
+                    m_fieldPackagerList[fieldNumber].UnPack(isoFields[fieldNumber], packedBytes, ref index);
+                    
                 }
             }
+            //int totFields = bitmap.GetLengthInBits();
+
+            //for (int fieldNumber = 2; fieldNumber <= totFields; fieldNumber++)
+            //{
+            //    // special bit fields indicating existance of third and fourth bitmap should not try to pack them
+
+            //    if (fieldNumber != 65 && fieldNumber != 129)
+            //    {
+            //        // check if current field number is present on message bitmap
+
+            //        if (bitmap.BitIsSet(fieldNumber)) 
+            //        {
+            //            if (m_fieldPackagerList[fieldNumber].IsComposite())
+            //            {
+            //                //if (m_fieldPackagerList[fieldNumber].GetStorageClass() == "ISO8583Net.ISOMessageSubFields")
+            //                //{
+            //                isoFields[fieldNumber] = new ISOFieldBitmapSubFields(Logger, (ISOFieldBitmapSubFieldsPackager)m_fieldPackagerList[fieldNumber], m_fieldPackagerList[fieldNumber].GetFieldNumber());
+            //                //}
+            //            }
+            //            else
+            //            {
+            //                    isoFields[fieldNumber] = new ISOField(Logger, m_fieldPackagerList[fieldNumber], m_fieldPackagerList[fieldNumber].GetFieldNumber());
+            //            }
+
+            //            m_fieldPackagerList[fieldNumber].UnPack(isoFields[fieldNumber], packedBytes, ref index);
+            //        }
+            //    }
+            //}
         }
 
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-        public override String ToString()
+        public override string ToString()
         {
             StringBuilder strBuilder = new StringBuilder();
 

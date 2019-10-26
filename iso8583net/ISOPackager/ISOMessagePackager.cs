@@ -11,6 +11,9 @@ namespace ISO8583Net.Packager
     public class ISOMessagePackager : ISOPackager
     {
         protected int m_totalFields;
+        /// <summary>
+        /// 
+        /// </summary>
 
         protected ISOMessageFieldsPackager m_msgFieldsPackager;
         /// <summary>
@@ -66,7 +69,7 @@ namespace ISO8583Net.Packager
         /// 
         /// </summary>
         /// <returns></returns>
-        public override String ToString()
+        public override string ToString()
         {
             return ("ISOMessagePackager Definition: \n" + m_msgFieldsPackager.ToString());
         }
