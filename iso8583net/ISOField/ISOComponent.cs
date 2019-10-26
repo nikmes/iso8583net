@@ -14,9 +14,9 @@ namespace ISO8583Net.Field
 
         protected int m_number;
 
-        private String m_value;
+        private string m_value;
 
-        public virtual String value
+        public virtual string value
         {
             get { return m_value; }
             set { m_value = value; }
@@ -38,7 +38,7 @@ namespace ISO8583Net.Field
         /// <param name="logger"></param>
         /// <param name="number"></param>
         /// <param name="value"></param>
-        public ISOComponent(ILogger logger, int number, String value)
+        public ISOComponent(ILogger logger, int number, string value)
         {
             _logger = logger;
 
@@ -50,19 +50,19 @@ namespace ISO8583Net.Field
         /// 
         /// </summary>
         /// <returns></returns>
-        public abstract override String ToString();
+        public abstract override string ToString();
         /// <summary>
         /// 
         /// </summary>
         /// <param name="fieldNumber"></param>
         /// <param name="fieldValue"></param>
-        public abstract void Set(int fieldNumber, String fieldValue);
+        public abstract void Set(int fieldNumber, string fieldValue);
         /// <summary>
         /// 
         /// </summary>
         /// <param name="fieldNumber"></param>
         /// <returns></returns>
-        public abstract String GetFieldValue(int fieldNumber);
+        public abstract string GetFieldValue(int fieldNumber);
         /// <summary>
         /// 
         /// </summary>

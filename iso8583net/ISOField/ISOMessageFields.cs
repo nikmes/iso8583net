@@ -1,4 +1,5 @@
 ﻿using ISO8583Net.Packager;
+using ISO8583Net.Utilities;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Text;
@@ -10,11 +11,19 @@ namespace ISO8583Net.Field
     /// </summary>
     public class ISOMessageFields : ISOField
     {
+        /// <summary>
+        /// 
+        /// </summary>
         protected ISOComponent[] m_isoFields;
+        /// <summary>
+        /// 
+        /// </summary>
 
         protected ISOMessageFieldsPackager m_packager;
-
-        public override String value
+        /// <summary>
+        /// 
+        /// </summary>
+        public override string value
         {
             get
             {
@@ -26,7 +35,7 @@ namespace ISO8583Net.Field
                 {
                     if (m_isoFields[i] != null)
                     {
-                        String str = m_isoFields[i].value;
+                        string str = m_isoFields[i].value;
 
                         strBuilder.Append(str);
                     }
@@ -54,11 +63,11 @@ namespace ISO8583Net.Field
         /// </summary>
         /// <param name="fieldNumber"></param>
         /// <param name="fieldValue"></param>
-        public override void Set(int fieldNumber, String fieldValue)
+        public override void Set(int fieldNumber, string fieldValue)
         {
             if (m_isoFields[fieldNumber] != null)
             {
-                m_isoFields[fieldNumber].value=fieldValue; // SetValue(fieldValue);
+                m_isoFields[fieldNumber].value = fieldValue; // SetValue(fieldValue);
             }
             else
             {
@@ -83,7 +92,7 @@ namespace ISO8583Net.Field
         /// <param name="fieldNumber"></param>
         /// <param name="subFieldNumber"></param>
         /// <param name="fieldValue"></param>
-        public void SetValue(int fieldNumber, int subFieldNumber, String fieldValue)
+        public void SetValue(int fieldNumber, int subFieldNumber, string fieldValue)
         {
             if (m_isoFields[fieldNumber] == null)
             {
@@ -162,7 +171,7 @@ namespace ISO8583Net.Field
         /// </summary>
         /// <param name="fieldNumber"></param>
         /// <returns></returns>
-        public override String GetFieldValue(int fieldNumber)
+        public override string GetFieldValue(int fieldNumber)
         {
             return m_isoFields[fieldNumber].value; 
         }
@@ -172,7 +181,7 @@ namespace ISO8583Net.Field
         /// <param name="fieldNumber"></param>
         /// <param name="subField"></param>
         /// <returns></returns>
-        public override String GetFieldValue(int fieldNumber, int subField)
+        public override string GetFieldValue(int fieldNumber, int subField)
         {
             throw new NotImplementedException();
         }
@@ -180,17 +189,28 @@ namespace ISO8583Net.Field
         /// 
         /// </summary>
         /// <returns></returns>
-        public override String ToString()
+        public override string ToString()
         {
             StringBuilder msgFieldValues = new StringBuilder();
-
-            for (int i = 0; i < m_packager.GetTotalFields(); i++)
+            var bitmap = m_isoFields[1] as ISOFieldBitmap;
+            int[] setFields = bitmap.GetSetFields();
+            
+            for (int k = 0; k < setFields.Length; k++)
             {
-                if (m_isoFields[i] != null && (((ISOFieldBitmap)m_isoFields[1]).BitIsSet(i) || i==0 || i==1))
+                int i = setFields[k];
+                if (m_isoFields[i] != null)
                 {
                     msgFieldValues.Append(m_isoFields[i].ToString());
                 }
             }
+            //int length = m_packager.GetTotalFields();
+            //for (int i = 0; i < length; i++)
+            //{
+            //    if (m_isoFields[i] != null && (bitmap.BitIsSet(i) || i==0 || i==1))
+            //    {
+            //        msgFieldValues.Append(m_isoFields[i].ToString());
+            //    }
+            //}
             return msgFieldValues.ToString();
         }
         /// <summary>

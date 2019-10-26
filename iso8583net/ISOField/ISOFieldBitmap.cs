@@ -3,6 +3,7 @@ using ISO8583Net.Types;
 using ISO8583Net.Utilities;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Buffers;
 using System.Linq;
 using System.Text;
 
@@ -13,19 +14,19 @@ namespace ISO8583Net.Field
     /// </summary>
     public class ISOFieldBitmap : ISOField
     {
-        private ISOFieldPackager m_packager;
+        private readonly ISOFieldPackager m_packager;
 
-        private byte[] m_bitmap;
+        private readonly byte[] m_bitmap;
 
         private int m_length;
         /// <summary>
         /// 
         /// </summary>
-        public override String value
+        public override string value
         {
             get
             {
-                return ISOUtils.Bytes2Hex(m_bitmap).Substring(0, this.GetLengthInBytes() * 2);
+                return ISOUtils.Bytes2Hex(m_bitmap, this.GetLengthInBytes()); //.Substring(0, this.GetLengthInBytes() * 2);
             }
         }
         /// <summary>
@@ -195,27 +196,22 @@ namespace ISO8583Net.Field
             }
 
             int byteIndex = index / 8;
-
             int bitIndex = index % 8;
-
 
             if (!secondaryBitmapIsSet)
             {
                 if (byteIndex >= 8)
                 {
                     this.SetBit(1);
-
                     secondaryBitmapIsSet = true;
                 }
             }
-
 
             if (!thirdBitmapIsSet)
             {
                 if (byteIndex >= 16)
                 {
                     this.SetBit(65);
-
                     thirdBitmapIsSet = true;
                 }
             }
@@ -242,13 +238,13 @@ namespace ISO8583Net.Field
             m_bitmap[(index / 8)] ^= mask;
         }
         /// <summary>
-        /// 
+        /// Check if bit is set
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
         public bool BitIsSet(int index)
         {
-            if (index == 1)
+            if (index <= 1)
             {
                 index = 0;
             }
@@ -267,7 +263,7 @@ namespace ISO8583Net.Field
         /// <returns></returns>
         public string ToHexString()
         {
-            return ISOUtils.Bytes2Hex(m_bitmap).Substring(0, this.GetLengthInBytes() * 2);
+            return ISOUtils.Bytes2Hex(m_bitmap, this.GetLengthInBytes());//.Substring(0, this.GetLengthInBytes() * 2);
         }
         /// <summary>
         /// 
@@ -283,24 +279,24 @@ namespace ISO8583Net.Field
         /// <returns></returns>
         public string ToBinaryString()
         {
-            return String.Join(String.Empty, ToHexString().Select(c => Convert.ToString(Convert.ToInt32(c.ToString(), 16), 2).PadLeft(4, '0')));
+            return string.Join(string.Empty, ToHexString().Select(c => Convert.ToString(Convert.ToInt32(c.ToString(), 16), 2).PadLeft(4, '0')));
         }
         /// <summary>
         /// 
         /// </summary>
         /// <param name="padString"></param>
         /// <returns></returns>
-        public string ToHumanReadable(String padString)
+        public string ToHumanReadable(string padString)
         {
             StringBuilder humanReadableSring = new StringBuilder(1024);
 
             humanReadableSring.Append(padString);
-
-            for (int i = 1; i <= this.GetLengthInBits(); i++)
+            int length = GetLengthInBits();
+            for (int i = 1; i <= length; i++)
             {
                 string pos = (i).ToString("000");
 
-                if (this.BitIsSet(i))
+                if (BitIsSet(i))
                 {
                     humanReadableSring.Append("[" + pos.PadRight(3, '0') + "][X] ");
                 }
@@ -309,7 +305,7 @@ namespace ISO8583Net.Field
                     humanReadableSring.Append("[" + pos.PadRight(3, '0') + "][ ] ");
                 }
 
-                if ((i) % 8 == 0 && i != this.GetLengthInBits())
+                if ((i) % 8 == 0 && i != length)
                 {
                     humanReadableSring.Append("\n" + padString);
                 }
@@ -349,6 +345,83 @@ namespace ISO8583Net.Field
             {
                 return m_bitmap.AsSpan(0, m_length).ToArray();
             }          
+        }
+
+        public int[] GetSetFields()
+        {
+            //allocate bitmap length * 8 plus one for the zero field;
+            int[] result;
+            int currentIndex = 0;
+            try
+            {
+                int length = GetLengthInBytes();
+                result = ArrayPool<int>.Shared.Rent((length * 8) + 1);
+
+                result[currentIndex] = 0;
+                currentIndex++;
+                for (int i = 0; i < length; i++)
+                {
+                    int multiplier = i * 8;
+                    if ((128 & m_bitmap[i]) > 0)
+                    {
+                        result[currentIndex] = 1 + multiplier;
+                        currentIndex++;
+                    }
+                    if ((64 & m_bitmap[i]) > 0)
+                    {
+                        result[currentIndex] = 2 + multiplier;
+                        currentIndex++;
+                    }
+                    if ((32 & m_bitmap[i]) > 0)
+                    {
+                        result[currentIndex] = 3 + multiplier;
+                        currentIndex++;
+                    }
+                    if ((16 & m_bitmap[i]) > 0)
+                    {
+                        result[currentIndex] = 4 + multiplier;
+                        currentIndex++;
+                    }
+                    if ((8 & m_bitmap[i]) > 0)
+                    {
+                        result[currentIndex] = 5 + multiplier;
+                        currentIndex++;
+                    }
+                    if ((4 & m_bitmap[i]) > 0)
+                    {
+                        result[currentIndex] = 6 + multiplier;
+                        currentIndex++;
+                    }
+                    if ((2 & m_bitmap[i]) > 0)
+                    {
+                        result[currentIndex] = 7 + multiplier;
+                        currentIndex++;
+                    }
+                    if ((1 & m_bitmap[i]) > 0)
+                    {
+                        result[currentIndex] = 8 + multiplier;
+                        currentIndex++;
+                    }
+
+                }
+            }
+            finally
+            {
+
+
+            }
+
+            if (result != null)
+            {
+                var finalResult = result.AsSpan<int>(0, currentIndex).ToArray();
+                ArrayPool<int>.Shared.Return(result);
+                return finalResult;
+            }
+            else
+            {
+                return null;
+            }
+
         }
         /// <summary>
         /// 

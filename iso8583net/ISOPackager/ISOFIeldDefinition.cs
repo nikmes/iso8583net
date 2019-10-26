@@ -27,10 +27,10 @@ namespace ISO8583Net.Packager
         public ISOFieldPadding contentPadding { get; set; }
 
         /// <value>The field description</value>
-        public String description { get; set; }
+        public string description { get; set; }
 
         /// <value>The field name</value>
-        public String name { get; set; }
+        public string name { get; set; }
 
         /// <value>The units used for length indicator</value>
         public int lengthLength { get; set; }

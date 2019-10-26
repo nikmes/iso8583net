@@ -1,11 +1,75 @@
 ﻿using ISO8583Net.Types;
 using System;
+using System.Buffers;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 
 namespace ISO8583Net.Utilities
 {
+    /// <summary>
+    /// Bitmap Extensions to provide functions such as bit enumerators
+    /// </summary>
+    public static class BitMapExtensions 
+    {
+        /// <summary>
+        /// Get an boolean enumeration for each field of the bitmap         
+        /// </summary>
+        /// <param name="bitmap"></param>
+        /// <returns></returns>
+        public static IEnumerable<bool> GetBitEnumerator(this byte[] bitmap)
+        {
+            //return true for field 0
+            yield return true;
+            for (int i = 0; i < bitmap.Length; i++)
+            {
+                yield return (128 & bitmap[i]) > 0;
+                yield return (64 & bitmap[i]) > 0;
+                yield return (32 & bitmap[i]) > 0;
+                yield return (16 & bitmap[i]) > 0;
+                yield return (8 & bitmap[i]) > 0;
+                yield return (4 & bitmap[i]) > 0;
+                yield return (2 & bitmap[i]) > 0;
+                yield return (1 & bitmap[i]) > 0;
+            }
+        }
+
+        /// <summary>
+        /// Get all the field ids that are set    
+        /// </summary>
+        /// <param name="bitmap"></param>
+        /// <returns></returns>
+        public static IEnumerable<int> GetFieldIdEnumerator(this byte[] bitmap)
+        {
+            //return set for field 0
+            yield return 0;
+            for (int i = 0; i < bitmap.Length; i++)
+            {
+                int multiplier = i * 8;
+                if ((128 & bitmap[i]) > 0)
+                    yield return 1 + multiplier;
+                if ((64 & bitmap[i]) > 0)
+                    yield return 2 + multiplier;
+                if ((32 & bitmap[i]) > 0)
+                    yield return 3 + multiplier;
+                if ((16 & bitmap[i]) > 0)
+                    yield return 4 + multiplier;
+                if ((8 & bitmap[i]) > 0)
+                    yield return 5 + multiplier;
+                if ((4 & bitmap[i]) > 0)
+                    yield return 6 + multiplier;
+                if ((2 & bitmap[i]) > 0)
+                    yield return 7 + multiplier;
+                if ((1 & bitmap[i]) > 0)
+                    yield return 8 + multiplier;
+            }
+        }
+
+        
+        
+    }
     /// <summary>
     /// The ISO8583Utilities static class implements methods for performing fast conversion between different data types
     /// </summary>
@@ -100,46 +164,7 @@ namespace ISO8583Net.Utilities
                       0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
                       0x0, 0xA, 0xB, 0xC, 0xD, 0xE, 0xF
         };
-
-        /// <summary>
-        /// Extents array functionality by allowing to get a new array (sub array) from an array
-        /// </summary>
-        /// <param name="data">The array from where subarray will be created</param>  
-        /// <param name="index">Starting position for the sub array</param>  
-        /// <param name="length">Length of sub arrayt starting from postion index</param>
-        /// <typeparam name="T">An array of any type. Int, Char, Byte etc</typeparam>
-        /// <returns>
-        /// A sub array, portion of the original array in a new array object
-        /// </returns>
-        public static T[] SubArray<T>(this T[] inData, int index, int length)
-        {
-            T[] result = new T[length];
-
-            Array.Copy(inData, index, result, 0, length);
-
-            return result;
-        }
-
-        /// <summary>
-        /// Extents array functionality by allowing to concatenate two arrays
-        /// </summary>
-        /// <param name="inData1">The first arrays to be concatanated with the next array</param>  
-        /// <param name="inData2">The arrays to be concatanate to the previous array</param>
-        /// <returns>
-        /// A new array, the resutl of the concatanation of the two arrays passed as parameters
-        /// </returns>
-        /// <typeparam name="T">An array of any type. Int, Char, Byte etc</typeparam>
-        public static T[] ConcatArray<T>(this T[] inData1, T[] inData2) // int index, int length)
-        {
-            List<T> tmp = new List<T>();
-
-            tmp.AddRange(inData1);
-
-            tmp.AddRange(inData2);
-            
-            return tmp.ToArray();
-        }
-
+               
         /// <summary>
         /// Extents array functionality by allowing to concatenate two arrays
         /// </summary>
@@ -150,13 +175,10 @@ namespace ISO8583Net.Utilities
         /// </returns>
         public static byte[] BufferConcat(byte[] inData1, byte[] inData2)
         {
-            List<byte> tmp = new List<byte>();
-
-            tmp.AddRange(inData1);
-
-            tmp.AddRange(inData2);
-
-            return tmp.ToArray();
+            byte[] result = new byte[inData1.Length + inData2.Length];
+            Array.Copy(inData1, 0, result, 0, inData1.Length);
+            Array.Copy(inData2, 0, result, inData1.Length, inData2.Length);
+            return result;
         }
 
         /// <summary>
@@ -179,41 +201,14 @@ namespace ISO8583Net.Utilities
             return result;
         }
 
-        // used from other libs
-
-        public static string ToHexStr(string Mesaj, byte[] inData, int inLen)
-        {
-            string output = Mesaj;
-
-            if (inData == null)
-                return output;
-
-            if (inData.Length < inLen)
-                return output;
-
-            for (int i = 0; i < inLen; ++i)
-                output = output + String.Format("{0:X02} ", inData[i]);
-
-            return output;
-        }
-
-        public static string ToHexStr(byte[] inData, int ofset, int inLen)
-        {
-            string output = "";
-
-            if (inData == null)
-                return output;
-
-            if (inData.Length < ofset + inLen)
-                return output;
-
-            for (int i = 0; i < inLen; ++i)
-                output = output + String.Format("{0:X02}", inData[ofset + i]);
-
-            return output;
-        }
-
-        public static byte[] HexToByteArray(String hexString)
+        
+        /// <summary>
+        /// Hex to Byte array
+        /// </summary>
+        /// <param name="hexString"></param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static byte[] HexToByteArray(string hexString)
         {
             hexString = hexString.Replace(" ", "");
 
@@ -230,9 +225,13 @@ namespace ISO8583Net.Utilities
         }
 
         /// <summary>
-        /// Adds two integers and returns the result.
+        /// Integer to byte
         /// </summary>
-        /// <param name="value">The integer to be convert to bytes</param>  
+        /// <param name="value"></param>
+        /// <param name="packedBytes"></param>
+        /// <param name="index"></param>
+        /// <param name="numHexDigits"></param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Int2Bytes(int value, byte[] packedBytes, ref int index, int numHexDigits)
         {
             // !! PROBLEM NEED TO CONVERT BASE ON LENGTH OF LENGTH !!! NOT ALWAYS 1 BYTE !!!!!!
@@ -252,9 +251,12 @@ namespace ISO8583Net.Utilities
             }
         }
         /// <summary>
-        /// Adds two integers and returns the result.
+        /// Convert a byte array to int
         /// </summary>
-        /// <param name="value">The integer to be convert to bytes</param>  
+        /// <param name="packedBytes"></param>
+        /// <param name="index"></param>
+        /// <param name="numHexDigits"></param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Bytes2Int(byte[] packedBytes, ref int index, int numHexDigits)
         {
             int pos = 8 * ((numHexDigits / 2) - 1);
@@ -273,33 +275,46 @@ namespace ISO8583Net.Utilities
             return result;
         }
         /// <summary>
-        /// Adds two integers and returns the result.
+        /// Integer to Bcd
         /// </summary>
-        /// <param name="value">The integer to be convert to bytes</param>  
+        /// <param name="index"></param>
+        /// <param name="packedBytes"></param>
+        /// <param name="value"></param>
+        /// <param name="numBytes"></param>
         public static void Int2Bcd(int value, byte[] packedBytes, ref int index, int numBytes)
         {
 
         }
         /// <summary>
-        /// Adds two integers and returns the result.
+        /// Integer to ASCII
         /// </summary>
-        /// <param name="value">The integer to be convert to bytes</param>  
+        /// <param name="value"></param>
+        /// <param name="packedBytes"></param>
+        /// <param name="index"></param>
+        /// <param name="numBytes"></param>
         public static void Int2Ascii(int value, byte[] packedBytes, ref int index, int numBytes)
         {
 
         }
         /// <summary>
-        /// Adds two integers and returns the result.
+        /// Integer to Ebcdic
         /// </summary>
-        /// <param name="value">The integer to be convert to bytes</param>  
+        /// <param name="numBytes"></param>
+        /// <param name="index"></param>
+        /// <param name="packedBytes"></param>
+        /// <param name="value"></param>
         public static void Int2Ebcdic(int value, byte[] packedBytes, ref int index, int numBytes)
         {
 
         }
         /// <summary>
-        /// Adds two integers and returns the result.
+        /// Do not use
         /// </summary>
-        public static void Ascii2Bcd(string value, byte[] packedBytes, ref int index, ISOFieldPadding padding)
+        /// <param name="value"></param>
+        /// <param name="packedBytes"></param>
+        /// <param name="index"></param>
+        /// <param name="padding"></param>
+        public static void Ascii2BcdOld(string value, byte[] packedBytes, ref int index, ISOFieldPadding padding)
         {
             int valueLength = value.Length;
 
@@ -339,18 +354,64 @@ namespace ISO8583Net.Utilities
             }
         }
         /// <summary>
-        /// Adds two integers and returns the result.
+        /// Ascii 2 Bcd
         /// </summary>
-        /// <param name="value">The integer to be convert to bytes</param>  
+        /// <param name="value"></param>
+        /// <param name="packedBytes"></param>
+        /// <param name="index"></param>
+        /// <param name="padding"></param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Ascii2Bcd(string value, byte[] packedBytes, ref int index, ISOFieldPadding padding)
+        {
+            int valueLength = value.Length;
+            int startIndex = 0;
+            bool needPadding = valueLength % 2 != 0;
+            if (needPadding && padding == ISOFieldPadding.LEFT)
+            {
+                //left nibble padding leave empty and make a byte from the first nibble of the data 
+                packedBytes[index] = (byte)(value[0] - 0x30);
+                index++;
+                //ignore the first char of the value 
+                startIndex++;                                
+            }  
+            else if (needPadding && padding == ISOFieldPadding.RIGHT)
+            {
+                //Stop before the last half nibble
+                valueLength--;
+            }
+            
+            // no padding needed just convert to bcd
+            for (int i = startIndex;  i < valueLength; i += 2)
+            {                    
+                packedBytes[index] = (byte)((value[i] - 0x30) * 0x10 + value[i + 1] - 0x30);
+                index++;
+            }
+            if (needPadding && padding == ISOFieldPadding.RIGHT)
+            {
+                //right nibble padding, take the last nibble and set it as the high part of the byte, leave the low/right side as 0 
+                packedBytes[index] = (byte)((value[valueLength] - 0x30) * 0x10);
+                index++;
+            }
+
+        }
+        /// <summary>
+        /// Bcd to ASCII
+        /// </summary>
+        /// <param name="packedBytes"></param>
+        /// <param name="index"></param>
+        /// <param name="padding"></param>
+        /// <param name="valueLength"></param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string Bcd2Ascii(byte[] packedBytes, ref int index, ISOFieldPadding padding, int valueLength)
         {
-            char[] value = null;
+            var value = valueLength <= MaxStackAllocationSize
+             ? stackalloc char[valueLength]
+             : new char[valueLength];
 
             if (valueLength % 2 == 0)
             {
-                // no padding needed just convert to bcd
-                value = new char[valueLength];
-
+                // no padding needed just convert to bcd               
                 for (int i = 0; i < valueLength; i += 2)
                 {
                     value[i] = (char)((packedBytes[index] >> 4) + 0x30);
@@ -360,8 +421,6 @@ namespace ISO8583Net.Utilities
             }
             else
             {
-                value = new char[valueLength];
-
                 if (padding == ISOFieldPadding.LEFT)
                 {
                     // LEFT padding so ignore the first half byte/ just read the second half byte
@@ -392,12 +451,15 @@ namespace ISO8583Net.Utilities
                 }
 
             }
-            return new string(value);
+            return value.ToString();
         }
         /// <summary>
-        /// Adds two integers and returns the result.
+        /// Ascii to byte array
         /// </summary>
-        /// <param name="value">The integer to be convert to bytes</param>  
+        /// <param name="strASCIIString"></param>
+        /// <param name="packedBytes"></param>
+        /// <param name="index"></param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Ascii2Bytes(string strASCIIString, byte[] packedBytes, ref int index)
         {
             int len = strASCIIString.Length;
@@ -409,26 +471,35 @@ namespace ISO8583Net.Utilities
             index += len;
         }
         /// <summary>
-        /// Adds two integers and returns the result.
+        /// Bytes to ASCII
         /// </summary>
-        /// <param name="value">The integer to be convert to bytes</param>  
+        /// <param name="packedBytes"></param>
+        /// <param name="index"></param>
+        /// <param name="numBytes"></param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string Bytes2Ascii(byte[] packedBytes, ref int index, int numBytes)
         {
-            char[] ascii = new char[numBytes];
+            var result = numBytes <= MaxStackAllocationSize
+              ? stackalloc char[numBytes]
+              : new char[numBytes];
 
             for (int i = 0; i < numBytes; i++)
             {
-                ascii[index + i] = (char)packedBytes[index];
+                result[index + i] = (char)packedBytes[index];
             }
 
             index += numBytes;
 
-            return new string(ascii);
+            return result.ToString();
         }
         /// <summary>
-        /// Adds two integers and returns the result.
+        /// Hex to byte array
         /// </summary>
-        /// <param name="value">The integer to be convert to bytes</param>  
+        /// <param name="value"></param>
+        /// <param name="packedBytes"></param>
+        /// <param name="index"></param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Hex2Bytes(string value, byte[] packedBytes, ref int index)
         {
             int binlength = value.Length / 2;
@@ -449,9 +520,10 @@ namespace ISO8583Net.Utilities
             index += binlength;
         }
         /// <summary>
-        /// Adds two integers and returns the result.
+        /// Hex string to byte array
         /// </summary>
-        /// <param name="value">The integer to be convert to bytes</param>  
+        /// <param name="str"></param>
+        /// <returns></returns>
         public static byte[] Hex2Bytes(string str)
         {
             var HexNibble = _HexNibble;
@@ -469,39 +541,46 @@ namespace ISO8583Net.Utilities
             return result;
         }
         /// <summary>
-        /// Adds two integers and returns the result.
+        ///  Convert a byte[] to a hex values string, starting from the index position with lenght numbytes
         /// </summary>
-        /// <param name="value">The integer to be convert to bytes</param>  
+        /// <param name="index"></param>
+        /// <param name="numBytes"></param>
+        /// <param name="packedBytes"></param>  
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string Bytes2Hex(byte[] packedBytes, ref int index, int numBytes)
         {
             var lookup32 = _lookup32;
 
-            var result = new char[(numBytes * 2)];
+            int charLength = numBytes * 2;
+            var result = charLength <= MaxStackAllocationSize
+               ? stackalloc char[charLength]
+               : new char[charLength];
 
-            for (int i = 0; i < numBytes; i++)
+            for (int i = 0; i < charLength; i += 2)
             {
-                var val = lookup32[packedBytes[i + index]];
+                var val = lookup32[packedBytes[i / 2]];
 
-                result[2 * i] = (char)val;
+                result[i] = (char)val;
 
-                result[2 * i + 1] = (char)(val >> 16);
+                result[i + 1] = (char)(val >> 16);
             }
-
+                        
             index += numBytes;
 
-            return new string(result);
+            return result.ToString();
         }
         /// <summary>
-        /// Adds two integers and returns the result.
+        /// Convert a byte[] to a hex values string
         /// </summary>
-        /// <param name="value">The integer to be convert to bytes</param>  
-        public static string Bytes2Hex(byte[] bytes)
+        /// <param name="bytes"></param>
+        /// <param name="length"></param>
+        public static string Bytes2HexOld(byte[] bytes, int length)
         {
             var lookup32 = _lookup32;
 
-            var result = new char[bytes.Length * 2];
+            var result = new char[length * 2];
 
-            for (int i = 0; i < bytes.Length; i++)
+            for (int i = 0; i < length; i++)
             {
                 var val = lookup32[bytes[i]];
 
@@ -512,10 +591,49 @@ namespace ISO8583Net.Utilities
 
             return new string(result);
         }
+        private const int MaxStackAllocationSize = 256;
         /// <summary>
-        /// Adds two integers and returns the result.
+        /// Convert a byte[] to a hex values string
         /// </summary>
-        /// <param name="value">The integer to be convert to bytes</param>  
+        /// <param name="bytes"></param>
+        /// <param name="length"></param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string Bytes2Hex(byte[] bytes, int length)
+        {
+            var lookup32 = _lookup32;
+
+            int charLength = length * 2;
+            var result = charLength <= MaxStackAllocationSize
+               ? stackalloc char[charLength]
+               : new char[charLength];
+            
+            for (int i = 0; i < charLength; i+=2)
+            {
+                var val = lookup32[bytes[i/2]];
+
+                result[i] = (char)val;
+
+                result[i + 1] = (char)(val >> 16);
+            }
+
+            return result.ToString();
+        }
+        /// <summary>
+        /// Convert a byte[] to a hex values string
+        /// </summary>
+        /// <param name="bytes"></param>
+        /// <returns></returns>
+        public static string Bytes2Hex(byte[] bytes)
+        {
+            return Bytes2Hex(bytes, bytes.Length);
+        }
+        /// <summary>
+        /// Writes the value of src to packedBytes in ebcdic format
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="packedBytes"></param>
+        /// <param name="src"></param>
         public static void Ascii2Ebcdic(string src, byte[] packedBytes, ref int index)
         {
             var os_toebcdic = _os_toebcdic;
@@ -530,28 +648,33 @@ namespace ISO8583Net.Utilities
             index += srcLength;
         }
         /// <summary>
-        /// Adds two integers and returns the result.
-        /// </summary>
-        /// <param name="value">The integer to be convert to bytes</param>  
+        /// Converts ebcdic to ascii
+        /// </summary>        
+        /// <param name="packedBytes"></param>
+        /// <param name="index"></param>
+        /// <param name="numBytes"></param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string Ebcdic2Ascii(byte[] packedBytes, ref int index, int numBytes)
         {
             var os_toascii = _os_toascii;
 
-            char[] ascii = new char[numBytes];
-
+            var result = numBytes <= MaxStackAllocationSize
+              ? stackalloc char[numBytes]
+              : new char[numBytes];
+            
             for (int i = 0; i < numBytes; i++)
             {
-                ascii[i] = (char)os_toascii[packedBytes[index + i]];
+                result[i] = (char)os_toascii[packedBytes[index + i]];
             }
 
             index += numBytes;
 
-            return new string(ascii);
+            return result.ToString();
         }
         /// <summary>
-        /// Adds two integers and returns the result.
+        /// Check if value is a digit
         /// </summary>
-        /// <param name="value">The integer to be convert to bytes</param>  
+        /// <param name="value"></param>
         public static bool IsDigits(string value)
         {
             /* checks that all characters in a string correspond to a numerical digit
@@ -645,7 +768,8 @@ namespace ISO8583Net.Utilities
         /// <summary>
         /// Prepares in a string a nice representation of binary data to hex data and ascii (whereever binary characters happen to be printable else is replacing them with a dot
         /// </summary>
-        /// <param name="value">The integer to be convert to bytes</param>  
+        /// <param name="iNumBytes"></param>
+        /// <param name="iPtr"></param>
         /// <returns>
         /// The string with the nicely formated hex representation of binary data
         /// </returns>
@@ -653,7 +777,7 @@ namespace ISO8583Net.Utilities
         {
             uint kDL_OUTPUT_HEX_COLS = 16;
 
-            String hexBuffer = String.Empty;
+            string hexBuffer = string.Empty;
 
             uint rowIdx, colIdx;
 

@@ -17,7 +17,7 @@ namespace ISO8583Net.Field
         /// <param name="packager"></param>
         /// <param name="number"></param>
         /// <param name="value"></param>
-        public ISOField(ILogger logger, ISOPackager packager, int number, String value) : base(logger, number, value)
+        public ISOField(ILogger logger, ISOPackager packager, int number, string value) : base(logger, number, value)
         {          
             m_packager = packager;
         }
@@ -45,7 +45,7 @@ namespace ISO8583Net.Field
         /// </summary>
         /// <param name="fieldNumber"></param>
         /// <returns></returns>
-        public override String GetFieldValue(int fieldNumber)
+        public override string GetFieldValue(int fieldNumber)
         {
             throw new NotImplementedException();
         }
@@ -55,7 +55,7 @@ namespace ISO8583Net.Field
         /// <param name="fieldNumber"></param>
         /// <param name="subField"></param>
         /// <returns></returns>
-        public override String GetFieldValue(int fieldNumber, int subField)
+        public override string GetFieldValue(int fieldNumber, int subField)
         {
             throw new NotImplementedException();
         }
@@ -70,9 +70,9 @@ namespace ISO8583Net.Field
         /// 
         /// </summary>
         /// <returns></returns>
-        public override String ToString()
+        public override string ToString()
         {
-            return (String.Format("F[{0}]{1}[{2}]\n{3}", m_number.ToString().PadLeft(3, '0')," ".PadRight(1, ' '), value, m_packager.InterpretField(value)));
+            return (string.Format("F[{0}]{1}[{2}]\n{3}", m_number.ToString().PadLeft(3, '0')," ".PadRight(1, ' '), value, m_packager.InterpretField(value)));
         }
     }
 }

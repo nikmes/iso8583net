@@ -9,26 +9,26 @@ namespace ISO8583Net.Interpreter
     {
         private Dictionary<int, int>  m_indexLength = new Dictionary<int, int>();
         
-        private Dictionary<int, Dictionary<String, String>> m_interpreter = new Dictionary<int, Dictionary<string, string>>();
+        private Dictionary<int, Dictionary<string, string>> m_interpreter = new Dictionary<int, Dictionary<string, string>>();
 
         public ISOIndexedValueInterpreter(ILogger logger) : base (logger)
         {
 
         }
 
-        public override String ToString(string fieldValue)
+        public override string ToString(string fieldValue)
         {
             StringBuilder strBuild = new StringBuilder();
 
             foreach (KeyValuePair<int, int> indexLengthEntry in m_indexLength)
             {
-                String subStr = fieldValue.Substring(indexLengthEntry.Key, indexLengthEntry.Value);
+                string subStr = fieldValue.Substring(indexLengthEntry.Key, indexLengthEntry.Value);
 
-                String value;
+                string value;
 
                 if (m_interpreter[indexLengthEntry.Key].TryGetValue(subStr, out value))
                 {
-                    String desc;
+                    string desc;
 
                     m_interpreter[indexLengthEntry.Key].TryGetValue("", out desc);
 
