@@ -15,18 +15,34 @@ namespace ISO8583Net.Packager
 
 
         private int m_totalFields;
+        /// <summary>
+        /// 
+        /// </summary>
 
         public string messageTypeIdentifier;
+        /// <summary>
+        /// 
+        /// </summary>
 
         public string messageTypeName;
+        /// <summary>
+        /// 
+        /// </summary>
 
         public string messageTypeDescription;
 
-
+        /// <summary>
+        /// 
+        /// </summary>
         public ISOFieldBitmap m_manBitmap;
+        /// <summary>
+        /// 
+        /// </summary>
 
         public ISOFieldBitmap m_conBitmap;
-
+        /// <summary>
+        /// 
+        /// </summary>
         public ISOFieldBitmap m_optBitmap;
 
         /// <summary>

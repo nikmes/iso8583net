@@ -11,8 +11,16 @@ namespace ISO8583Net.Packager
     /// </summary>
     public class ISOFieldPackager : ISOPackager
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="logger"></param>
         public ISOFieldPackager(ILogger logger) : base(logger) { }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="logger"></param>
+        /// <param name="isoFieldDefinition"></param>
         public ISOFieldPackager(ILogger logger, ISOFieldDefinition isoFieldDefinition) : base(logger, isoFieldDefinition) { }
         
         /// <summary>
@@ -254,7 +262,12 @@ namespace ISO8583Net.Packager
                     break;
             }
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="isoField"></param>
+        /// <param name="packedBytes"></param>
+        /// <param name="index"></param>
         public void PackLengh(ISOComponent isoField, byte[] packedBytes, ref int index)
         {
 

@@ -9,6 +9,9 @@ using System.Xml;
 
 namespace ISO8583Net.Packager
 {
+    /// <summary>
+    /// Packager Loader
+    /// </summary>
     public class ISOPackagerLoader
     {
         private int m_totalFields = 0;
@@ -38,9 +41,9 @@ namespace ISO8583Net.Packager
             }
             else
             {
-                Logger.LogError(String.Format("Filename [{0}] dose not exist",fileName));
+                Logger.LogError(string.Format("Filename [{0}] does not exist",fileName));
 
-                throw new Exception(String.Format("Filename[{0}] dose not exist", fileName));
+                throw new Exception(string.Format("Filename[{0}] does not exist", fileName));
             }
 
             while (reader.Read())
@@ -204,7 +207,7 @@ namespace ISO8583Net.Packager
 
             // Search for the attribute name on this current node.
 
-            String attribute = reader["number"];
+            string attribute = reader["number"];
 
             if (attribute != null)
             {
@@ -425,10 +428,10 @@ namespace ISO8583Net.Packager
                 {
                     int fldNumber = int.Parse(reader["number"]);
 
-                    String packager       = reader["packager"];
-                    String storageclass   = reader["storageclass"];
-                    String iscomposite    = reader["composite"];
-                    String isointerpreter = reader["interpreter"];
+                    string packager       = reader["packager"];
+                    string storageclass   = reader["storageclass"];
+                    string iscomposite    = reader["composite"];
+                    string isointerpreter = reader["interpreter"];
 
                     if (Logger.IsEnabled(LogLevel.Trace)) Logger.LogTrace("Field Number: " + fldNumber.ToString().PadLeft(3, '0') + " Name: " + reader["name"] + " Description: " + reader["desc"]);
                                                                                                 
@@ -515,10 +518,10 @@ namespace ISO8583Net.Packager
                 {
                     int fldNumber = int.Parse(reader["number"]);
 
-                    String packager = reader["packager"];
-                    String storageclass = reader["storageclass"];
-                    String iscomposite = reader["composite"];
-                    String isointerpreter = reader["interpreter"];
+                    string packager = reader["packager"];
+                    string storageclass = reader["storageclass"];
+                    string iscomposite = reader["composite"];
+                    string isointerpreter = reader["interpreter"];
 
                     if (Logger.IsEnabled(LogLevel.Trace)) Logger.LogTrace("Field Number: " + fldNumber.ToString().PadLeft(3, '0') + " Name: " + reader["name"] + " Description: " + reader["desc"]);
 
@@ -602,9 +605,9 @@ namespace ISO8583Net.Packager
             {
                 do
                 {
-                    String index = reader["index"];
-                    String length = reader["length"];
-                    String desc = reader["desc"];
+                    string index = reader["index"];
+                    string length = reader["length"];
+                    string desc = reader["desc"];
 
                     if (reader.ReadToDescendant("value"))
                     {
@@ -616,7 +619,7 @@ namespace ISO8583Net.Packager
 
                         do
                         {
-                            String value = reader["value"];
+                            string value = reader["value"];
                             desc         = reader["desc"];
 
                             dic.Add(value, desc);
