@@ -36,8 +36,8 @@ namespace ISO8583NetBenchmark
         static void Main(string[] args)
         {
             
-            var summary = BenchmarkRunner.Run<ISOUtilsTest>(new Config());
-            //var summary = BenchmarkRunner.Run<BitmapTest>(new Config());
+            //var summary = BenchmarkRunner.Run<ISOUtilsTest>(new Config());
+            var summary = BenchmarkRunner.Run<BitmapTest>(new Config());
             //var summary = BenchmarkRunner.Run<HexUtilsTest>(new Config());
 
         }
