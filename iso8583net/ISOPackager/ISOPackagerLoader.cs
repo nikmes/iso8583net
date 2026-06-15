@@ -19,79 +19,57 @@ namespace ISO8583Net.Packager
         private readonly ILogger _logger;
 
         internal ILogger Logger { get { return _logger; } }
+
         /// <summary>
-        /// 
+        /// Loads a packager definition from an XML file on disk.
         /// </summary>
-        /// <param name="logger"></param>
-        /// <param name="fileName"></param>
-        /// <param name="msgFieldPackager"></param>
+        /// <param name="logger">Logger instance for diagnostic output.</param>
+        /// <param name="fileName">Path to the XML dialect file.</param>
+        /// <param name="msgFieldPackager">Output packager populated from the file.</param>
         public ISOPackagerLoader(ILogger logger, string fileName, ref ISOMessageFieldsPackager msgFieldPackager)
         {
             _logger = logger;
 
-            XmlReader reader = null;
-
-            ISOMessageTypesPackager isoMessageTypesPackager = null;
-
-            if (File.Exists(fileName))
+            if (!File.Exists(fileName))
             {
-                if (Logger.IsEnabled(LogLevel.Trace)) Logger.LogTrace("Loading packager definition from [" + fileName + "]");
-
-                reader = XmlReader.Create(fileName);
-            }
-            else
-            {
-                Logger.LogError(string.Format("Filename [{0}] does not exist",fileName));
-
+                Logger.LogError(string.Format("Filename [{0}] does not exist", fileName));
                 throw new Exception(string.Format("Filename[{0}] does not exist", fileName));
             }
 
-            while (reader.Read())
+            if (Logger.IsEnabled(LogLevel.Trace)) Logger.LogTrace("Loading packager definition from [" + fileName + "]");
+
+            using (XmlReader reader = XmlReader.Create(fileName))
             {
-                if (reader.IsStartElement())
-                {
-                    switch (reader.Name)
-                    {
-                        case "isopackager":
-                            string attribute = reader["totalfields"];
-                            m_totalFields = Int32.Parse(attribute);
-                            m_totalFields += 1;
-                            break;
-
-                        case "messages":
-                            isoMessageTypesPackager = new ISOMessageTypesPackager(Logger, m_totalFields);
-                            isoMessageTypesPackager = LoadMessageTypes(reader);
-                            break;
-
-                        case "isofields":
-                            msgFieldPackager = LoadISOMessageFieldsPackager(reader,0); 
-                            msgFieldPackager.SetMessageTypesPackager(isoMessageTypesPackager);                           
-                            msgFieldPackager.SetStorageClass(Type.GetType("ISO8583Net.ISOMessageFields"));
-                            break;
-                    }
-                }
+                ParsePackagerDefinition(reader, ref msgFieldPackager, "ISO8583Net.Field.ISOMessageFields");
             }
         }
+
         /// <summary>
-        /// 
+        /// Loads a packager definition from the embedded VISA XML resource.
         /// </summary>
-        /// <param name="logger"></param>
-        /// <param name="msgFieldPackager"></param>
+        /// <param name="logger">Logger instance for diagnostic output.</param>
+        /// <param name="msgFieldPackager">Output packager populated from the embedded resource.</param>
         public ISOPackagerLoader(ILogger logger, ref ISOMessageFieldsPackager msgFieldPackager)
         {
             _logger = logger;
 
-            XmlReader reader = null;
-
-            ISOMessageTypesPackager isoMessageTypesPackager = null;
-
-            if (Logger.IsEnabled(LogLevel.Trace)) Logger.LogTrace("Loading packager definition from build-in resource");
-
-            // load from embeded resource visa.xml
+            if (Logger.IsEnabled(LogLevel.Trace)) Logger.LogTrace("Loading packager definition from built-in resource");
 
             Stream stream = typeof(ISOPackagerLoader).GetTypeInfo().Assembly.GetManifestResourceStream("ISO8583Net.ISODialects.visa.xml");
 
-            reader = XmlReader.Create(stream);
+            using (XmlReader reader = XmlReader.Create(stream))
+            {
+                ParsePackagerDefinition(reader, ref msgFieldPackager, "ISO8583Net.Field.ISOMessageFields");
+            }
+        }
+
+        /// <summary>
+        /// Parses the root-level elements of an ISO packager XML definition.
+        /// Handles isopackager (metadata), messages (message types), and isofields (field definitions).
+        /// </summary>
+        private void ParsePackagerDefinition(XmlReader reader, ref ISOMessageFieldsPackager msgFieldPackager, string fieldsStorageClass)
+        {
+            ISOMessageTypesPackager isoMessageTypesPackager = null;
 
             while (reader.Read())
             {
@@ -103,6 +81,13 @@ namespace ISO8583Net.Packager
                             string attribute = reader["totalfields"];
                             m_totalFields = Int32.Parse(attribute);
                             m_totalFields += 1;
+
+                            // Read the optional header packager name from the dialect XML
+                            string headerPackagerName = reader["headerpackager"];
+                            if (!string.IsNullOrEmpty(headerPackagerName) && msgFieldPackager != null)
+                            {
+                                msgFieldPackager.HeaderPackagerName = headerPackagerName;
+                            }
                             break;
 
                         case "messages":
@@ -113,7 +98,7 @@ namespace ISO8583Net.Packager
                         case "isofields":
                             msgFieldPackager = LoadISOMessageFieldsPackager(reader, 0);
                             msgFieldPackager.SetMessageTypesPackager(isoMessageTypesPackager);
-                            msgFieldPackager.SetStorageClass(Type.GetType("ISO8583Net.Field.ISOMessageFields"));
+                            msgFieldPackager.SetStorageClass(Type.GetType(fieldsStorageClass));
                             break;
                     }
                 }

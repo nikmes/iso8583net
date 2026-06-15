@@ -10,7 +10,7 @@ namespace ISO8583NetBenchmark
     //[EtwProfiler] //Create traces for perfview
     //[SimpleJob(RuntimeMoniker.NetCoreApp21)]
     //[SimpleJob(RuntimeMoniker.NetCoreApp30)]
-    [SimpleJob(RunStrategy.Throughput, targetCount: 30, id: "MonitoringJob")]
+    [SimpleJob(RunStrategy.Throughput, iterationCount: 30, id: "MonitoringJob")]
     //[MinColumn, Q1Column, Q3Column, MaxColumn]
     public class HexUtilsTest
     {
@@ -40,7 +40,7 @@ namespace ISO8583NetBenchmark
     [EtwProfiler] //Create traces for perfview
     //[SimpleJob(RuntimeMoniker.NetCoreApp21)]
     //[SimpleJob(RuntimeMoniker.NetCoreApp30)]
-    [SimpleJob(RunStrategy.Throughput, targetCount: 30, id: "MonitoringJob")]
+    [SimpleJob(RunStrategy.Throughput, iterationCount: 30, id: "MonitoringJob")]
     //[MinColumn, Q1Column, Q3Column, MaxColumn]
     public class ISOUtilsTest
     {

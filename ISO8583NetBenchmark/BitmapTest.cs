@@ -9,7 +9,7 @@ namespace ISO8583NetBenchmark
 {
     [MemoryDiagnoser]
     [EtwProfiler] //Create traces for perfview
-    [SimpleJob(RunStrategy.Throughput, targetCount: 60, id: "MonitoringJob")]
+    [SimpleJob(RunStrategy.Throughput, iterationCount: 60, id: "MonitoringJob")]
     public class BitmapTest
     {        
         Microsoft.Extensions.Logging.ILogger logger;

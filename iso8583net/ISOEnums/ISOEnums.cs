@@ -78,4 +78,18 @@
         /// <summary>Tracks 2 and 3 code set as defined in ISO/IEC 7813 and ISO/IEC 4909 respectively</summary>
         Z
     }
+
+    /// <summary>
+    /// Well-known bitmap boundary constants for ISO 8583.
+    /// Bit 1 of the primary bitmap (field 65) indicates the presence of a secondary bitmap.
+    /// Bit 1 of the secondary bitmap (field 129) indicates the presence of a tertiary bitmap.
+    /// These are reserved indicator bits, not actual data fields.
+    /// </summary>
+    public static class BitmapBoundaries
+    {
+        /// <summary>Field number in the primary bitmap that flags the presence of a secondary bitmap.</summary>
+        public const int SecondaryBitmapFlag = 65;
+        /// <summary>Field number in the secondary bitmap that flags the presence of a tertiary bitmap.</summary>
+        public const int TertiaryBitmapFlag = 129;
+    }
 }

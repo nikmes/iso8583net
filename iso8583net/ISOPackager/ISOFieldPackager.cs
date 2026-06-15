@@ -263,12 +263,12 @@ namespace ISO8583Net.Packager
             }
         }
         /// <summary>
-        /// 
+        /// Packs the length indicator for a variable-length field.
         /// </summary>
-        /// <param name="isoField"></param>
-        /// <param name="packedBytes"></param>
-        /// <param name="index"></param>
-        public void PackLengh(ISOComponent isoField, byte[] packedBytes, ref int index)
+        /// <param name="isoField">The ISO field whose length to pack.</param>
+        /// <param name="packedBytes">The destination byte array.</param>
+        /// <param name="index">Current write position in the byte array.</param>
+        public void PackLength(ISOComponent isoField, byte[] packedBytes, ref int index)
         {
 
         }

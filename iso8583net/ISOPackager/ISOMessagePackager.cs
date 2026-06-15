@@ -100,12 +100,21 @@ namespace ISO8583Net.Packager
             return ((ISOMessageFieldsPackager)(m_msgFieldsPackager.GetFieldPackager(fieldNumber))).GetFieldPackager(subFieldNumber);
         }
         /// <summary>
-        /// 
+        /// Gets the underlying message fields packager.
         /// </summary>
         /// <returns></returns>
         public ISOMessageFieldsPackager GetISOMessageFieldsPackager()
         {
             return m_msgFieldsPackager;
+        }
+
+        /// <summary>
+        /// Gets the name of the header packager class as specified in the XML dialect
+        /// (e.g. "ISOHeaderVisaPackager"). Returns null if no header is configured.
+        /// </summary>
+        public string HeaderPackagerName
+        {
+            get { return m_msgFieldsPackager?.HeaderPackagerName; }
         }
     }
 }

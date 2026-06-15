@@ -1,9 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
+		<TargetFramework>net10.0</TargetFramework>
 		<AssemblyName>ISO8583Net</AssemblyName>
 		<RootNamespace>ISO8583Net</RootNamespace>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<PackageId>ISO8583Net</PackageId>
+		<Version>2.0.0</Version>
+		<Authors>nikmes</Authors>
+		<Description>A highly configurable .NET library for building and parsing ISO 8583 financial transaction messages. Supports XML-based dialect configuration, multiple encodings (BCD, ASCII, EBCDIC, BIN), bitmap handling, BER-TLV fields, and VISA header support.</Description>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageProjectUrl>https://github.com/nikmes/iso8583net</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/nikmes/iso8583net</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageTags>iso8583;financial;payment;visa;mastercard;banking;emv;transaction;messaging</PackageTags>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -15,7 +26,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
+	  <None Include="..\README.md" Pack="true" PackagePath="\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.8" />
 	</ItemGroup>
 
 </Project>
