@@ -18,11 +18,11 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <None Remove="ISODialects\visa.xml" />
+	  <None Remove="ISODialects\visa.json" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <EmbeddedResource Include="ISODialects\visa.xml" />
+	  <EmbeddedResource Include="ISODialects\visa.json" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -1,0 +1,83 @@
+{
+  "name": "ISO8583 Simple Test",
+  "version": "1.0",
+  "description": "Minimal dialect for testing (fields 0,1,7,11,24). No header.",
+  "totalFields": 32,
+  "headerPackager": "ISOHeaderD8Packager",
+  "messages": [
+    {
+      "type": "1800",
+      "name": "Test Administrative Message",
+      "f000": "M",
+      "f001": "M"
+    }
+  ],
+  "fields": [
+    {
+      "$type": "simple",
+      "number": 0,
+      "name": "Message Type Identifier",
+      "lengthFormat": "FIXED",
+      "lengthLength": 0,
+      "length": 4,
+      "lengthCoding": "BIN",
+      "lengthPadding": "LEFT",
+      "contentFormat": "N",
+      "contentCoding": "BCD",
+      "contentPadding": "LEFT"
+    },
+    {
+      "$type": "bitmap",
+      "number": 1,
+      "name": "Primary Bitmap",
+      "lengthFormat": "FIXED",
+      "lengthLength": 0,
+      "length": 16,
+      "lengthCoding": "BIN",
+      "lengthPadding": "LEFT",
+      "contentFormat": "HD",
+      "contentCoding": "BIN",
+      "contentPadding": "LEFT",
+      "storageClass": "Field.ISOFieldBitmap"
+    },
+    {
+      "$type": "simple",
+      "number": 7,
+      "name": "Transmission Date and Time",
+      "lengthFormat": "FIXED",
+      "lengthLength": 0,
+      "length": 10,
+      "lengthCoding": "BIN",
+      "lengthPadding": "LEFT",
+      "contentFormat": "N",
+      "contentCoding": "BCD",
+      "contentPadding": "LEFT"
+    },
+    {
+      "$type": "simple",
+      "number": 11,
+      "name": "Systems Trace Audit Number",
+      "lengthFormat": "FIXED",
+      "lengthLength": 0,
+      "length": 6,
+      "lengthCoding": "BIN",
+      "lengthPadding": "LEFT",
+      "contentFormat": "N",
+      "contentCoding": "BCD",
+      "contentPadding": "LEFT"
+    },
+    {
+      "$type": "simple",
+      "number": 24,
+      "name": "Network International Identifier",
+      "lengthFormat": "FIXED",
+      "lengthLength": 0,
+      "length": 3,
+      "lengthCoding": "BIN",
+      "lengthPadding": "LEFT",
+      "contentFormat": "N",
+      "contentCoding": "BCD",
+      "contentPadding": "LEFT"
+    }
+  ]
+}

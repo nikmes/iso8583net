@@ -54,7 +54,7 @@ namespace ISO8583Net.Message
         /// If no header is configured, the message is created without a header.
         /// </summary>
         /// <param name="logger">Logger instance.</param>
-        /// <param name="isoMessagePackager">The message packager loaded from an XML dialect.</param>
+        /// <param name="isoMessagePackager">The message packager loaded from a JSON dialect definition.</param>
         public ISOMessage(ILogger logger, ISOMessagePackager isoMessagePackager) : base(logger, 0)
         {
             m_isoMesssagePackager = isoMessagePackager;
@@ -100,9 +100,9 @@ namespace ISO8583Net.Message
         private static ISOHeader CreateHeaderForPackager(ILogger logger, ISOHeaderPackager packager)
         {
             if (packager is ISOHeaderVisaPackager)
-            {
                 return new ISOHeaderVisa(logger, packager);
-            }
+            if (packager is ISOHeaderD8Packager)
+                return new ISOHeaderD8(logger, packager);
             // Default: create a generic Visa header (most common)
             return new ISOHeaderVisa(logger, packager);
         }

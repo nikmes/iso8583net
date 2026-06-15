@@ -76,11 +76,11 @@ namespace ISO8583Net.Field
 
             if ((m_packager.m_isoFieldDefinition.contentCoding) == ISOFieldCoding.BIN && m_length<9)
             {
-                // length is bytes is number of hexadecimal digits divided by 2
+                // m_length is already in bytes (hex digits / 2 from constructor)
 
-                Array.Copy(packedBytes, index, m_bitmap, 0, m_length/2);
+                Array.Copy(packedBytes, index, m_bitmap, 0, m_length);
 
-                index += 4;
+                index += m_length;
             }
             else if (m_packager.m_isoFieldDefinition.contentCoding == ISOFieldCoding.BIN)
             {

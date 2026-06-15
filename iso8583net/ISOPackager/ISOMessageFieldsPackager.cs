@@ -149,7 +149,16 @@ namespace ISO8583Net.Packager
                 // Skip bitmap indicator bits (fields 65 and 129)
                 if (fieldNumber >= 2 && fieldNumber != BitmapBoundaries.SecondaryBitmapFlag && fieldNumber != BitmapBoundaries.TertiaryBitmapFlag)
                 {
-                   
+                    if (fieldNumber >= m_fieldPackagerList.Length || m_fieldPackagerList[fieldNumber] == null)
+                    {
+                        if (Logger.IsEnabled(LogLevel.Error))
+                            Logger.LogError("Field [{FieldNumber}] has NO packager defined in the dialect! " +
+                                "Total fields in dialect: {TotalFields}. " +
+                                "Add this field to your dialect definition.",
+                                fieldNumber, m_totalFields);
+                        continue;
+                    }
+
                     if (m_fieldPackagerList[fieldNumber].IsComposite())
                     {                       
                         isoFields[fieldNumber] = new ISOFieldBitmapSubFields(Logger, (ISOFieldBitmapSubFieldsPackager)m_fieldPackagerList[fieldNumber], m_fieldPackagerList[fieldNumber].GetFieldNumber());                     
