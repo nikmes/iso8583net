@@ -9,10 +9,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\iso8583net\ISO8583Net.csproj" />
+    <ProjectReference Include="..\ISO8583Server\ISO8583Server.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.8" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.8" />
   </ItemGroup>
 
 </Project>
