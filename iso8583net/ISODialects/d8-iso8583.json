@@ -1,13 +1,13 @@
 {
   "name": "ISO8583 Simple Test",
   "version": "1.0",
-  "description": "Minimal dialect for testing (fields 0,1,7,11,24). No header.",
-  "totalFields": 32,
+  "description": "Minimal dialect for testing (fields 0,1,7,11,24,39). D8 header.",
+  "totalFields": 64,
   "headerPackager": "ISOHeaderD8Packager",
   "messages": [
     {
       "type": "1800",
-      "name": "Test Administrative Message",
+      "name": "Network Management Request",
       "f000": "M",
       "f001": "M"
     }
@@ -70,6 +70,19 @@
       "$type": "simple",
       "number": 24,
       "name": "Network International Identifier",
+      "lengthFormat": "FIXED",
+      "lengthLength": 0,
+      "length": 3,
+      "lengthCoding": "BIN",
+      "lengthPadding": "LEFT",
+      "contentFormat": "N",
+      "contentCoding": "BCD",
+      "contentPadding": "LEFT"
+    },
+    {
+      "$type": "simple",
+      "number": 39,
+      "name": "Response Code",
       "lengthFormat": "FIXED",
       "lengthLength": 0,
       "length": 3,

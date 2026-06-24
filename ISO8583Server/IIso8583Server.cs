@@ -21,6 +21,21 @@ public interface IIso8583Server
     /// <summary>Stops the server gracefully.</summary>
     Task StopAsync();
 
+    /// <summary>
+    /// Interval in seconds for periodically sending a SignOn request (MTI 1800)
+    /// to each connected client. Set to 0 to disable.
+    /// </summary>
+    int SignOnIntervalSeconds { get; set; }
+
+    /// <summary>Send a SignOn request immediately when a client connects.</summary>
+    bool SendSignOnOnConnect { get; set; }
+
+    /// <summary>Enable/disable periodic SignOn requests. When false, SignOnIntervalSeconds is ignored.</summary>
+    bool EnablePeriodicSignOn { get; set; }
+
+    /// <summary>TLS configuration. Set <see cref="TlsOptions.IsEnabled"/> to true for TLS.</summary>
+    TlsOptions Tls { get; set; }
+
     /// <summary>Callback for log messages (thread-safe, may be called from any thread).</summary>
     Action<string>? OnLog { get; set; }
 

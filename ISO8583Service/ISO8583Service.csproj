@@ -30,4 +30,16 @@
     </None>
   </ItemGroup>
 
+  <!-- Bundle deploy scripts in publish output -->
+  <ItemGroup>
+    <Content Include="..\deploy\iso8583service.service">
+      <Link>deploy\iso8583service.service</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\deploy\deploy.sh">
+      <Link>deploy\deploy.sh</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>

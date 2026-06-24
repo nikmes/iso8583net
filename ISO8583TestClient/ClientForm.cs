@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using ISO8583Net.Message;
+using ISO8583Net.Packager;
 using Microsoft.Extensions.Logging;
 
 namespace ISO8583TestClient;
@@ -16,6 +18,8 @@ public sealed class ClientForm : Form
     private readonly TextBox _hostInput;
     private readonly NumericUpDown _portInput;
     private readonly Button _connectButton;
+    private readonly TextBox _dialectPathTextBox;
+    private readonly Button _dialectBrowseBtn;
     private readonly TextBox _hexInput;
     private readonly Button _sendButton;
     private readonly TextBox _logTextBox;
@@ -24,6 +28,7 @@ public sealed class ClientForm : Form
     // ── State ─────────────────────────────────────────────────────────────
     private TcpClient? _client;
     private NetworkStream? _stream;
+    private ISOMessagePackager? _packager;
     private ILogger? _logger;
     private CancellationTokenSource? _cts;
 
@@ -78,17 +83,47 @@ public sealed class ClientForm : Form
             ForeColor = Color.Gray
         };
 
+        // ── Dialect row ───────────────────────────────────────────────────
+        var dialectLabel = new Label
+        {
+            Text = "Dialect:", Location = new Point(12, 48),
+            Size = new Size(50, 23), TextAlign = ContentAlignment.MiddleRight
+        };
+        _dialectPathTextBox = new TextBox
+        {
+            Location = new Point(66, 46), Size = new Size(300, 23),
+            ReadOnly = true, BackColor = Color.White, Text = "(built-in VISA)"
+        };
+        _dialectBrowseBtn = new Button
+        {
+            Text = "...", Location = new Point(370, 44),
+            Size = new Size(30, 28), FlatStyle = FlatStyle.Flat
+        };
+        _dialectBrowseBtn.FlatAppearance.BorderSize = 0;
+        _dialectBrowseBtn.Click += (_, _) =>
+        {
+            using var dlg = new OpenFileDialog
+            {
+                Title = "Select ISO 8583 Dialect File",
+                Filter = "JSON Dialect Files (*.json)|*.json|All Files (*.*)|*.*",
+                DefaultExt = ".json",
+                InitialDirectory = AppDomain.CurrentDomain.BaseDirectory
+            };
+            if (dlg.ShowDialog() == DialogResult.OK)
+                _dialectPathTextBox.Text = dlg.FileName;
+        };
+
         // ── Hex input panel ───────────────────────────────────────────────
         var hexLabel = new Label
         {
             Text = "Hex message to send (spaces are trimmed):",
-            Location = new Point(12, 50), Size = new Size(300, 20),
+            Location = new Point(12, 80), Size = new Size(300, 20),
             ForeColor = Color.FromArgb(80, 80, 80)
         };
         _hexInput = new TextBox
         {
-            Location = new Point(12, 72),
-            Size = new Size(Width - 36, 180),
+            Location = new Point(12, 102),
+            Size = new Size(Width - 36, 150),
             Multiline = true, ScrollBars = ScrollBars.Vertical,
             Font = new Font("Consolas", 9.75f),
             Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
@@ -97,8 +132,8 @@ public sealed class ClientForm : Form
         // ── Send button ───────────────────────────────────────────────────
         _sendButton = new Button
         {
-            Text = "Send", Location = new Point(12, 258),
-            Size = new Size(100, 30),
+            Text = "Send & Receive", Location = new Point(12, 258),
+            Size = new Size(130, 30),
             BackColor = Color.FromArgb(0, 150, 0),
             ForeColor = Color.White, FlatStyle = FlatStyle.Flat,
             Font = new Font("Consolas", 9.75f, FontStyle.Bold),
@@ -131,6 +166,7 @@ public sealed class ClientForm : Form
         Controls.AddRange(new Control[] {
             hostLabel, _hostInput, portLabel, _portInput,
             _connectButton, _statusLabel,
+            dialectLabel, _dialectPathTextBox, _dialectBrowseBtn,
             hexLabel, _hexInput, _sendButton,
             logLabel, _logTextBox
         });
@@ -167,7 +203,6 @@ public sealed class ClientForm : Form
         if (_stream == null) return;
 
         string hex = _hexInput.Text;
-        // Strip all whitespace
         hex = hex.Replace(" ", "").Replace("\r", "").Replace("\n", "").Replace("\t", "");
 
         if (hex.Length == 0)
@@ -191,12 +226,122 @@ public sealed class ClientForm : Form
             await _stream.WriteAsync(bytes, 0, bytes.Length);
             await _stream.FlushAsync();
 
-            _logger?.LogInformation("Sent successfully.");
+            _logger?.LogInformation("Sent (response will arrive via background listener).");
         }
         catch (Exception ex)
         {
             _logger?.LogError(ex, "Send failed.");
         }
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════
+    //  Background read loop
+    // ═══════════════════════════════════════════════════════════════════════
+
+    private async Task BackgroundReadLoopAsync(CancellationToken ct)
+    {
+        var lengthBuf = new byte[2];
+
+        while (!ct.IsCancellationRequested && _stream != null)
+        {
+            try
+            {
+                int n = await _stream.ReadAsync(lengthBuf, 0, 2, ct);
+                if (n < 2)
+                {
+                    _logger?.LogWarning("Connection closed (read {N}/2 bytes).", n);
+                    await DisconnectAsync();
+                    return;
+                }
+
+                int msgLen = (lengthBuf[0] << 8) | lengthBuf[1];
+                if (msgLen <= 0 || msgLen > 4096)
+                {
+                    _logger?.LogWarning("Invalid message length: {Len}", msgLen);
+                    continue;
+                }
+
+                var buf = new byte[msgLen];
+                int total = 0;
+                while (total < msgLen)
+                {
+                    int r = await _stream.ReadAsync(buf, total, msgLen - total, ct);
+                    if (r == 0) throw new EndOfStreamException();
+                    total += r;
+                }
+
+                _logger?.LogInformation("Received: {Len} bytes.", msgLen);
+                LogHexDump("RX", buf);
+
+                await ParseAndAutoRespondAsync(buf, ct);
+            }
+            catch (EndOfStreamException) { _logger?.LogWarning("Connection closed."); await DisconnectAsync(); return; }
+            catch (OperationCanceledException) { return; }
+            catch (Exception ex) { _logger?.LogError(ex, "Read error."); }
+        }
+    }
+
+    /// <summary>
+    /// Parses an incoming message. If it's a SignOn request (MTI 1800),
+    /// automatically sends a SignOn response (MTI 1814, F39=00).
+    /// </summary>
+    private async Task ParseAndAutoRespondAsync(byte[] data, CancellationToken ct)
+    {
+        EnsurePackagerLoaded();
+
+        try
+        {
+            var msg = new ISOMessage(
+                new Microsoft.Extensions.Logging.Abstractions.NullLogger<ISOMessage>(),
+                _packager!);
+            msg.UnPack(data);
+
+            _logger?.LogInformation("─── Parsed Message ───\n{Dump}", msg.ToString());
+
+            string mti = msg.GetFieldValue(0);
+
+            // ── Auto-respond to SignOn request ──────────────────────────
+            if (mti == "1800" && _stream != null)
+            {
+                _logger?.LogInformation("SignOn request detected — building response...");
+
+                msg.Set(0, "1814");
+                msg.Set(39, "00");
+
+                byte[] rsp = msg.Pack();
+                LogHexDump("TX (SignOn Response)", rsp);
+
+                var framed = new byte[2 + rsp.Length];
+                framed[0] = (byte)(rsp.Length >> 8);
+                framed[1] = (byte)(rsp.Length & 0xFF);
+                Array.Copy(rsp, 0, framed, 2, rsp.Length);
+
+                await _stream.WriteAsync(framed, 0, framed.Length, ct);
+                await _stream.FlushAsync(ct);
+
+                _logger?.LogInformation("SignOn response sent.");
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger?.LogError(ex, "Parse/respond failed.");
+        }
+    }
+
+    private void EnsurePackagerLoaded()
+    {
+        if (_packager != null) return;
+
+        string path = _dialectPathTextBox.Text;
+        bool isBuiltIn = path == "(built-in VISA)" || string.IsNullOrWhiteSpace(path);
+
+        var nullLog = new Microsoft.Extensions.Logging.Abstractions.NullLogger<ISOMessagePackager>();
+        _packager = isBuiltIn
+            ? new ISOMessagePackager(nullLog)
+            : new ISOMessagePackager(nullLog, path);
+
+        _logger?.LogInformation("Dialect loaded: {Source} ({Fields} fields)",
+            isBuiltIn ? "built-in VISA" : path, _packager.GetTotalFields());
     }
 
     private async void OnFormClosing(object? sender, FormClosingEventArgs e)
@@ -245,6 +390,9 @@ public sealed class ClientForm : Form
         _portInput.Enabled = false;
         _statusLabel.Text = $"Connected to {host}:{port}";
         _statusLabel.ForeColor = Color.FromArgb(0, 150, 0);
+
+        // Start background read loop for incoming messages
+        _ = Task.Run(() => BackgroundReadLoopAsync(_cts.Token));
     }
 
     private async Task DisconnectAsync()

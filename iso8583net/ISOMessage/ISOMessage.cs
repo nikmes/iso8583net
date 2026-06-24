@@ -257,7 +257,15 @@ namespace ISO8583Net.Message
         {
             StringBuilder msgFieldValues = new StringBuilder();
 
-            msgFieldValues.Append("ISO Message Content: \n");
+            // ── Header breakdown ──
+            if (m_isoHeader != null)
+            {
+                msgFieldValues.AppendLine("── Header ──");
+                msgFieldValues.AppendLine(m_isoHeader.ToString());
+                msgFieldValues.AppendLine();
+            }
+
+            msgFieldValues.AppendLine("── ISO Message Content ──");
 
             msgFieldValues.Append(m_isoMessageFields.ToString());
 

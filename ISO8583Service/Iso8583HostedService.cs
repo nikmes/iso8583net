@@ -30,6 +30,21 @@ public sealed class Iso8583HostedService : IHostedService
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {
+        _server.SignOnIntervalSeconds = _options.SignOnIntervalSeconds;
+        _server.SendSignOnOnConnect = _options.SendSignOnOnConnect;
+        _server.EnablePeriodicSignOn = _options.EnablePeriodicSignOn;
+
+        if (_options.TlsEnabled)
+        {
+            _server.Tls = new TlsOptions
+            {
+                CertPath = _options.TlsCertPath,
+                KeyPath = _options.TlsKeyPath,
+                CaCertPath = _options.TlsCaCertPath,
+                RequireClientCert = _options.TlsRequireClientCert
+            };
+        }
+
         // Wire server callbacks to Serilog
         _server.OnLog = msg =>
         {
@@ -43,8 +58,8 @@ public sealed class Iso8583HostedService : IHostedService
 
         _server.OnMessageParsed = (connNum, bytes, hexDump, parsed) =>
         {
+            // Server already logs full parse detail; just log summary here
             _logger.LogInformation("[#{ConnNum}] Received {Bytes} bytes", connNum, bytes.Length);
-            _logger.LogInformation("[#{ConnNum}] ── Parsed ──\n{Dump}", connNum, parsed);
         };
 
         string? dialectPath = string.IsNullOrWhiteSpace(_options.DialectPath)
@@ -69,4 +84,14 @@ public sealed class ServerOptions
 
     public int Port { get; set; } = 9090;
     public string? DialectPath { get; set; }
+    public int SignOnIntervalSeconds { get; set; }
+    public bool SendSignOnOnConnect { get; set; }
+    public bool EnablePeriodicSignOn { get; set; }
+
+    // TLS settings
+    public bool TlsEnabled { get; set; }
+    public string? TlsCertPath { get; set; }
+    public string? TlsKeyPath { get; set; }
+    public string? TlsCaCertPath { get; set; }
+    public bool TlsRequireClientCert { get; set; }
 }

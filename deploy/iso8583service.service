@@ -1,0 +1,26 @@
+[Unit]
+Description=ISO 8583 Service
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=ecbxuser
+Group=ecbxuser
+WorkingDirectory=/home/ecbxuser/linux-x64
+ExecStart=/home/ecbxuser/linux-x64/ISO8583Service
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=iso8583service
+
+# Security hardening
+NoNewPrivileges=yes
+PrivateTmp=yes
+
+# Environment for production
+Environment=DOTNET_ENVIRONMENT=Production
+
+[Install]
+WantedBy=multi-user.target
