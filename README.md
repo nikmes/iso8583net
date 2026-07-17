@@ -8,8 +8,6 @@ A highly configurable .NET library for building and parsing **ISO 8583** financi
 
 > **Version 2.0.0** — migrated from XML to JSON dialect definitions with System.Text.Json polymorphic deserialization.
 
-📖 **Documentation Site:** [nikmes.github.io/iso8583net](https://nikmes.github.io/iso8583net/)
-
 ---
 
 ## Features
@@ -25,7 +23,7 @@ A highly configurable .NET library for building and parsing **ISO 8583** financi
 | **Message Headers** | Pre-built VISA header (22 bytes) and D8 ISO 8583:1993 header (21 bytes ASCII). Extensible via custom header packagers. |
 | **Message Type Definitions** | Define MTIs with field participation flags (Mandatory/Optional/Conditional) per message type |
 | **Field Interpreters** | Indexed-value interpreters for decoding field sub-components with human-readable labels |
-| **High Performance** | `ArrayPool<byte>` support via `PackPooled()`, aggressive inlining, lookup-table hex conversion, and BenchmarkDotNet benchmarks |
+| **High Performance** | Span-based bitmap enumeration, delegate dispatch for encodings, field object reuse, pre-sized `StringBuilder` in `ToString()`, `ArrayPool<byte>` support via `PackPooled()` |
 | **TCP Server** | Built-in async TCP server with TLS/mTLS support, periodic SignOn, Echo, SignOff, and connection monitoring |
 | **Logging** | Integrates with `Microsoft.Extensions.Logging` — use Serilog, NLog, or any compatible provider |
 | **Cross-Platform** | Targets .NET 10.0 — runs on Windows, Linux, and macOS |
@@ -47,8 +45,6 @@ git clone https://github.com/nikmes/iso8583net.git
 cd iso8583net
 dotnet build
 ```
-
-![clone](iso8583net/site/images/gitclone.png)
 
 ---
 
@@ -124,9 +120,66 @@ byte[] packed = message.PackPooled(); // Uses ArrayPool<byte>.Shared internally
 
 ---
 
-## Sample Trace
+## Solution Structure
 
-![output](iso8583net/site/images/output.png)
+```mermaid
+graph TD
+    subgraph src["src/"]
+        ISO8583Net["ISO8583Net<br/>Core Library"]
+        ISO8583Server["ISO8583Server<br/>TCP Server Library"]
+    end
+    subgraph tests["tests/"]
+        ISO8583Net_Tests["ISO8583Net.Tests<br/>xUnit Test Suite"]
+    end
+    subgraph samples["samples/"]
+        SimpleTest["SimpleTest<br/>Console Demo"]
+        TestClient["TestClient<br/>WinForms Client"]
+        TestServer["TestServer<br/>WinForms Server"]
+    end
+    subgraph benchmarks["benchmarks/"]
+        Benchmarks["ISO8583Net.Benchmarks<br/>BenchmarkDotNet"]
+    end
+    subgraph tools["tools/"]
+        ISO8583Service["ISO8583Service<br/>ASP.NET Hosted Service"]
+    end
+
+    ISO8583Server --> ISO8583Net
+    ISO8583Net_Tests --> ISO8583Net
+    SimpleTest --> ISO8583Net
+    TestClient --> ISO8583Net
+    TestServer --> ISO8583Net
+    TestServer --> ISO8583Server
+    Benchmarks --> ISO8583Net
+    ISO8583Service --> ISO8583Server
+```
+
+```
+iso8583net/
+├── src/
+│   ├── ISO8583Net/              # Core library (NuGet package)
+│   │   ├── ISOMessage/          # ISOMessage — the main API
+│   │   ├── ISOPackager/         # JSON dialect loader, field packagers
+│   │   ├── ISOField/            # Field types (flat, bitmap, sub-fields, BER-TLV)
+│   │   ├── ISOHeader/           # VISA & D8 message headers
+│   │   ├── ISOInterpreter/      # Field value interpreters
+│   │   ├── ISOEnums/            # Enums: encoding, padding, content types
+│   │   ├── ISOUtils/            # High-speed hex, BCD, EBCDIC converters
+│   │   └── ISODialects/         # Built-in dialect JSON files
+│   └── ISO8583Server/           # Async TCP server library with TLS
+├── tests/
+│   └── ISO8583Net.Tests/        # xUnit test suite (8 tests)
+├── samples/
+│   ├── SimpleTest/              # Console demo application
+│   ├── TestClient/              # WinForms test client GUI
+│   └── TestServer/              # WinForms test server GUI
+├── benchmarks/
+│   └── ISO8583Net.Benchmarks/   # BenchmarkDotNet benchmarks (32 benchmarks)
+├── tools/
+│   └── ISO8583Service/          # ASP.NET Core hosted service
+├── docs/
+│   └── specs/                   # Dialect technical specifications
+└── deploy/                      # Linux deployment scripts & systemd unit
+```
 
 ---
 
@@ -134,8 +187,8 @@ byte[] packed = message.PackPooled(); // Uses ArrayPool<byte>.Shared internally
 
 | Dialect | File | Description |
 |---------|------|-------------|
-| **VISA BASE I** | `ISODialects/visa.json` | VISA financial message format with 22-byte header, up to 192 fields. Embedded as a default resource. |
-| **D8 G2B ISO 8583:1993** | `ISODialects/d8-iso8583.json` | D8 G2B Payment Platform with 21-byte ASCII header, Fixed TLV in field 48, BER-TLV in field 55. |
+| **VISA BASE I** | `src/ISO8583Net/ISODialects/visa.json` | VISA financial message format with 22-byte header, up to 192 fields. Embedded as default resource. |
+| **D8 G2B ISO 8583:1993** | `src/ISO8583Net/ISODialects/d8-iso8583.json` | D8 G2B Payment Platform with 21-byte ASCII header, Fixed TLV in field 48, BER-TLV in field 55. |
 
 ### Writing a Custom Dialect
 
@@ -230,31 +283,6 @@ Field types available via the `$type` discriminator:
 
 ---
 
-## Solution Structure
-
-```
-iso8583net/
-├── iso8583net/                  # Core library (NuGet package)
-│   ├── ISOMessage/              # ISOMessage — the main API
-│   ├── ISOPackager/             # JSON dialect loader, field packagers
-│   ├── ISOField/                # Field types (flat, bitmap, bitmap sub-fields, BER-TLV)
-│   ├── ISOHeader/               # VISA & D8 message headers
-│   ├── ISOInterpreter/          # Field value interpreters
-│   ├── ISOEnums/                # Enums: encoding, padding, content types
-│   ├── ISOUtils/                # High-speed hex, BCD, EBCDIC converters
-│   └── ISODialects/             # Built-in dialect JSON files
-├── ISO8583Tests/                # xUnit test suite
-├── ISO8583NetBenchmark/         # BenchmarkDotNet benchmarks
-├── ISO8583NetSimpleTest/        # Simple console demo
-├── ISO8583Server/               # Async TCP server library with TLS support
-├── ISO8583TestServer/           # WinForms test server GUI
-├── ISO8583TestClient/           # WinForms test client GUI
-├── ISO8583Service/              # Windows service host
-└── docs/                        # Documentation site source (DocFX)
-```
-
----
-
 ## TCP Server
 
 The `ISO8583Server` project provides a production-ready async TCP server:
@@ -318,11 +346,7 @@ await server.StartAsync(port: 8583);
 | Ascii2Bytes_32 |  12.921 ns |      88 B |
 | Bcd2Ascii_16   |  17.066 ns |      96 B |
 
-Full benchmark reports and charts are in the [ISO8583NetBenchmark/BenchmarkDotNet.Artifacts/](ISO8583NetBenchmark/BenchmarkDotNet.Artifacts/) directory. See [IMPROVEMENTS.md](IMPROVEMENTS.md) for a deep-dive into performance optimization opportunities.
-
-![benchmark](iso8583net/site/images/benchmark.png)
-
-![BenchmarkDotNet R Graph](iso8583net/site/images/BenchmarkDotNetRGraph.png)
+Full benchmark reports and charts are in the [benchmarks/ISO8583Net.Benchmarks/BenchmarkDotNet.Artifacts/](benchmarks/ISO8583Net.Benchmarks/BenchmarkDotNet.Artifacts/) directory.
 
 ---
 
@@ -334,7 +358,5 @@ This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) f
 
 ## Links
 
-- 📖 [Documentation](https://nikmes.github.io/iso8583net/)
 - 📦 [NuGet Package](https://www.nuget.org/packages/ISO8583Net/)
 - 🐛 [Issue Tracker](https://github.com/nikmes/iso8583net/issues)
-- 🔧 [Contributing](https://github.com/nikmes/iso8583net)
