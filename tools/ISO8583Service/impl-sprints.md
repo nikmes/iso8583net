@@ -133,6 +133,55 @@ Wire REST API actions (`POST /signon`, `/echo`, `/signoff`) to pipeline.
 
 ---
 
+## Sprint 7 — Handler Framework for D8 G2B Dialect
+
+**Goal:** Full handler coverage for the D8 ISO 8583 G2B dialect (14 message
+types across 4 functional groups: Authorization, Financial, Reversal, Network
+Management).
+
+| ID | Task | File(s) | Status |
+|----|------|---------|--------|
+| HNDL-1 | Create `BaseRequestHandler` — abstract handler for 1100/1200/1400; auto-copies common fields, sets response MTI, calls virtual `ProcessAsync()` returning F39 | `src/ISO8583Server/Pipeline/Handlers/BaseRequestHandler.cs` | ✅ |
+| HNDL-2 | Create `BaseAdviceHandler` — abstract handler for advice (1120/1220/1420); auto-acks with F39="400", copies key fields, virtual `OnAcknowledgedAsync()` | `src/ISO8583Server/Pipeline/Handlers/BaseAdviceHandler.cs` | ✅ |
+| HNDL-3 | Create `NetworkManagementHandler` — handles 1804→1814; dispatches F24 (801=Logon, 802=Logoff, 811=KeyChange, 831=Echo) to virtual methods | `src/ISO8583Server/Pipeline/Handlers/NetworkManagementHandler.cs` | ✅ |
+| HNDL-4 | Create `AuthorizationHandler` — 1100→1110, extends `BaseRequestHandler` | `tools/ISO8583Service/Handlers/AuthorizationHandler.cs` | ✅ |
+| HNDL-5 | Create `FinancialHandler` — 1200→1210, extends `BaseRequestHandler` | `tools/ISO8583Service/Handlers/FinancialHandler.cs` | ✅ |
+| HNDL-6 | Create `ReversalHandler` — 1400→1410, extends `BaseRequestHandler` | `tools/ISO8583Service/Handlers/ReversalHandler.cs` | ✅ |
+| HNDL-7 | Create advice handlers — `AuthorizationAdvice` (1120→1130), `FinancialAdvice` (1220→1230), `ReversalAdvice` (1420→1430) | `tools/ISO8583Service/Handlers/*AdviceHandler.cs` | ✅ |
+| HNDL-8 | Upgrade `DefaultHandler` with logging, clearer docs | `src/ISO8583Server/Pipeline/Handlers/DefaultHandler.cs` | ✅ |
+| HNDL-9 | Build + verify: all 22 tests pass, 0 errors | — | ✅ |
+
+### Handler Architecture
+
+```
+IMessageHandler (interface)
+├── BaseRequestHandler (abstract)       ← handles request→response flow
+│   ├── AuthorizationHandler       1100→1110
+│   ├── FinancialHandler           1200→1210
+│   └── ReversalHandler            1400→1410
+├── BaseAdviceHandler (abstract)       ← auto-acknowledges advice
+│   ├── AuthorizationAdviceHandler 1120→1130
+│   ├── FinancialAdviceHandler     1220→1230
+│   └── ReversalAdviceHandler      1420→1430
+├── NetworkManagementHandler           ← handles 1804→1814 (F24 dispatch)
+└── DefaultHandler ("*" catch-all)     ← legacy 1800→1814 echo, passthrough
+```
+
+### Key Design Decisions
+
+- **Base classes in library** (`src/ISO8583Server/Pipeline/Handlers/`):
+  reusable for any ISO 8583 dialect
+- **Concrete handlers in app layer** (`tools/ISO8583Service/Handlers/`):
+  D8 G2B-specific business logic
+- **ProcessResult struct**: returns F39 action code + optional F38 approval code
+- **Virtual methods**: all business logic in overridable virtuals — users
+  override, not implement interfaces
+- **Catch-all still fires**: DefaultHandler (`*`) runs alongside specific
+  handlers but returns null for handled MTIs (no-op overhead)
+
+---
+
+
 ## Progress Summary
 
 | Sprint | Name | Tasks | Completed | Status |
@@ -142,9 +191,10 @@ Wire REST API actions (`POST /signon`, `/echo`, `/signoff`) to pipeline.
 | 2 | Parser Stage | 7 | 7 | ✅ |
 | 3 | Dispatcher & Handlers | 9 | 9 | ✅ |
 | 4 | SignOn, Echo & Periodic | 9 | 9 | ✅ |
-| 5 | Tuning & Benchmarks | 7 | 0 | ⬜ |
-| 6 | Hardening & Polish | 9 | 0 | ⬜ |
-| **Total** | | **58** | **58** | **100%** |
+| 5 | Tuning & Benchmarks | 7 | 7 | ✅ |
+| 6 | Hardening & Polish | 9 | 9 | ✅ |
+| 7 | Handler Framework (D8 G2B) | 9 | 9 | ✅ |
+| **Total** | | **67** | **67** | **100%** |
 
 
 ### Dependency Order
@@ -157,15 +207,17 @@ graph TD
     S2 --> S3
     S1 --> S4["Sprint 4<br/>SignOn & Periodic ✅"]
     S3 --> S4
-    S3 --> S5["Sprint 5<br/>Tuning & Benchmarks"]
-    S4 --> S6["Sprint 6<br/>Hardening & Polish"]
+    S3 --> S5["Sprint 5<br/>Tuning & Benchmarks ✅"]
+    S4 --> S6["Sprint 6<br/>Hardening & Polish ✅"]
     S5 --> S6
+    S3 --> S7["Sprint 7<br/>Handler Framework ✅"]
 ```
 
 - **S0 ✓** — Types, interfaces, config (committed: c0df913)
 - **S1 ✓** — Reader, Writer, ConnectionPipeline, PipelineHost (committed: 77f7394)
 - **S2 ✓** — Parser with concurrency + circuit breaker (committed: 74cbc6d)
-- **S3 ✓** — Dispatcher, HandlerRegistry, DefaultHandler, DI integration (pending commit)
-- **S4 ✓** — PeriodicSignOnService, broadcast pipeline, removed direct socket writes (pending commit)
-- **S5** — needs S3 (working end-to-end pipeline to benchmark)
-- **S6** — needs S4 + S5 (final hardening)
+- **S3 ✓** — Dispatcher, HandlerRegistry, DefaultHandler, DI integration
+- **S4 ✓** — PeriodicSignOnService, broadcast pipeline, removed direct socket writes
+- **S5 ✓** — Benchmark suite, channel tuning, throughput documentation
+- **S6 ✓** — Logging, health checks, circuit breaker, drain timeout, integration tests
+- **S7 ✓** — Handler framework: BaseRequestHandler, BaseAdviceHandler, NetworkManagementHandler + 6 concrete handlers for D8 G2B dialect
