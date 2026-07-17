@@ -79,7 +79,7 @@ public sealed class Iso8583TcpServer : IIso8583Server
 
         // ── Create pipeline host ───────────────────────────────────────
         var pipelineOptions = new PipelineOptions();
-        _pipelineHost = new PipelineHost(pipelineOptions);
+        _pipelineHost = new PipelineHost(pipelineOptions, _packager!);
 
         // ── Start listener ──────────────────────────────────────────────
         _cts = CancellationTokenSource.CreateLinkedTokenSource(ct);

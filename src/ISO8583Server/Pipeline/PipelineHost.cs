@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using ISO8583Net.Packager;
 
 namespace ISO8583Net.Server.Pipeline;
 
@@ -15,11 +16,13 @@ namespace ISO8583Net.Server.Pipeline;
 public sealed class PipelineHost
 {
     private readonly PipelineOptions _options;
+    private readonly ISOMessagePackager _packager;
     private readonly ConcurrentDictionary<int, ConnectionPipeline> _pipelines = new();
 
-    public PipelineHost(PipelineOptions options)
+    public PipelineHost(PipelineOptions options, ISOMessagePackager packager)
     {
         _options = options;
+        _packager = packager;
     }
 
     /// <summary>
@@ -37,7 +40,7 @@ public sealed class PipelineHost
         CancellationToken ct)
     {
         var pipeline = new ConnectionPipeline(
-            stream, connectionNumber, remoteEndpoint, _options, ct);
+            stream, connectionNumber, remoteEndpoint, _packager, _options, ct);
 
         _pipelines.TryAdd(connectionNumber, pipeline);
         return pipeline;

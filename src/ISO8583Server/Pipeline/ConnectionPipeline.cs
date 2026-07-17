@@ -3,23 +3,29 @@ using System.IO;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
+using ISO8583Net.Packager;
 using ISO8583Net.Server.Pipeline.Messages;
 
 namespace ISO8583Net.Server.Pipeline;
 
 /// <summary>
-/// Manages the full per-connection SEDA pipeline: reader → (parser → dispatcher → handlers) → writer.
-/// In Sprint 1, only reader and writer are wired; a pass-through bridge echoes raw bytes.
+/// Manages the full per-connection SEDA pipeline:
+/// reader → parser → (dispatcher → handlers) → writer.
+///
+/// Sprint 2: reader → parser → (echo bridge: re-pack parsed messages) → writer.
+/// Sprint 3: replaces the echo bridge with dispatcher + handlers.
 /// </summary>
 public sealed class ConnectionPipeline : IAsyncDisposable
 {
     private readonly CancellationTokenSource _cts;
     private readonly Task _readerTask;
-    private readonly Task _passthroughTask;
+    private readonly Task _parserTask;
+    private readonly Task _bridgeTask;
     private readonly Task _writerTask;
 
     // Channels — owned by this pipeline
     private readonly Channel<RawMessage> _rawChannel;
+    private readonly Channel<ParsedMessage> _parsedChannel;
     private readonly Channel<OutboundMessage> _outboundChannel;
 
     public PipelineStats Stats { get; }
@@ -28,6 +34,7 @@ public sealed class ConnectionPipeline : IAsyncDisposable
         Stream stream,
         int connectionNumber,
         string remoteEndpoint,
+        ISOMessagePackager packager,
         PipelineOptions options,
         CancellationToken parentCt)
     {
@@ -46,6 +53,14 @@ public sealed class ConnectionPipeline : IAsyncDisposable
             {
                 FullMode = BoundedChannelFullMode.Wait,
                 SingleWriter = true,
+                SingleReader = false  // N parser tasks may read
+            });
+
+        _parsedChannel = Channel.CreateBounded<ParsedMessage>(
+            new BoundedChannelOptions(options.ParsedMessageCapacity)
+            {
+                FullMode = BoundedChannelFullMode.Wait,
+                SingleWriter = false,  // N parser tasks may write
                 SingleReader = true
             });
 
@@ -61,34 +76,33 @@ public sealed class ConnectionPipeline : IAsyncDisposable
         _readerTask = ReaderStage.RunAsync(stream, _rawChannel.Writer, Stats, _cts.Token);
         _writerTask = WriterStage.RunAsync(stream, _outboundChannel.Reader, Stats, _cts.Token);
 
-        // Sprint 1 pass-through: echo raw bytes back
-        // Reader → RawMessage → (pass-through: re-frame) → OutboundMessage → Writer
-        _passthroughTask = RunPassThroughAsync(_cts.Token);
+        // Sprint 2: reader → parser → (echo bridge: re-pack) → writer
+        _parserTask = ParserStage.RunAsync(
+            _rawChannel.Reader, _parsedChannel.Writer, packager, Stats, options, _cts.Token);
+
+        _bridgeTask = RunEchoBridgeAsync(_cts.Token);
     }
 
     /// <summary>
-    /// Sprint 1 pass-through: reads raw frames, immediately echoes them back.
-    /// Replaced by parser + dispatcher + handlers in Sprint 2–3.
+    /// Sprint 2 echo bridge: reads parsed messages and echoes them back
+    /// by re-packing and framing. Replaced by dispatcher + handlers in Sprint 3.
     /// </summary>
-    private async Task RunPassThroughAsync(CancellationToken ct)
+    private async Task RunEchoBridgeAsync(CancellationToken ct)
     {
         try
         {
-            await foreach (var raw in _rawChannel.Reader.ReadAllAsync(ct))
+            await foreach (var parsed in _parsedChannel.Reader.ReadAllAsync(ct))
             {
-                // Re-frame: prepend 2-byte LI + raw data
-                int frameLength = 2 + raw.Length;
+                // Re-pack the ISO message and frame it
+                byte[] packed = parsed.Message.Pack();
+                int frameLength = 2 + packed.Length;
                 byte[] framed = new byte[frameLength];
-                framed[0] = (byte)(raw.Length >> 8);
-                framed[1] = (byte)(raw.Length & 0xFF);
-                raw.Data.Span.CopyTo(framed.AsSpan(2));
+                framed[0] = (byte)(packed.Length >> 8);
+                framed[1] = (byte)(packed.Length & 0xFF);
+                Array.Copy(packed, 0, framed, 2, packed.Length);
 
                 var outbound = OutboundMessage.FromPreFramed(framed, Stats.ConnectionNumber);
-
                 await _outboundChannel.Writer.WriteAsync(outbound, ct);
-
-                // Return the rented buffer now that we've copied the data
-                raw.Return();
             }
         }
         catch (OperationCanceledException) { /* graceful */ }
@@ -104,17 +118,17 @@ public sealed class ConnectionPipeline : IAsyncDisposable
     /// </summary>
     public async Task StopAsync(TimeSpan drainTimeout)
     {
-        // Signal reader to stop
+        // Signal all stages to stop
         _cts.Cancel();
 
-        // Wait for reader + pass-through to finish (with timeout)
-        var drainTasks = new[] { _readerTask, _passthroughTask };
+        // Wait for reader + parser + bridge to finish (with timeout)
+        var drainTasks = new[] { _readerTask, _parserTask, _bridgeTask };
         var drainCts = new CancellationTokenSource(drainTimeout);
         try
         {
             await Task.WhenAll(drainTasks).WaitAsync(drainCts.Token);
         }
-        catch (OperationCanceledException) { /* timeout — force complete */ }
+        catch (OperationCanceledException) { /* timeout */ }
         catch (TimeoutException) { /* timeout */ }
 
         // Complete the outbound channel so writer drains and exits
