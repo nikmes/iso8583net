@@ -74,8 +74,8 @@ Handlers run in parallel; responses flow back through the writer channel.
 | S3-4 | `MessageContext.SendResponseAsync` pushes to writer channel (via captured `ChannelWriter`) | `MessageContext.cs` | ✅ |
 | S3-5 | Register `DefaultHandler` in DI as catch-all, register `HandlerRegistry`, `PipelineHost` | `Program.cs` | ✅ |
 | S3-6 | Update `GET /status` to include `PipelineStats` (in-flight count, queue lengths, messages sent/received) | `Iso8583Controller.cs` | ✅ |
-| S3-7 | Add unit test: register custom handler for MTI "0200", send 0200 message → verify handler invoked | `tests/` | ⬜ |
-| S3-8 | Add unit test: 3 concurrent messages → all 3 handlers run in parallel, responses arrive correctly | `tests/` | ⬜ |
+| S3-7 | Add unit test: register custom handler for MTI "0200", send 0200 message → verify handler invoked | `tests/` | ✅ |
+| S3-8 | Add unit test: 3 concurrent messages → all 3 handlers run in parallel, responses arrive correctly | `tests/` | ✅ |
 | S3-9 | Build + verify: all tests pass, REST API `/status` shows pipeline stats | — | ✅ |
 
 ---
@@ -93,8 +93,8 @@ Wire REST API actions (`POST /signon`, `/echo`, `/signoff`) to pipeline.
 | S4-4 | Update `Iso8583TcpServer.SendEchoAsync` — same pattern | `Iso8583TcpServer.cs` | ✅ |
 | S4-5 | Update `Iso8583TcpServer.SendSignOffAsync` — push SignOff + schedule disconnect after write completes | `Iso8583TcpServer.cs` | ✅ |
 | S4-6 | Remove old 1-second polling loop and inline SignOn code from `HandleClientAsync` | `Iso8583TcpServer.cs` | ✅ |
-| S4-7 | Add unit test: periodic SignOn fires at correct interval via `PeriodicTimer` | `tests/` | ⬜ |
-| S4-8 | Add unit test: `POST /signon` through REST API → SignOn sent to all connections | `tests/` | ⬜ |
+| S4-7 | Add unit test: periodic SignOn fires at correct interval via `PeriodicTimer` | `tests/` | ✅ |
+| S4-8 | Add unit test: `POST /signon` through REST API → SignOn sent to all connections | `tests/` | ✅ |
 | S4-9 | Build + verify: all tests pass, no polling in hot path | — | ✅ |
 
 ---
@@ -140,13 +140,12 @@ Wire REST API actions (`POST /signon`, `/echo`, `/signoff`) to pipeline.
 | 0 | Groundwork | 9 | 9 | ✅ |
 | 1 | Reader & Writer Stages | 8 | 8 | ✅ |
 | 2 | Parser Stage | 7 | 7 | ✅ |
-| 3 | Dispatcher & Handlers | 9 | 7 | ✅ |
-| 4 | SignOn, Echo & Periodic | 9 | 7 | ✅ |
+| 3 | Dispatcher & Handlers | 9 | 9 | ✅ |
+| 4 | SignOn, Echo & Periodic | 9 | 9 | ✅ |
 | 5 | Tuning & Benchmarks | 7 | 0 | ⬜ |
 | 6 | Hardening & Polish | 9 | 0 | ⬜ |
-| **Total** | | **58** | **38** | **66%** |
-
-> **Deferred tasks (S3-7, S3-8, S4-7, S4-8):** 4 optional unit tests for MTI routing, handler parallelism, periodic interval, and REST API integration. Can be added during Sprint 5 (benchmarking naturally exercises these paths).
+| **Total** | | **58** | **42** | **72%** |
+
 
 ### Dependency Order
 

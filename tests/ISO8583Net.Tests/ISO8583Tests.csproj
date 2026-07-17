@@ -22,6 +22,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\ISO8583Net\ISO8583Net.csproj" />
     <ProjectReference Include="..\..\src\ISO8583Server\ISO8583Server.csproj" />
+    <ProjectReference Include="..\..\tools\ISO8583Service\ISO8583Service.csproj" />
   </ItemGroup>
 
 </Project>
