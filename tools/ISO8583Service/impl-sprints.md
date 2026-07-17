@@ -107,11 +107,11 @@ Wire REST API actions (`POST /signon`, `/echo`, `/signoff`) to pipeline.
 |----|------|---------|--------|
 | S5-1 | Add `PipelineBenchmarks` to `ISO8583Net.Benchmarks` — measure throughput (msg/sec) with varying concurrency | `benchmarks/ISO8583Net.Benchmarks/` | ✅ `9a3c147` |
 | S5-2 | Benchmark: single connection, 1 parser task vs 2 vs 4 parser tasks | — | ✅ (in S5-1) |
-| S5-3 | Benchmark: measure P50/P99 latency at 1K, 10K, 50K msg/sec | — | ⬜ |
-| S5-4 | Tune default channel capacities based on benchmark results | `appsettings.json` | ⬜ |
-| S5-5 | Add `PipelineStats` to benchmarks — track in-flight, queue depths, dropped messages | — | ⬜ |
-| S5-6 | Document benchmark results in `arch-design.md` (update throughput table with real numbers) | `arch-design.md` | ⬜ |
-| S5-7 | Build + verify: benchmarks run, no regressions | — | ⬜ |
+| S5-3 | Benchmark: measure P50/P99 latency at 1K, 10K, 50K msg/sec | — | ✅ |
+| S5-4 | Tune default channel capacities based on benchmark results | `appsettings.json` | ✅ |
+| S5-5 | Add `PipelineStats` to benchmarks — track in-flight, queue depths, dropped messages | — | ✅ |
+| S5-6 | Document benchmark results in `arch-design.md` (update throughput table with real numbers) | `arch-design.md` | ✅ |
+| S5-7 | Build + verify: benchmarks run, no regressions | — | ✅ |
 
 ---
 
@@ -144,7 +144,7 @@ Wire REST API actions (`POST /signon`, `/echo`, `/signoff`) to pipeline.
 | 4 | SignOn, Echo & Periodic | 9 | 9 | ✅ |
 | 5 | Tuning & Benchmarks | 7 | 0 | ⬜ |
 | 6 | Hardening & Polish | 9 | 0 | ⬜ |
-| **Total** | | **58** | **44** | **76%** |
+| **Total** | | **58** | **49** | **84%** |
 
 
 ### Dependency Order

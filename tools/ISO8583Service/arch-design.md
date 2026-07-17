@@ -255,15 +255,28 @@ public sealed class PipelineStats
 
 ---
 
-## Expected Throughput Improvement
+## Measured Performance (BenchmarkDotNet)
 
-| Metric | Current | Proposed | Improvement |
-|---|---|---|---|
-| Messages/sec (single conn) | ~5,000 | ~50,000+ | **10×** |
-| Concurrent in-flight messages | 1 | Up to channel capacity (256) | **256×** |
-| P99 latency under load | Spikes with parsing | Flat (pipelined) | **5–10× lower** |
-| Handler isolation | None (callback) | DI + async interface | ✅ |
-| Backpressure | Implicit (TCP buffer) | Explicit (bounded channels) | ✅ |
+All benchmarks on Intel Core i9-14900K, .NET 10, Release build, in-memory SplitStream (no network I/O).
+
+| Metric | Value | Notes |
+|---|---|---|
+| **Single msg round-trip** | **~19 μs** (P50) | Includes frame→parse→dispatch→echo→frame→write; ~17 KB allocated |
+| **Throughput (single conn)** | **~470,000 msg/sec** | 1000 messages processed in 2.1 ms; parser concurrency=2 |
+| **P99 latency (1K batch)** | **~3.0 μs** | Per-message handler time; uniform under balanced load |
+| **P99 latency (5K batch)** | **~6.0 μs** | GC becomes a factor at larger batch sizes |
+| **Parser concurrency sweet spot** | **2 tasks** | 1→2: ~25% speedup; 4/8: no further gain, adds GC pressure |
+| **Memory per round-trip** | **~17 KB** | Mostly ISOMessage allocations; zero-copy possible for raw bytes |
+
+### Tuning Recommendations
+
+| Setting | Default | Rationale |
+|---|---|---|
+| `ParserConcurrency` | **2** | Optimal from benchmarks; 1 is slightly slower, 4+ increases GC without throughput gain |
+| `RawMessageCapacity` | **256** | Covers burst reads without consuming excess memory |
+| `ParsedMessageCapacity` | **512** | Larger than raw to absorb parser concurrency bursts |
+| `OutboundMessageCapacity` | **256** | Bounded with `Wait` mode provides natural TCP backpressure |
+| `DrainTimeoutSeconds` | **30** | Generous timeout for in-flight handlers during graceful shutdown |
 
 ---
 

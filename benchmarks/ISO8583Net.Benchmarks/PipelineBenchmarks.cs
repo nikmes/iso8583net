@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using BenchmarkDotNet.Attributes;
@@ -33,6 +35,33 @@ namespace ISO8583NetBenchmark
         public IReadOnlySet<string> SupportedMTIs { get; } = new HashSet<string> { "*" };
         public Task<ISOMessage?> HandleAsync(MessageContext context, CancellationToken ct)
             => Task.FromResult<ISOMessage?>(context.Request);
+    }
+
+    /// <summary>
+    /// Wraps an inner handler and records per-message processing latency
+    /// (microseconds from dispatch start to response ready).
+    /// Used by percentile benchmarks.
+    /// </summary>
+    internal sealed class LatencyRecordingHandler : IMessageHandler
+    {
+        private readonly IMessageHandler _inner;
+        private readonly ConcurrentBag<long> _latenciesUs;
+
+        public LatencyRecordingHandler(IMessageHandler inner, ConcurrentBag<long> latenciesUs)
+        {
+            _inner = inner;
+            _latenciesUs = latenciesUs;
+        }
+
+        public IReadOnlySet<string> SupportedMTIs => _inner.SupportedMTIs;
+
+        public async Task<ISOMessage?> HandleAsync(MessageContext context, CancellationToken ct)
+        {
+            var sw = Stopwatch.StartNew();
+            var result = await _inner.HandleAsync(context, ct);
+            _latenciesUs.Add(sw.ElapsedTicks * 1_000_000L / Stopwatch.Frequency);
+            return result;
+        }
     }
 
     /// <summary>
@@ -307,6 +336,93 @@ namespace ISO8583NetBenchmark
             cts.Cancel();
             await pipeline.StopAsync(TimeSpan.FromSeconds(5));
             await pipeline.DisposeAsync();
+        }
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    //  Percentile latency: measure P50/P95/P99 at batch sizes
+    // ═══════════════════════════════════════════════════════════════════
+
+    [MemoryDiagnoser]
+    [MarkdownExporter]
+    [WarmupCount(1)]
+    [IterationCount(3)]
+    public class PercentileLatencyBenchmarks
+    {
+        [Params(100, 1000, 5000)]
+        public int MessageCount { get; set; }
+
+        private ISOMessagePackager _packager = null!;
+        private byte[][] _framedMessages = null!;
+
+        [GlobalSetup]
+        public void GlobalSetup()
+        {
+            var logger = new NullBenchLogger();
+            _packager = new ISOMessagePackager(logger);
+
+            _framedMessages = new byte[5000][];
+            for (int i = 0; i < 5000; i++)
+            {
+                var msg = new ISOMessage(logger, _packager);
+                msg.Set(0, "1800");
+                msg.Set(7, DateTime.UtcNow.ToString("MMddHHmmss"));
+                msg.Set(11, $"{i + 1:D6}");
+                msg.Set(24, "801");
+                byte[] packed = msg.Pack();
+                byte[] frame = new byte[2 + packed.Length];
+                frame[0] = (byte)(packed.Length >> 8);
+                frame[1] = (byte)(packed.Length & 0xFF);
+                Array.Copy(packed, 0, frame, 2, packed.Length);
+                _framedMessages[i] = frame;
+            }
+        }
+
+        [Benchmark]
+        public async Task<(double P50, double P95, double P99)> MeasurePercentiles()
+        {
+            var latencies = new ConcurrentBag<long>();
+            var registry = new HandlerRegistry(new IMessageHandler[]
+                { new LatencyRecordingHandler(new BenchmarkEchoHandler(), latencies) });
+
+            var options = new PipelineOptions
+            {
+                RawMessageCapacity = 8192,
+                ParsedMessageCapacity = 8192,
+                OutboundMessageCapacity = 8192,
+                ParserConcurrency = 2,
+                DrainTimeoutSeconds = 10
+            };
+
+            var host = new PipelineHost(options, registry);
+            host.SetPackager(_packager);
+
+            // Feed messages into the pipeline as a batch
+            using var clientStream = new MemoryStream();
+            for (int i = 0; i < MessageCount; i++)
+                clientStream.Write(_framedMessages[i], 0, _framedMessages[i].Length);
+            clientStream.Position = 0;
+            using var serverToClient = new MemoryStream();
+            using var serverStream = new SplitStream(clientStream, serverToClient);
+            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+
+            var pipeline = host.Accept(serverStream, 1, "127.0.0.1:0", cts.Token);
+
+            while (pipeline.Stats.MessagesSent < MessageCount)
+                await Task.Yield();
+
+            cts.Cancel();
+            await pipeline.StopAsync(TimeSpan.FromSeconds(5));
+            await pipeline.DisposeAsync();
+
+            // Compute percentiles
+            var sorted = latencies.OrderBy(l => l).ToArray();
+            if (sorted.Length == 0) return (0, 0, 0);
+
+            double P50 = sorted[(int)(sorted.Length * 0.50)];
+            double P95 = sorted[(int)(sorted.Length * 0.95)];
+            double P99 = sorted[(int)(sorted.Length * 0.99)];
+            return (P50, P95, P99);
         }
     }
 }

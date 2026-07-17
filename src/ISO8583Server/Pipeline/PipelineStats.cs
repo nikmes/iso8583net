@@ -53,6 +53,12 @@ public sealed class PipelineStats
     /// <summary>Current write queue depth (messages waiting to be written).</summary>
     public int WriteQueueLength { get; set; }
 
+    /// <summary>Peak in-flight count observed.</summary>
+    public int MaxInFlight { get; set; }
+
+    /// <summary>Peak write queue depth observed.</summary>
+    public int MaxWriteQueueLength { get; set; }
+
     // ── Increment helpers ──────────────────────────────────────────────
 
     public void IncrementMessagesReceived() => Interlocked.Increment(ref _messagesReceived);
