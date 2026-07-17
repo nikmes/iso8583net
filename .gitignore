@@ -260,5 +260,8 @@ paket-files/
 __pycache__/
 *.pyc
 
+# BenchmarkDotNet artifacts
+BenchmarkDotNet.Artifacts/
+
 # Business project documents
 docs/project/
