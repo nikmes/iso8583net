@@ -47,6 +47,14 @@ namespace ISO8583Net.Field
             m_number = number;
         }
         /// <summary>
+        /// Clears the value, allowing this component to be reused in subsequent UnPack operations.
+        /// </summary>
+        public virtual void Reset()
+        {
+            m_value = null;
+        }
+
+        /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>

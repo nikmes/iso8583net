@@ -1,12 +1,13 @@
 #!/bin/bash
-# Deploy ISO8583Service to the target server
-# Usage: ./deploy.sh <server-ip>
+# Deploy ISO8583Service (with WebAPI) to the target server
+# Usage: ./deploy.sh <user@server>
 
 set -e
 
 SERVER=${1:?"Usage: $0 <user@server>"}
 SERVICE_NAME="iso8583service"
 REMOTE_DIR="/home/ecbxuser/linux-x64"
+API_PORT="${API_PORT:-5000}"
 
 echo "📦 Publishing for linux-x64..."
 dotnet publish ../ISO8583Service/ISO8583Service.csproj \
@@ -26,12 +27,16 @@ rsync -avz --delete \
 
 echo "🔧 Installing systemd service..."
 scp iso8583service.service "$SERVER:/tmp/"
-ssh "$SERVER" << 'EOF'
+ssh "$SERVER" << EOF
     sudo mv /tmp/iso8583service.service /etc/systemd/system/
     sudo systemctl daemon-reload
     sudo systemctl enable iso8583service
     sudo systemctl restart iso8583service
 EOF
 
-echo "✅ Done! Check status:"
+echo "✅ Done!"
+echo "   ISO8583 port: 9443"
+echo "   WebAPI:       http://$SERVER:$API_PORT/api/iso8583/status"
+echo ""
+echo "Check status:"
 ssh "$SERVER" "sudo systemctl status iso8583service --no-pager"

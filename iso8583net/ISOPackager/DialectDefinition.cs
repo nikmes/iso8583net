@@ -1,6 +1,7 @@
 using ISO8583Net.Field;
 using ISO8583Net.Interpreter;
 using ISO8583Net.Types;
+using ISO8583Net.Utilities;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -213,6 +214,7 @@ namespace ISO8583Net.Packager
             packager.SetFieldDefinition(ToFieldDefinition(dto));
             packager.SetStorageClass(ResolveType(dto.StorageClass));
             packager.SetComposite(false);
+            SetEncodingDelegates(packager);
 
             if (dto.Interpreter != null)
                 packager.SetISOInterpreter(BuildInterpreter(logger, dto.Interpreter));
@@ -240,6 +242,7 @@ namespace ISO8583Net.Packager
                 sp.SetFieldDefinition(subFd);
                 sp.SetStorageClass(ResolveType(sub.StorageClass));
                 sp.SetComposite(false);
+                SetEncodingDelegates(sp);
 
                 if (sub.Interpreter != null)
                     sp.SetISOInterpreter(BuildInterpreter(logger, sub.Interpreter));
@@ -301,6 +304,34 @@ namespace ISO8583Net.Packager
                 interp.AddIndexValueDescriptionDic(idx.Index, dic);
             }
             return interp;
+        }
+
+        private static void SetEncodingDelegates(ISOPackager packager)
+        {
+            var fd = packager.m_isoFieldDefinition;
+            switch (fd.contentCoding)
+            {
+                case ISOFieldCoding.BCD:
+                    packager.PackContent = (v, b, ref i, p) => ISOUtils.Ascii2Bcd(v, b, ref i, p);
+                    packager.UnpackContent = (b, ref i, len) => ISOUtils.Bcd2Ascii(b, ref i, fd.contentPadding, len);
+                    break;
+                case ISOFieldCoding.ASCII:
+                    packager.PackContent = (v, b, ref i, _) => ISOUtils.Ascii2Bytes(v, b, ref i);
+                    packager.UnpackContent = (b, ref i, len) => ISOUtils.Bytes2Ascii(b, ref i, len);
+                    break;
+                case ISOFieldCoding.BIN:
+                    packager.PackContent = (v, b, ref i, _) => ISOUtils.Hex2Bytes(v, b, ref i);
+                    packager.UnpackContent = (b, ref i, len) => ISOUtils.Bytes2Hex(b, ref i, len / 2);
+                    break;
+                case ISOFieldCoding.EBCDIC:
+                    packager.PackContent = (v, b, ref i, _) => ISOUtils.Ascii2Ebcdic(v, b, ref i);
+                    packager.UnpackContent = (b, ref i, len) => ISOUtils.Ebcdic2Ascii(b, ref i, len);
+                    break;
+                default:
+                    packager.PackContent = (v, b, ref i, _) => ISOUtils.Ascii2Bytes(v, b, ref i);
+                    packager.UnpackContent = (b, ref i, len) => ISOUtils.Bytes2Ascii(b, ref i, len);
+                    break;
+            }
         }
     }
 }

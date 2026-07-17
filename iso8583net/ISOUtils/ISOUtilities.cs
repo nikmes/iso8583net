@@ -234,21 +234,10 @@ namespace ISO8583Net.Utilities
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Int2Bytes(int value, byte[] packedBytes, ref int index, int numHexDigits)
         {
-            // !! PROBLEM NEED TO CONVERT BASE ON LENGTH OF LENGTH !!! NOT ALWAYS 1 BYTE !!!!!!
-
-            if (numHexDigits == 2)
-            {
-                packedBytes[index] = (byte)(value);
-                index += 1;
-            }
-            else
-            {
-                packedBytes[index] = (byte)(value);
-                packedBytes[index + 1] = (byte)(value >> 8);
-                packedBytes[index + 2] = (byte)(value >> 16);
-                packedBytes[index + 3] = (byte)(value >> 24);
-                index = index + 4;
-            }
+            int byteCount = numHexDigits / 2;
+            for (int i = 0; i < byteCount; i++)
+                packedBytes[index + i] = (byte)(value >> (8 * i));
+            index += byteCount;
         }
         /// <summary>
         /// Convert a byte array to int
@@ -486,7 +475,7 @@ namespace ISO8583Net.Utilities
 
             for (int i = 0; i < numBytes; i++)
             {
-                result[index + i] = (char)packedBytes[index];
+                result[i] = (char)packedBytes[index + i];
             }
 
             index += numBytes;

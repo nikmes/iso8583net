@@ -103,9 +103,10 @@ namespace ISO8583Net.Packager
             m_fieldPackagerList[1].Pack(isoFields[1], packedBytes, ref i);
 
             var bitmap = isoFields[1] as ISOFieldBitmap;
-            int[] setFields = bitmap.GetSetFields();
+            Span<int> setFields = stackalloc int[193];
+            int count = bitmap.GetSetFields(setFields);
 
-            for (int k = 0; k < setFields.Length; k++)
+            for (int k = 0; k < count; k++)
             {
                 int fieldNumber = setFields[k];
                 // Skip bitmap indicator bits (fields 65 and 129)
@@ -141,9 +142,10 @@ namespace ISO8583Net.Packager
             m_fieldPackagerList[1].UnPack(isoFields[1], packedBytes, ref index);
 
             var bitmap = isoFields[1] as ISOFieldBitmap;
-            int[] setFields = bitmap.GetSetFields();
+            Span<int> setFields = stackalloc int[193];
+            int count = bitmap.GetSetFields(setFields);
 
-            for (int k = 0; k < setFields.Length; k++)
+            for (int k = 0; k < count; k++)
             {
                 int fieldNumber = setFields[k];
                 // Skip bitmap indicator bits (fields 65 and 129)
@@ -160,12 +162,20 @@ namespace ISO8583Net.Packager
                     }
 
                     if (m_fieldPackagerList[fieldNumber].IsComposite())
-                    {                       
-                        isoFields[fieldNumber] = new ISOFieldBitmapSubFields(Logger, (ISOFieldBitmapSubFieldsPackager)m_fieldPackagerList[fieldNumber], m_fieldPackagerList[fieldNumber].GetFieldNumber());                     
+                    {
+                        var existing = isoFields[fieldNumber];
+                        if (existing != null)
+                            existing.Reset();
+                        else
+                            isoFields[fieldNumber] = new ISOFieldBitmapSubFields(Logger, (ISOFieldBitmapSubFieldsPackager)m_fieldPackagerList[fieldNumber], m_fieldPackagerList[fieldNumber].GetFieldNumber());
                     }
                     else
                     {
-                        isoFields[fieldNumber] = new ISOField(Logger, m_fieldPackagerList[fieldNumber], m_fieldPackagerList[fieldNumber].GetFieldNumber());
+                        var existing = isoFields[fieldNumber];
+                        if (existing != null)
+                            existing.Reset();
+                        else
+                            isoFields[fieldNumber] = new ISOField(Logger, m_fieldPackagerList[fieldNumber], m_fieldPackagerList[fieldNumber].GetFieldNumber());
                     }
 
                     m_fieldPackagerList[fieldNumber].UnPack(isoFields[fieldNumber], packedBytes, ref index);
@@ -223,6 +233,13 @@ namespace ISO8583Net.Packager
         public ISOPackager GetFieldPackager(int fieldNumber)
         {
             return m_fieldPackagerList[fieldNumber];
+        }
+        /// <summary>
+        /// Returns the message types packager for enumerating supported message types.
+        /// </summary>
+        public ISOMessageTypesPackager GetMessageTypesPackager()
+        {
+            return m_isoMsgTypePackager;
         }
         /// <summary>
         /// 

@@ -58,6 +58,16 @@ namespace ISO8583Net.Field
             }
         }
         /// <summary>
+        /// Clears value and all sub-field references for reuse.
+        /// </summary>
+        public override void Reset()
+        {
+            base.Reset();
+            for (int i = 0; i < m_isoFields.Length; i++)
+                m_isoFields[i] = null;
+        }
+
+        /// <summary>
         /// 
         /// </summary>
         /// <param name="fieldNumber"></param>
@@ -81,7 +91,7 @@ namespace ISO8583Net.Field
         {
             get
             {
-                StringBuilder strBuilder = new StringBuilder();
+                StringBuilder strBuilder = new StringBuilder(2048);
 
                 for (int i = 0; i < m_packager.totalFields; i++)
                 {
@@ -151,13 +161,14 @@ namespace ISO8583Net.Field
         /// <returns></returns>
         public override string ToString()
         {
-            StringBuilder msgFieldValues = new StringBuilder();
+            StringBuilder msgFieldValues = new StringBuilder(2048);
 
             msgFieldValues.Append("F[" + m_number.ToString().PadLeft(3, '0') + "]".PadRight(2, ' ') + "[" + this.value + "]\n");
 
             var bitmap = m_isoFields[0] as ISOFieldBitmap;
-            var setFields = bitmap.GetSetFields();
-            for (int k = 0; k < setFields.Length; k++)
+            Span<int> setFields = stackalloc int[193];
+            int count = bitmap.GetSetFields(setFields);
+            for (int k = 0; k < count; k++)
             {
                 int i = setFields[k];
                 if (m_isoFields[i] != null)

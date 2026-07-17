@@ -1,10 +1,29 @@
 ﻿using ISO8583Net.Field;
 using ISO8583Net.Interpreter;
+using ISO8583Net.Types;
 using Microsoft.Extensions.Logging;
 using System;
 
 namespace ISO8583Net.Packager
 {
+    /// <summary>
+    /// Delegate for packing content into a byte buffer.
+    /// </summary>
+    /// <param name="value">The string value to pack.</param>
+    /// <param name="buffer">The destination byte array.</param>
+    /// <param name="index">Current write position in the buffer.</param>
+    /// <param name="padding">Padding direction for the encoding.</param>
+    public delegate void PackContentAction(string value, byte[] buffer, ref int index, ISOFieldPadding padding);
+
+    /// <summary>
+    /// Delegate for unpacking content from a byte buffer.
+    /// </summary>
+    /// <param name="buffer">The source byte array.</param>
+    /// <param name="index">Current read position in the buffer.</param>
+    /// <param name="lengthToRead">Number of units to read (dependent on encoding).</param>
+    /// <returns>The decoded string value.</returns>
+    public delegate string UnpackContentFunc(byte[] buffer, ref int index, int lengthToRead);
+
     /// <summary>
     /// 
     /// </summary>
@@ -35,6 +54,16 @@ namespace ISO8583Net.Packager
         /// </summary>
 
         public ISOFieldDefinition m_isoFieldDefinition;
+
+        /// <summary>
+        /// Pre-resolved delegate for packing content, set during dialect building.
+        /// </summary>
+        public PackContentAction PackContent { get; set; }
+
+        /// <summary>
+        /// Pre-resolved delegate for unpacking content, set during dialect building.
+        /// </summary>
+        public UnpackContentFunc UnpackContent { get; set; }
 
         /// <summary>
         /// 

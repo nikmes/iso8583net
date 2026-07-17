@@ -1,220 +1,42 @@
-﻿using ISO8583Net.Message;
-using ISO8583Net.Packager;
-using BenchmarkDotNet.Engines;
+using System;
 using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Diagnostics.Windows.Configs;
+using ISO8583Net.Utilities;
 
 namespace ISO8583NetBenchmark
 {
+    /// <summary>
+    /// Low-level conversion utility benchmarks.
+    /// </summary>
     [MemoryDiagnoser]
-    //[EtwProfiler] //Create traces for perfview
-    //[SimpleJob(RuntimeMoniker.NetCoreApp21)]
-    //[SimpleJob(RuntimeMoniker.NetCoreApp30)]
-    [SimpleJob(RunStrategy.Throughput, iterationCount: 30, id: "MonitoringJob")]
-    //[MinColumn, Q1Column, Q3Column, MaxColumn]
-    public class HexUtilsTest
+    [MarkdownExporter]
+    public class ConversionBenchmarks
     {
-        private byte[] bytes;
-        
-        [GlobalSetup]
-        public void GlobalSetup()
-        {
-            string stringhex = "29001234567890123456193012121959";
-            bytes = ISO8583Net.Utilities.ISOUtils.Hex2Bytes(stringhex);
-        }
-
-        [Benchmark]
-        public string Bytes2Hex()
-        {
-            return ISO8583Net.Utilities.ISOUtils.Bytes2HexOld(bytes, bytes.Length);            
-        }
-
-        [Benchmark]
-        public string Bytes2Hex2()
-        {            
-            return ISO8583Net.Utilities.ISOUtils.Bytes2Hex(bytes, bytes.Length);
-        }
-
-    }
-    [MemoryDiagnoser]
-    [EtwProfiler] //Create traces for perfview
-    //[SimpleJob(RuntimeMoniker.NetCoreApp21)]
-    //[SimpleJob(RuntimeMoniker.NetCoreApp30)]
-    [SimpleJob(RunStrategy.Throughput, iterationCount: 30, id: "MonitoringJob")]
-    //[MinColumn, Q1Column, Q3Column, MaxColumn]
-    public class ISOUtilsTest
-    {
-        private byte[] packedBytes;
-
-        Microsoft.Extensions.Logging.ILogger logger;
-        static private ISOMessagePackager mPackager;
+        private byte[] _hexBytes16;
+        private byte[] _hexBytes64;
+        private string _hexString16;
+        private string _hexString64;
+        private string _numericString16;
+        private string _asciiString32;
 
         [GlobalSetup]
-        public void GlobalSetup()
+        public void Setup()
         {
-            packedBytes = new byte[2048];
-
-            logger = new Microsoft.Extensions.Logging.Abstractions.NullLogger<ISOUtilsTest>();
-
-            mPackager = new ISOMessagePackager(logger); // initialize from default visa packager that is embeded as a resource in the library
+            _hexString16 = "0123456789ABCDEF";
+            _hexString64 = "0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF";
+            _hexBytes16 = ISOUtils.Hex2Bytes(_hexString16);
+            _hexBytes64 = ISOUtils.Hex2Bytes(_hexString64);
+            _numericString16 = "0000000000012345";
+            _asciiString32 = "ABCDEFGHIJKLMNOPQRSTUVWXYZ012345";
         }
 
-        [Benchmark]
-        public void PackUnpack1stBmap()
-        {
-
-            ISOMessage m = new ISOMessage(logger, mPackager);
-
-            m.Set(0, "0100");
-            m.Set(2, "40004000400040001");
-            m.Set(3, "000000");
-            m.Set(4, "000000002900");
-            m.Set(7, "1231231233");
-            m.Set(11, "123123");
-            m.Set(12, "193012");
-            m.Set(14, "1219");
-            m.Set(18, "5999");
-            m.Set(19, "196");
-            m.Set(22, "9010");
-            m.Set(25, "23");
-            m.Set(37, "123123123123");
-
-            packedBytes = m.Pack();
-
-            ISOMessage uM = new ISOMessage(logger, mPackager);
-
-            uM.UnPack(packedBytes);
-        }
-
-        [Benchmark]
-        public void PackUnpack2ndBmap()
-        {
-            ISOMessage m = new ISOMessage(logger, mPackager);
-
-            m.Set(0, "0100");
-            m.Set(2, "40004000400040001");
-            m.Set(3, "000000");
-            m.Set(4, "000000002900");
-            m.Set(7, "1231231233");
-            m.Set(11, "123123");
-            m.Set(12, "193012");
-            m.Set(14, "1219");
-            m.Set(18, "5999");
-            m.Set(19, "196");
-            m.Set(22, "9010");
-            m.Set(25, "23");
-            m.Set(37, "123123123123");
-            m.Set(70, "123");
-
-            packedBytes = m.Pack();
-
-            ISOMessage uM = new ISOMessage(logger, mPackager);
-
-            uM.UnPack(packedBytes);
-
-        }
-
-        [Benchmark]
-        public void PackUnpack3rdBmap()
-        {
-            ISOMessage m = new ISOMessage(logger, mPackager);
-
-            m.Set(0, "0100");
-            m.Set(2, "40004000400040001");
-            m.Set(3, "000000");
-            m.Set(4, "000000002900");
-            m.Set(7, "1231231233");
-            m.Set(11, "123123");
-            m.Set(12, "193012");
-            m.Set(14, "1219");
-            m.Set(18, "5999");
-            m.Set(19, "196");
-            m.Set(22, "9010");
-            m.Set(25, "23");
-            m.Set(37, "123123123123");
-            //m.Set(62, 01, "Y");
-            //m.Set(63, 01, "1222");
-            //m.Set(63, 03, "9999");
-            m.Set(70, "123");
-            m.Set(132, "ABABABAB");
-
-            byte[] packedBytes = m.Pack();
-
-            ISOMessage uM = new ISOMessage(logger, mPackager);
-
-            uM.UnPack(packedBytes);
-        }
-
-        [Benchmark]
-        public void PackUnpack1stBmapPool()
-        {
-
-            ISOMessage m = new ISOMessage(logger, mPackager);
-
-            m.Set(0, "0100");
-            m.Set(2, "40004000400040001");
-            m.Set(3, "000000");
-            m.Set(4, "000000002900");
-            m.Set(7, "1231231233");
-            m.Set(11, "123123");
-            m.Set(12, "193012");
-            m.Set(14, "1219");
-            m.Set(18, "5999");
-            m.Set(19, "196");
-            m.Set(22, "9010");
-            m.Set(25, "23");
-            m.Set(37, "123123123123");
-
-            packedBytes = m.PackPooled();
-
-            ISOMessage uM = new ISOMessage(logger, mPackager);
-
-            uM.UnPack(packedBytes);
-        }
-
-        [Benchmark]
-        public void PackOnly1stBmap()
-        {
-            ISOMessage m = new ISOMessage(logger, mPackager);
-
-            m.Set(0, "0100");
-            m.Set(2, "40004000400040001");
-            m.Set(3, "000000");
-            m.Set(4, "000000002900");
-            m.Set(7, "1231231233");
-            m.Set(11, "123123");
-            m.Set(12, "193012");
-            m.Set(14, "1219");
-            m.Set(18, "5999");
-            m.Set(19, "196");
-            m.Set(22, "9010");
-            m.Set(25, "23");
-            m.Set(37, "123123123123");
-
-            packedBytes = m.Pack();
-        }
-
-        [Benchmark]
-        public void PackOnly1stBmapPool()
-        {
-            ISOMessage m = new ISOMessage(logger, mPackager);
-
-            m.Set(0, "0100");
-            m.Set(2, "40004000400040001");
-            m.Set(3, "000000");
-            m.Set(4, "000000002900");
-            m.Set(7, "1231231233");
-            m.Set(11, "123123");
-            m.Set(12, "193012");
-            m.Set(14, "1219");
-            m.Set(18, "5999");
-            m.Set(19, "196");
-            m.Set(22, "9010");
-            m.Set(25, "23");
-            m.Set(37, "123123123123");
-
-            packedBytes = m.PackPooled();
-        }
-
+        [Benchmark] public byte[] Hex2Bytes_16() => ISOUtils.Hex2Bytes(_hexString16);
+        [Benchmark] public byte[] Hex2Bytes_64() => ISOUtils.Hex2Bytes(_hexString64);
+        [Benchmark] public string Bytes2Hex_8() => ISOUtils.Bytes2Hex(_hexBytes16, _hexBytes16.Length);
+        [Benchmark] public string Bytes2Hex_32() => ISOUtils.Bytes2Hex(_hexBytes64, _hexBytes64.Length);
+        [Benchmark] public byte[] Ascii2Bcd_16() { byte[] buf = new byte[16]; int i = 0; ISOUtils.Ascii2Bcd(_numericString16, buf, ref i, ISO8583Net.Types.ISOFieldPadding.LEFT); return buf; }
+        [Benchmark] public string Bcd2Ascii_16() { byte[] buf = new byte[16]; int i = 0; ISOUtils.Ascii2Bcd(_numericString16, buf, ref i, ISO8583Net.Types.ISOFieldPadding.LEFT); int j = 0; return ISOUtils.Bcd2Ascii(buf, ref j, ISO8583Net.Types.ISOFieldPadding.LEFT, 16); }
+        [Benchmark] public byte[] Ascii2Bytes_32() { byte[] buf = new byte[64]; int i = 0; ISOUtils.Ascii2Bytes(_asciiString32, buf, ref i); return buf; }
+        [Benchmark] public string Bytes2Ascii_32() { byte[] buf = new byte[64]; int i = 0; ISOUtils.Ascii2Bytes(_asciiString32, buf, ref i); int j = 0; return ISOUtils.Bytes2Ascii(buf, ref j, 32); }
+        [Benchmark] public byte[] HexToByteArray_32() => ISOUtils.HexToByteArray(_hexString64);
     }
 }

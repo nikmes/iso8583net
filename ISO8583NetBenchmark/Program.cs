@@ -1,33 +1,27 @@
 ﻿using System;
+using System.Linq;
+using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Exporters;
+using BenchmarkDotNet.Exporters.Csv;
 using BenchmarkDotNet.Loggers;
 using BenchmarkDotNet.Running;
-using Microsoft.Extensions.Logging;
-using BenchmarkDotNet.Configs;
-using BenchmarkDotNet.Exporters.Csv;
-using System.Linq;
-using Serilog;
-using BenchmarkDotNet.Jobs;
-using BenchmarkDotNet.Diagnostics.Windows.Configs;
 
 namespace ISO8583NetBenchmark
 {
-    public class Config : ManualConfig
+    /// <summary>
+    /// Shared benchmark configuration: CSV + Markdown + RPlot exporters,
+    /// memory diagnostics, default column providers.
+    /// </summary>
+    public class BenchmarkConfig : ManualConfig
     {
-        public Config()
+        public BenchmarkConfig()
         {
-            Add(new ConsoleLogger());
-            Add(CsvMeasurementsExporter.Default);
-            Add(RPlotExporter.Default);
-            Add(DefaultConfig.Instance.GetColumnProviders().ToArray());
-            //Add(MarkdownExporter.Default);
-            //Add(HtmlExporter.Default);
-
-            //Add(Job.Default
-            //.With(new GcMode()
-            //{
-            //    Force = false // tell BenchmarkDotNet not to force GC collections after every iteration
-            //}));
+            AddExporter(CsvMeasurementsExporter.Default);
+            AddExporter(MarkdownExporter.GitHub);
+            AddExporter(RPlotExporter.Default);
+            AddExporter(HtmlExporter.Default);
+            AddLogger(new ConsoleLogger());
+            AddColumnProvider(DefaultConfig.Instance.GetColumnProviders().ToArray());
         }
     }
 
@@ -35,11 +29,8 @@ namespace ISO8583NetBenchmark
     {
         static void Main(string[] args)
         {
-            
-            //var summary = BenchmarkRunner.Run<ISOUtilsTest>(new Config());
-            var summary = BenchmarkRunner.Run<BitmapTest>(new Config());
-            //var summary = BenchmarkRunner.Run<HexUtilsTest>(new Config());
-
+            // Run all benchmarks with shared config
+            BenchmarkRunner.Run(typeof(Program).Assembly, new BenchmarkConfig());
         }
     }
 }

@@ -328,41 +328,9 @@ namespace ISO8583Net.Packager
 
             // if is of type ISOMessageFields then dont try pack the content as is invalid 
 
-            if (!this.IsComposite()) //this.GetStorageClass() != "ISO8583Net.ISOMessageSubFields")
+            if (!this.IsComposite())
             {
-                ////!!!! NOT EFFICIENT - WE KNOW THE TYPE GET VALUES IN BYTES WHERE YOU CAN !!!!!!/////
-                
-                switch (m_isoFieldDefinition.contentCoding)
-                {
-                    case ISOFieldCoding.BCD:
-                        ISOUtils.Ascii2Bcd(isoFieldValue, packedBytes, ref index, m_isoFieldDefinition.contentPadding);
-                        break;
-
-                    case ISOFieldCoding.ASCII:
-                        ISOUtils.Ascii2Bytes(isoFieldValue, packedBytes, ref index);
-                        break;
-
-                    case ISOFieldCoding.BIN:
-                        ISOUtils.Hex2Bytes(isoFieldValue, packedBytes, ref index);
-                        break;
-
-                    case ISOFieldCoding.EBCDIC:
-                        ISOUtils.Ascii2Ebcdic(isoFieldValue, packedBytes, ref index);
-                        break;
-
-                    //case ISOFieldCoding.Z:
-                    //    break;
-
-                    //case ISOFieldCoding.BCDU:
-                    //    break;
-
-                    default:
-                        // Logger.LogCritical("Unknown content coding for Field [" + m_number.ToString().PadLeft(3, '0') + "]. Fallback to ASCII Packager");
-
-                        ISOUtils.Ascii2Bytes(isoField.value, packedBytes, ref index);
-
-                        break;
-                }
+                PackContent(isoFieldValue, packedBytes, ref index, m_isoFieldDefinition.contentPadding);
             }
         }
         /// <summary>
@@ -427,47 +395,17 @@ namespace ISO8583Net.Packager
 
             // handle content coding
 
-            if (!this.IsComposite()) //this.GetStorageClass() != "ISO8583Net.ISOMessageSubFields")
+            if (!this.IsComposite())
             {
-                if (m_isoFieldDefinition.contentCoding == ISOFieldCoding.BCD)
+                if (m_isoFieldDefinition.contentCoding == ISOFieldCoding.BIN
+                    && m_isoFieldDefinition.lengthFormat == ISOFieldLengthFormat.FIXED
+                    && m_storeClass == "ISO8583Net.Field.ISOFieldBitmap")
                 {
-                    isoField.value=(ISOUtils.Bcd2Ascii(packedBytes, ref index, m_isoFieldDefinition.contentPadding, lengthToRead));
-
-                    // Logger.LogInformation("Field  [" + m_number + "] [" + isoField.GetValue() + "]");
+                    ((ISOFieldBitmap)isoField).Set(packedBytes, ref index);
                 }
-                else if (m_isoFieldDefinition.contentCoding == ISOFieldCoding.ASCII)
+                else if (UnpackContent != null)
                 {
-                    isoField.value=(ISOUtils.Bytes2Ascii(packedBytes, ref index, lengthToRead));
-
-                    //if (Logger.IsEnabled(LogLevel.Information)) Logger.LogInformation("Field  [" + m_number + "] [" + isoField.GetValue() + "]");
-                }
-                else if (m_isoFieldDefinition.contentCoding == ISOFieldCoding.BIN)
-                {
-                    // handle the ISOMessage Bitmap differently than other Bitmaps
-
-                    if (m_isoFieldDefinition.lengthFormat == ISOFieldLengthFormat.FIXED && m_storeClass == "ISO8583Net.Field.ISOFieldBitmap")
-                    {
-                        //if (Logger.IsEnabled(LogLevel.Debug)) Logger.LogDebug("ISO field [" + m_number + "] is ISOFieldBitmap and is FIXED Length but special handling needed based on 2nd and 3rd Bitmap Indicator.");
-
-                        // no length to read, the Set method of Bitmap will identify if 2nd and 3rd bitmap is set so it will know how many byets to read
-
-                        ((ISOFieldBitmap)isoField).Set(packedBytes, ref index);
-                    }
-                    else
-                    {
-                        isoField.value=(ISOUtils.Bytes2Hex(packedBytes, ref index, lengthToRead / 2)); // Number of hex digits so convert to number of bytes
-                    }
-                }
-                else if (m_isoFieldDefinition.contentCoding == ISOFieldCoding.EBCDIC)
-                {
-                    isoField.value=(ISOUtils.Ebcdic2Ascii(packedBytes, ref index, lengthToRead));
-
-                    //if (Logger.IsEnabled(LogLevel.Information)) Logger.LogInformation("Field  [" + m_number + "] [" + isoField.GetValue() + "]");
-
-                }
-                else
-                {
-                    //if (Logger.IsEnabled(LogLevel.Critical)) Logger.LogCritical("Unknown content coding for Field [" + m_number.ToString().PadLeft(3, '0') + "]. Fallback to ASCII UnPack");
+                    isoField.value = UnpackContent(packedBytes, ref index, lengthToRead);
                 }
             }
         }

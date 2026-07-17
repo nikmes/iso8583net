@@ -1,5 +1,7 @@
 using System;
 using System.Buffers;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -31,7 +33,11 @@ public sealed class Iso8583TcpServer : IIso8583Server
     private ISOMessagePackager? _packager;
     private int _connectionCount;
 
+    /// <summary>Tracks active client connections (connNum → metadata + stream).</summary>
+    private readonly ConcurrentDictionary<int, ClientConnection> _connections = new();
+
     public bool IsRunning => _listener != null;
+    public int ConnectionCount => _connections.Count;
     public int SignOnIntervalSeconds { get; set; }
     public bool SendSignOnOnConnect { get; set; }
     public bool EnablePeriodicSignOn { get; set; }
@@ -57,6 +63,9 @@ public sealed class Iso8583TcpServer : IIso8583Server
             _packager = new ISOMessagePackager(new NullLogger(), dialectPath);
         }
         Log($"Dialect loaded. {_packager.GetTotalFields()} fields defined.");
+
+        // ── Log supported message types ─────────────────────────────────
+        LogMessageTypes();
 
         // ── Load TLS certificate ───────────────────────────────────────
         if (Tls.IsEnabled)
@@ -94,6 +103,42 @@ public sealed class Iso8583TcpServer : IIso8583Server
         OnStatusChanged?.Invoke("Idle");
     }
 
+    public async Task SendSignOnAsync(CancellationToken ct = default)
+    {
+        Log("─── Manual SignOn Request (all connections) ───");
+        var tasks = _connections.Select(kvp =>
+            SendSignOnRequestToStreamAsync(kvp.Value.Stream, kvp.Key, "801", "SignOn", ct));
+        await Task.WhenAll(tasks);
+    }
+
+    public async Task SendEchoAsync(CancellationToken ct = default)
+    {
+        Log("─── Manual Echo Message (all connections) ───");
+        var tasks = _connections.Select(kvp =>
+            SendSignOnRequestToStreamAsync(kvp.Value.Stream, kvp.Key, "831", "Echo", ct));
+        await Task.WhenAll(tasks);
+    }
+
+    public async Task SendSignOffAsync(bool disconnectAfter = false, CancellationToken ct = default)
+    {
+        Log("─── Manual SignOff Request (all connections) ───");
+        var tasks = _connections.Select(kvp =>
+            SendSignOnRequestToStreamAsync(kvp.Value.Stream, kvp.Key, "803", "SignOff", ct));
+        await Task.WhenAll(tasks);
+
+        if (disconnectAfter)
+        {
+            Log("─── Disconnecting all clients per SignOff ───");
+            await StopAsync();
+        }
+    }
+
+    public IReadOnlyList<(int ConnNum, string RemoteEndpoint, DateTime ConnectedAt)> GetConnections()
+    {
+        return _connections.Select(kvp =>
+            (kvp.Key, kvp.Value.RemoteEndpoint, kvp.Value.ConnectedAt)).ToList();
+    }
+
     // ═══════════════════════════════════════════════════════════════════════
 
     private async Task AcceptLoopAsync(CancellationToken ct)
@@ -118,14 +163,18 @@ public sealed class Iso8583TcpServer : IIso8583Server
 
     private async Task HandleClientAsync(TcpClient client, int connNum, CancellationToken ct)
     {
+        Stream? stream = null;
         try
         {
-            using (client)
+            stream = WrapWithTls(client, connNum);
+            if (stream == null) return;
+
+            string remoteEndpoint = client.Client.RemoteEndPoint?.ToString() ?? "unknown";
+            var connInfo = new ClientConnection(stream, remoteEndpoint);
+            _connections.TryAdd(connNum, connInfo);
+
+            try
             {
-                var stream = WrapWithTls(client, connNum);
-                if (stream == null) return;
-                using (stream)
-                {
                 var lengthBuf = new byte[LengthPrefixSize];
                 DateTime lastSignOn = DateTime.MinValue;
 
@@ -143,7 +192,7 @@ public sealed class Iso8583TcpServer : IIso8583Server
                         SignOnIntervalSeconds > 0 &&
                         (DateTime.UtcNow - lastSignOn).TotalSeconds >= SignOnIntervalSeconds)
                     {
-                        await SendEchoAsync(stream, connNum, ct);
+                        await SendEchoToStreamAsync(stream, connNum, ct);
                         lastSignOn = DateTime.UtcNow;
                     }
 
@@ -222,13 +271,18 @@ public sealed class Iso8583TcpServer : IIso8583Server
                     }
                     finally { ArrayPool<byte>.Shared.Return(buf); }
                 }
-            } // using (stream)
-        } // using (client)
+            }
+            finally
+            {
+                _connections.TryRemove(connNum, out _);
+            }
         }
         catch (OperationCanceledException) { }
         catch (Exception ex) { Log($"[#{connNum}] Error: {ex.Message}"); }
         finally
         {
+            stream?.Dispose();
+            client.Dispose();
             Interlocked.Decrement(ref _connectionCount);
             OnStatusChanged?.Invoke($"Active connections: {_connectionCount}");
         }
@@ -309,54 +363,39 @@ public sealed class Iso8583TcpServer : IIso8583Server
     /// </summary>
     private async Task SendInitialSignOnAsync(Stream stream, int connNum, CancellationToken ct)
     {
-        try
-        {
-            Log($"[#{connNum}] ── SignOn Request (Initial) ──");
-
-            var signOn = BuildSignOnRequest(connNum, "801");
-            Log($"[#{connNum}] SignOn content:");
-            Log(signOn.ToString());
-
-            byte[] reqBytes = signOn.Pack();
-
-            var framed = new byte[LengthPrefixSize + reqBytes.Length];
-            framed[0] = (byte)(reqBytes.Length >> 8);
-            framed[1] = (byte)(reqBytes.Length & 0xFF);
-            Array.Copy(reqBytes, 0, framed, LengthPrefixSize, reqBytes.Length);
-
-            Log($"[#{connNum}] Sending SignOn ({reqBytes.Length} bytes, LI=0x{reqBytes.Length:X4})...");
-            Log(FormatHexDump(connNum, framed));
-
-            await stream.WriteAsync(framed, 0, framed.Length, ct);
-            await stream.FlushAsync(ct);
-        }
-        catch (Exception ex)
-        {
-            Log($"[#{connNum}] SignOn send failed: {ex.Message}");
-        }
+        await SendSignOnRequestToStreamAsync(stream, connNum, "801", "SignOn (Initial)", ct);
     }
 
     /// <summary>
-    /// Sends an Echo message (MTI 1800, F24=831) periodically.
+    /// Sends an Echo message (MTI 1800, F24=831) to a specific stream.
     /// </summary>
-    private async Task SendEchoAsync(Stream stream, int connNum, CancellationToken ct)
+    private async Task SendEchoToStreamAsync(Stream stream, int connNum, CancellationToken ct)
+    {
+        await SendSignOnRequestToStreamAsync(stream, connNum, "831", "Echo (Periodic)", ct);
+    }
+
+    /// <summary>
+    /// Builds, frames, and sends a SignOn-style request (MTI 1800) to a stream.
+    /// </summary>
+    private async Task SendSignOnRequestToStreamAsync(
+        Stream stream, int connNum, string f24Value, string label, CancellationToken ct)
     {
         try
         {
-            Log($"[#{connNum}] ── Echo Message (Periodic) ──");
+            Log($"[#{connNum}] ── {label} ──");
 
-            var signOn = BuildSignOnRequest(connNum, "831");
-            Log($"[#{connNum}] Echo content:");
-            Log(signOn.ToString());
+            var request = BuildSignOnRequest(connNum, f24Value);
+            Log($"[#{connNum}] {label} content:");
+            Log(request.ToString());
 
-            byte[] reqBytes = signOn.Pack();
+            byte[] reqBytes = request.Pack();
 
             var framed = new byte[LengthPrefixSize + reqBytes.Length];
             framed[0] = (byte)(reqBytes.Length >> 8);
             framed[1] = (byte)(reqBytes.Length & 0xFF);
             Array.Copy(reqBytes, 0, framed, LengthPrefixSize, reqBytes.Length);
 
-            Log($"[#{connNum}] Sending Echo ({reqBytes.Length} bytes, LI=0x{reqBytes.Length:X4})...");
+            Log($"[#{connNum}] Sending {label} ({reqBytes.Length} bytes, LI=0x{reqBytes.Length:X4})...");
             Log(FormatHexDump(connNum, framed));
 
             await stream.WriteAsync(framed, 0, framed.Length, ct);
@@ -364,7 +403,7 @@ public sealed class Iso8583TcpServer : IIso8583Server
         }
         catch (Exception ex)
         {
-            Log($"[#{connNum}] Echo send failed: {ex.Message}");
+            Log($"[#{connNum}] {label} send failed: {ex.Message}");
         }
     }
 
@@ -515,6 +554,91 @@ public sealed class Iso8583TcpServer : IIso8583Server
     }
 
     private void Log(string message) => OnLog?.Invoke(message);
+
+    // ═══════════════════════════════════════════════════════════════════════
+    //  Dialect Info Logging
+    // ═══════════════════════════════════════════════════════════════════════
+
+    /// <summary>
+    /// Logs the supported message types (grouped by Req/Resp pairs) and total fields.
+    /// </summary>
+    private void LogMessageTypes()
+    {
+        if (_packager == null) return;
+
+        var msgTypesPackager = _packager.GetISOMessageFieldsPackager()?.GetMessageTypesPackager();
+        if (msgTypesPackager == null) return;
+
+        var msgTypes = msgTypesPackager.GetMessageTypes().ToList();
+        if (msgTypes.Count == 0)
+        {
+            Log("No message types defined in dialect.");
+            return;
+        }
+
+        Log("─── Supported Message Types ───");
+        Log($"  Total: {msgTypes.Count} message type(s)");
+        Log($"  Total fields: {_packager.GetTotalFields()}");
+        Log("");
+
+        // Group by first 3 digits to find Req/Resp pairs
+        // ISO 8583 convention: xxy0=Request, xxy1=Response, xxy2=Advice, xxy3=AdviceResponse, etc.
+        var groups = msgTypes
+            .GroupBy(mt => mt.messageTypeIdentifier.Length >= 4
+                ? mt.messageTypeIdentifier[..3]
+                : mt.messageTypeIdentifier)
+            .OrderBy(g => g.Key);
+
+        var printed = new HashSet<string>();
+
+        foreach (var group in groups)
+        {
+            var sorted = group.OrderBy(mt => mt.messageTypeIdentifier).ToList();
+
+            if (sorted.Count == 1)
+            {
+                var mt = sorted[0];
+                Log($"  {mt.messageTypeIdentifier}: {mt.messageTypeName}" +
+                    (string.IsNullOrWhiteSpace(mt.messageTypeDescription) ? "" : $" ({mt.messageTypeDescription})"));
+            }
+            else
+            {
+                // Print pairs: e.g. 0100 ↔ 0110
+                for (int i = 0; i < sorted.Count; i += 2)
+                {
+                    if (i + 1 < sorted.Count)
+                    {
+                        var req = sorted[i];
+                        var resp = sorted[i + 1];
+                        Log($"  {req.messageTypeIdentifier}: {req.messageTypeName.PadRight(28)} ↔  {resp.messageTypeIdentifier}: {resp.messageTypeName}");
+                    }
+                    else
+                    {
+                        var mt = sorted[i];
+                        Log($"  {mt.messageTypeIdentifier}: {mt.messageTypeName}" +
+                            (string.IsNullOrWhiteSpace(mt.messageTypeDescription) ? "" : $" ({mt.messageTypeDescription})"));
+                    }
+                }
+            }
+        }
+
+        Log("");
+    }
+
+    /// <summary>Holds per-connection metadata and the stream for sending messages.</summary>
+    private sealed class ClientConnection
+    {
+        public Stream Stream { get; }
+        public string RemoteEndpoint { get; }
+        public DateTime ConnectedAt { get; }
+
+        public ClientConnection(Stream stream, string remoteEndpoint)
+        {
+            Stream = stream;
+            RemoteEndpoint = remoteEndpoint;
+            ConnectedAt = DateTime.UtcNow;
+        }
+    }
 
     /// <summary>Minimal silent logger for internal packager/parser use.</summary>
     private sealed class NullLogger : ILogger

@@ -27,7 +27,7 @@ namespace ISO8583Net.Field
         {
             get
             {
-                StringBuilder strBuilder = new StringBuilder();
+                StringBuilder strBuilder = new StringBuilder(2048);
 
                 int totalFields = m_packager.GetTotalFields();
 
@@ -191,7 +191,7 @@ namespace ISO8583Net.Field
         /// <returns></returns>
         public override string ToString()
         {
-            StringBuilder msgFieldValues = new StringBuilder();
+            StringBuilder msgFieldValues = new StringBuilder(4096);
             var bitmap = m_isoFields[1] as ISOFieldBitmap;
 
             // Always include MTI (field 0) and Bitmap (field 1)
@@ -202,8 +202,9 @@ namespace ISO8583Net.Field
                 msgFieldValues.Append(m_isoFields[1].ToString());
 
             // Then include all data fields that have their bitmap bit set
-            int[] setFields = bitmap.GetSetFields();
-            for (int k = 0; k < setFields.Length; k++)
+            Span<int> setFields = stackalloc int[193];
+            int count = bitmap.GetSetFields(setFields);
+            for (int k = 0; k < count; k++)
             {
                 int i = setFields[k];
                 if (i > 1 && m_isoFields[i] != null)

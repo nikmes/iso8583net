@@ -163,6 +163,13 @@ namespace ISO8583Net.Packager
         {
             return m_msgTypes[isoMsgType].GetConditionalBitmap();
         }
+        /// <summary>
+        /// Returns all registered message types.
+        /// </summary>
+        public IEnumerable<ISOMsgTypePackager> GetMessageTypes()
+        {
+            return m_msgTypes.Values;
+        }
 
     }
 }

@@ -1,8 +1,10 @@
 using System;
 using System.Threading.Tasks;
 using ISO8583Net.Server;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Scalar.AspNetCore;
 using Serilog;
 
 namespace ISO8583Service;
@@ -22,21 +24,27 @@ internal static class Program
 
         try
         {
-            Log.Information("─── ISO 8583 Service starting ───");
+            Log.Information("─── ISO 8583 Service with WebAPI starting ───");
 
-            var host = Host.CreateDefaultBuilder(args)
-                .UseSerilog()
-                .ConfigureServices((ctx, services) =>
-                {
-                    services.Configure<ServerOptions>(
-                        ctx.Configuration.GetSection(ServerOptions.SectionName));
+            var builder = WebApplication.CreateBuilder(args);
 
-                    services.AddSingleton<IIso8583Server, Iso8583TcpServer>();
-                    services.AddHostedService<Iso8583HostedService>();
-                })
-                .Build();
+            builder.Host.UseSerilog();
 
-            await host.RunAsync();
+            builder.Services.Configure<ServerOptions>(
+                builder.Configuration.GetSection(ServerOptions.SectionName));
+
+            builder.Services.AddSingleton<IIso8583Server, Iso8583TcpServer>();
+            builder.Services.AddHostedService<Iso8583HostedService>();
+            builder.Services.AddControllers();
+            builder.Services.AddOpenApi();
+
+            var app = builder.Build();
+
+            app.MapControllers();
+            app.MapOpenApi();
+            app.MapScalarApiReference();
+
+            await app.RunAsync();
         }
         catch (Exception ex)
         {

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,6 +13,9 @@ public interface IIso8583Server
     /// <summary>Whether the server is currently listening.</summary>
     bool IsRunning { get; }
 
+    /// <summary>Number of currently connected clients.</summary>
+    int ConnectionCount { get; }
+
     /// <summary>Starts listening on the specified port using the given dialect.</summary>
     /// <param name="port">TCP port to bind.</param>
     /// <param name="dialectPath">Path to JSON dialect file, or null for built-in VISA.</param>
@@ -20,6 +24,22 @@ public interface IIso8583Server
 
     /// <summary>Stops the server gracefully.</summary>
     Task StopAsync();
+
+    /// <summary>
+    /// Manually send a SignOn request (MTI 1800, F24=801) to all connected clients.
+    /// </summary>
+    Task SendSignOnAsync(CancellationToken ct = default);
+
+    /// <summary>
+    /// Manually send an Echo message (MTI 1800, F24=831) to all connected clients.
+    /// </summary>
+    Task SendEchoAsync(CancellationToken ct = default);
+
+    /// <summary>
+    /// Manually send a SignOff request (MTI 1800, F24=803) to all connected clients
+    /// and optionally disconnect them afterwards.
+    /// </summary>
+    Task SendSignOffAsync(bool disconnectAfter = false, CancellationToken ct = default);
 
     /// <summary>
     /// Interval in seconds for periodically sending a SignOn request (MTI 1800)
@@ -35,6 +55,9 @@ public interface IIso8583Server
 
     /// <summary>TLS configuration. Set <see cref="TlsOptions.IsEnabled"/> to true for TLS.</summary>
     TlsOptions Tls { get; set; }
+
+    /// <summary>Snapshot of active connections for monitoring.</summary>
+    IReadOnlyList<(int ConnNum, string RemoteEndpoint, DateTime ConnectedAt)> GetConnections();
 
     /// <summary>Callback for log messages (thread-safe, may be called from any thread).</summary>
     Action<string>? OnLog { get; set; }

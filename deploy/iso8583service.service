@@ -1,5 +1,5 @@
 [Unit]
-Description=ISO 8583 Service
+Description=ISO 8583 Service with WebAPI
 After=network-online.target
 Wants=network-online.target
 
@@ -21,6 +21,7 @@ PrivateTmp=yes
 
 # Environment for production
 Environment=DOTNET_ENVIRONMENT=Production
+Environment=ASPNETCORE_URLS=http://0.0.0.0:5000
 
 [Install]
 WantedBy=multi-user.target

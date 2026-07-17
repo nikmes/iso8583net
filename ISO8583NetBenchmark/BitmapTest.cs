@@ -1,87 +1,106 @@
 ﻿using ISO8583Net.Message;
 using ISO8583Net.Packager;
-using BenchmarkDotNet.Engines;
-using BenchmarkDotNet.Attributes;
 using ISO8583Net.Utilities;
-using BenchmarkDotNet.Diagnostics.Windows.Configs;
+using BenchmarkDotNet.Attributes;
+using Microsoft.Extensions.Logging.Abstractions;
+using ISO8583Net.Field;
 
 namespace ISO8583NetBenchmark
 {
+    /// <summary>
+    /// Bitmap-level operations: bit checking, field enumeration, GetSetFields.
+    /// </summary>
     [MemoryDiagnoser]
-    [EtwProfiler] //Create traces for perfview
-    [SimpleJob(RunStrategy.Throughput, iterationCount: 60, id: "MonitoringJob")]
-    public class BitmapTest
-    {        
-        Microsoft.Extensions.Logging.ILogger logger;
-        static private ISOMessagePackager mPackager;
-        ISOMessage m;
+    [MarkdownExporter]
+    public class BitmapBenchmarks
+    {
+        private ISOMessagePackager _packager;
+        private ISOMessage _message;
+        private ISOFieldBitmap _bitmap;
 
         [GlobalSetup]
-        public void GlobalSetup()
+        public void Setup()
         {
-            
-            logger = new Microsoft.Extensions.Logging.Abstractions.NullLogger<BitmapTest>();
-            mPackager = new ISOMessagePackager(logger); // initialize from default visa packager that is embeded as a resource in the library
-            m = new ISOMessage(logger, mPackager);
+            var logger = NullLogger.Instance;
+            _packager = new ISOMessagePackager(logger);
+            _message = new ISOMessage(logger, _packager);
 
-            m.Set(0, "0100");
-            m.Set(2, "40004000400040001");
-            m.Set(3, "000000");
-            m.Set(4, "000000002900");
-            m.Set(7, "1231231233");
-            m.Set(11, "123123");
-            m.Set(12, "193012");
-            m.Set(14, "1219");
-            m.Set(18, "5999");
-            m.Set(19, "196");
-            m.Set(22, "9010");
-            m.Set(25, "23");
-            m.Set(37, "123123123123");
+            // Fill a typical authorization request with primary+secondary bitmap fields
+            _message.Set(0, "0100");
+            _message.Set(2, "4000400040004001");
+            _message.Set(3, "300000");
+            _message.Set(4, "000000002900");
+            _message.Set(7, "1234567890");
+            _message.Set(11, "123456");
+            _message.Set(12, "193012");
+            _message.Set(14, "1219");
+            _message.Set(18, "5999");
+            _message.Set(19, "196");
+            _message.Set(22, "9010");
+            _message.Set(25, "23");
+            _message.Set(37, "123456789012");
+            _message.Set(64, "ABCDEF1234567890");
+            _message.Set(70, "123");
+            _message.Set(132, "ABABABAB");
+
+            _bitmap = (ISOFieldBitmap)_message.GetField(1);
         }
 
         [Benchmark(Baseline = true)]
-        public bool[] IsBitSet()
+        public bool[] IsBitSet_Loop()
         {
-            bool[] fields = new bool[196]; 
-            var bitmap = m.GetField(1) as ISO8583Net.Field.ISOFieldBitmap;
-            int length = bitmap.GetByteArray().Length * 8;
+            bool[] fields = new bool[196];
+            int length = _bitmap.GetByteArray().Length * 8;
             for (int i = 0; i < length; i++)
             {
                 if (i != 1 && i != 65)
-                {
-                    fields[i] = bitmap.BitIsSet(i);
-                }
+                    fields[i] = _bitmap.BitIsSet(i);
             }
             return fields;
         }
 
         [Benchmark]
-        public bool[] FieldEnumerator()
+        public bool[] FieldIdEnumerator()
         {
             bool[] fields = new bool[196];
-            var bitmap = m.GetField(1) as ISO8583Net.Field.ISOFieldBitmap;
-            var enumerator = bitmap.GetByteArray().GetFieldIdEnumerator();
-            foreach (var item in enumerator)
-            {
-                fields[item] = true;
-            }
+            foreach (var id in _bitmap.GetByteArray().GetFieldIdEnumerator())
+                fields[id] = true;
             return fields;
         }
 
         [Benchmark]
-        public bool[] GetSetFields()
+        public bool[] GetSetFields_Alloc()
         {
             bool[] fields = new bool[196];
-            var bitmap = m.GetField(1) as ISO8583Net.Field.ISOFieldBitmap;
-            var setFields = bitmap.GetSetFields();
+            int[] setFields = _bitmap.GetSetFields();
             for (int i = 0; i < setFields.Length; i++)
-            {
                 fields[setFields[i]] = true;
-            }
-            
             return fields;
         }
 
+        [Benchmark]
+        public bool[] BitEnumerator()
+        {
+            bool[] result = new bool[196];
+            int i = 0;
+            foreach (var b in _bitmap.GetByteArray().GetBitEnumerator())
+            {
+                if (i < 196) result[i] = b;
+                i++;
+            }
+            return result;
+        }
 
+        [Benchmark]
+        public string ToHumanReadable() => _bitmap.ToHumanReadable("  ");
+
+        [Benchmark]
+        public string ToHexString() => _bitmap.ToHexString();
+
+        [Benchmark]
+        public byte[] GetByteArray() => _bitmap.GetByteArray();
+
+        [Benchmark]
+        public string ToString_() => _bitmap.ToString();
     }
 }

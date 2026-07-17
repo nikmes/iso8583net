@@ -347,81 +347,38 @@ namespace ISO8583Net.Field
             }          
         }
 
+        /// <summary>
+        /// Fills caller-provided span with the numbers of all set fields. Field 0 is always first.
+        /// Returns the count of fields written.
+        /// </summary>
+        public int GetSetFields(Span<int> destination)
+        {
+            int currentIndex = 0;
+            destination[currentIndex++] = 0;
+
+            int length = GetLengthInBytes();
+            for (int i = 0; i < length; i++)
+            {
+                int multiplier = i * 8;
+                byte b = m_bitmap[i];
+                if ((128 & b) > 0) destination[currentIndex++] = 1 + multiplier;
+                if ((64  & b) > 0) destination[currentIndex++] = 2 + multiplier;
+                if ((32  & b) > 0) destination[currentIndex++] = 3 + multiplier;
+                if ((16  & b) > 0) destination[currentIndex++] = 4 + multiplier;
+                if ((8   & b) > 0) destination[currentIndex++] = 5 + multiplier;
+                if ((4   & b) > 0) destination[currentIndex++] = 6 + multiplier;
+                if ((2   & b) > 0) destination[currentIndex++] = 7 + multiplier;
+                if ((1   & b) > 0) destination[currentIndex++] = 8 + multiplier;
+            }
+            return currentIndex;
+        }
+
         public int[] GetSetFields()
         {
-            //allocate bitmap length * 8 plus one for the zero field;
-            int[] result;
-            int currentIndex = 0;
-            try
-            {
-                int length = GetLengthInBytes();
-                result = ArrayPool<int>.Shared.Rent((length * 8) + 1);
-
-                result[currentIndex] = 0;
-                currentIndex++;
-                for (int i = 0; i < length; i++)
-                {
-                    int multiplier = i * 8;
-                    if ((128 & m_bitmap[i]) > 0)
-                    {
-                        result[currentIndex] = 1 + multiplier;
-                        currentIndex++;
-                    }
-                    if ((64 & m_bitmap[i]) > 0)
-                    {
-                        result[currentIndex] = 2 + multiplier;
-                        currentIndex++;
-                    }
-                    if ((32 & m_bitmap[i]) > 0)
-                    {
-                        result[currentIndex] = 3 + multiplier;
-                        currentIndex++;
-                    }
-                    if ((16 & m_bitmap[i]) > 0)
-                    {
-                        result[currentIndex] = 4 + multiplier;
-                        currentIndex++;
-                    }
-                    if ((8 & m_bitmap[i]) > 0)
-                    {
-                        result[currentIndex] = 5 + multiplier;
-                        currentIndex++;
-                    }
-                    if ((4 & m_bitmap[i]) > 0)
-                    {
-                        result[currentIndex] = 6 + multiplier;
-                        currentIndex++;
-                    }
-                    if ((2 & m_bitmap[i]) > 0)
-                    {
-                        result[currentIndex] = 7 + multiplier;
-                        currentIndex++;
-                    }
-                    if ((1 & m_bitmap[i]) > 0)
-                    {
-                        result[currentIndex] = 8 + multiplier;
-                        currentIndex++;
-                    }
-
-                }
-            }
-            finally
-            {
-
-
-            }
-
-            if (result != null)
-            {
-                var finalResult = result.AsSpan<int>(0, currentIndex).ToArray();
-                ArrayPool<int>.Shared.Return(result);
-                return finalResult;
-            }
-            else
-            {
-                return null;
-            }
-
+            int length = GetLengthInBytes();
+            var result = new int[(length * 8) + 1];
+            int count = GetSetFields(result);
+            return result.AsSpan(0, count).ToArray();
         }
         /// <summary>
         /// 

@@ -85,9 +85,10 @@ namespace ISO8583Net.Packager
 
             // bitmap was packed so get the total length in bits to determine up to what field number it expands
             var bitmap = isoFields[0] as ISOFieldBitmap;
-            int[] setFields = bitmap.GetSetFields();
+            Span<int> setFields = stackalloc int[193];
+            int count = bitmap.GetSetFields(setFields);
 
-            for (int k = 0; k < setFields.Length; k++)
+            for (int k = 0; k < count; k++)
             {
                 int fieldNumber = setFields[k];
                 if (fieldNumber != 0)
@@ -147,15 +148,20 @@ namespace ISO8583Net.Packager
 
             m_fieldPackagerList[0].UnPack(isoFields[0], packedBytes, ref index);
             var bitmap = isoFields[0] as ISOFieldBitmap;
-            int[] setFields = bitmap.GetSetFields();
+            Span<int> setFields = stackalloc int[193];
+            int count = bitmap.GetSetFields(setFields);
 
-            for (int k = 0; k < setFields.Length; k++)
+            for (int k = 0; k < count; k++)
             {
                 int fieldNumber = setFields[k];
                 if (fieldNumber != 0)
                 {
-                    isoFields[fieldNumber] = new ISOField(Logger, m_fieldPackagerList[fieldNumber], m_fieldPackagerList[fieldNumber].GetFieldNumber());
-                    m_fieldPackagerList[fieldNumber].UnPack(isoFields[fieldNumber], packedBytes, ref index);                    
+                    var existing = isoFields[fieldNumber];
+                    if (existing != null)
+                        existing.Reset();
+                    else
+                        isoFields[fieldNumber] = new ISOField(Logger, m_fieldPackagerList[fieldNumber], m_fieldPackagerList[fieldNumber].GetFieldNumber());
+                    m_fieldPackagerList[fieldNumber].UnPack(isoFields[fieldNumber], packedBytes, ref index);
                 }
             }
             //int totFields = bitmap.GetLengthInBits();
