@@ -28,19 +28,15 @@ handler framework. For architecture details, see
 
 ## Architecture Overview
 
-```
-┌──────────┐    ┌────────┐    ┌──────────┐    ┌──────────┐    ┌────────┐
-│  Reader   │───▶│ Parser  │───▶│Dispatcher│───▶│ Handlers │───▶│ Writer  │
-│ (socket)  │    │(unpack)│    │ (route)  │    │(your code)│   │(socket)│
-└──────────┘    └────────┘    └──────────┘    └──────────┘    └────────┘
-                                     │               │
-                                     │  MTI lookup   │  response via
-                                     │  + catch-all  │  ChannelWriter
-                                     ▼               ▼
-                              ┌──────────────────────────────┐
-                              │      HandlerRegistry          │
-                              │  MTI → List<IMessageHandler>  │
-                              └──────────────────────────────┘
+```mermaid
+flowchart LR
+    Reader["🔵 Reader<br/>(socket I/O)"] -->|RawMessage| Parser["🟢 Parser<br/>(ISOMessage.UnPack)"]
+    Parser -->|ParsedMessage| Dispatcher["🟡 Dispatcher<br/>(route by MTI)"]
+    Dispatcher -->|"fire-and-forget"| Handlers["🟠 Handlers<br/>(your business logic)"]
+    Handlers -->|OutboundMessage| Writer["🔴 Writer<br/>(socket I/O)"]
+
+    Dispatcher -.->|"MTI lookup<br/>+ catch-all"| Registry["HandlerRegistry<br/>MTI → List&lt;IMessageHandler&gt;"]
+    Handlers -.->|response via<br/>ChannelWriter| Registry
 ```
 
 Your business logic lives **only in handlers**. The pipeline handles I/O,
@@ -49,19 +45,67 @@ shutdown — you never touch sockets or message framing.
 
 ### Handler Hierarchy
 
-```
-IMessageHandler                   ← low-level interface (full control)
-├── BaseRequestHandler            ← for requests: 1100, 1200, 1400
-│   ├── AuthorizationHandler      (you override ProcessAsync)
-│   ├── FinancialHandler           "
-│   └── ReversalHandler            "
-├── BaseAdviceHandler             ← for advice: 1120, 1220, 1420
-│   ├── AuthorizationAdviceHandler (you override OnAcknowledgedAsync)
-│   ├── FinancialAdviceHandler     "
-│   └── ReversalAdviceHandler      "
-├── NetworkManagementHandler      ← for network: 1804
-│   (you override HandleLogonAsync, HandleEchoAsync, etc.)
-└── DefaultHandler                ← catch-all ("*"): 1800 echo, unknown passthrough
+```mermaid
+classDiagram
+    class IMessageHandler {
+        <<interface>>
+        +SupportedMTIs
+        +HandleAsync(ctx, ct)
+    }
+    class BaseRequestHandler {
+        <<abstract>>
+        +RequestMTI
+        +ResponseMTI
+        #ProcessAsync(ctx, ct)*
+        #BuildResponse(req, result)
+    }
+    class BaseAdviceHandler {
+        <<abstract>>
+        +AdviceMTI
+        +ResponseMTI
+        #OnAcknowledgedAsync(ctx, ct)
+        #BuildAcknowledgement(req)
+    }
+    class NetworkManagementHandler {
+        +SupportedMTIs ["1804"]
+        #HandleLogonAsync(ctx, ct)
+        #HandleLogoffAsync(ctx, ct)
+        #HandleKeyChangeAsync(ctx, ct)
+        #HandleEchoAsync(ctx, ct)
+    }
+    class DefaultHandler {
+        +SupportedMTIs ["*"]
+        "catch-all: 1800 echo, passthrough"
+    }
+    class AuthorizationHandler {
+        RequestMTI="1100" ResponseMTI="1110"
+    }
+    class FinancialHandler {
+        RequestMTI="1200" ResponseMTI="1210"
+    }
+    class ReversalHandler {
+        RequestMTI="1400" ResponseMTI="1410"
+    }
+    class AuthorizationAdviceHandler {
+        AdviceMTI="1120" ResponseMTI="1130"
+    }
+    class FinancialAdviceHandler {
+        AdviceMTI="1220" ResponseMTI="1230"
+    }
+    class ReversalAdviceHandler {
+        AdviceMTI="1420" ResponseMTI="1430"
+    }
+
+    IMessageHandler <|-- BaseRequestHandler
+    IMessageHandler <|-- BaseAdviceHandler
+    IMessageHandler <|-- NetworkManagementHandler
+    IMessageHandler <|-- DefaultHandler
+    BaseRequestHandler <|-- AuthorizationHandler
+    BaseRequestHandler <|-- FinancialHandler
+    BaseRequestHandler <|-- ReversalHandler
+    BaseAdviceHandler <|-- AuthorizationAdviceHandler
+    BaseAdviceHandler <|-- FinancialAdviceHandler
+    BaseAdviceHandler <|-- ReversalAdviceHandler
 ```
 
 ---
@@ -197,20 +241,23 @@ new ProcessResult("116", approvalCode: "OK1"); // with approval code
 
 ### Lifecycle
 
-```
-request arrives (MTI 1100)
-    │
-    ▼
-HandleAsync() calls ProcessAsync()
-    │
-    ▼
-your ProcessAsync() returns ProcessResult
-    │
-    ▼
-BuildResponse() sets MTI, F38, F39 on the ISOMessage
-    │
-    ▼
-response sent to writer channel → socket
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Pipeline
+    participant HandleAsync
+    participant ProcessAsync as "your ProcessAsync()"
+    participant BuildResponse
+
+    Client->>Pipeline: ISO 8583 request (MTI 1100)
+    Pipeline->>HandleAsync: invoke HandleAsync(ctx, ct)
+    HandleAsync->>ProcessAsync: call ProcessAsync(ctx, ct)
+    Note over ProcessAsync: read F2 (PAN)<br/>read F4 (Amount)<br/>validate, check balance
+    ProcessAsync-->>HandleAsync: return ProcessResult("000", "A1B2C3")
+    HandleAsync->>BuildResponse: BuildResponse(request, result)
+    Note over BuildResponse: set MTI: 1100→1110<br/>set F38: "A1B2C3"<br/>set F39: "000"
+    BuildResponse-->>Pipeline: ISOMessage response
+    Pipeline->>Client: ISO 8583 response (MTI 1110)
 ```
 
 ### Overriding BuildResponse
@@ -245,20 +292,24 @@ record of a previously completed transaction. Your job is to acknowledge receipt
 
 ### Lifecycle
 
-```
-advice arrives (MTI 1120)
-    │
-    ▼
-OnAcknowledgedAsync() runs (your hook)
-    │  └─ save to SAF table
-    │  └─ log to audit trail
-    │  └─ trigger reconciliation job
-    │
-    ▼
-BuildAcknowledgement() sets response MTI + F39="400" ALWAYS
-    │
-    ▼
-response sent
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Pipeline
+    participant HandleAsync
+    participant OnAck as "your OnAcknowledgedAsync()"
+    participant BuildAck as "BuildAcknowledgement()"
+
+    Client->>Pipeline: advice message (MTI 1120)
+    Pipeline->>HandleAsync: invoke HandleAsync(ctx, ct)
+    HandleAsync->>OnAck: call OnAcknowledgedAsync(ctx, ct)
+    Note over OnAck: save to SAF table<br/>log to audit trail<br/>trigger reconciliation
+    Note over OnAck: errors are CAUGHT —<br/>does NOT affect response
+    OnAck-->>HandleAsync: (completes or throws)
+    HandleAsync->>BuildAck: BuildAcknowledgement(request)
+    Note over BuildAck: set MTI: 1120→1130<br/>set F39: "400" (ALWAYS)
+    BuildAck-->>Pipeline: ISOMessage response
+    Pipeline->>Client: acknowledgment (MTI 1130, F39=400)
 ```
 
 ### Example: SAF clearing
