@@ -1,6 +1,4 @@
 using System;
-using System.Buffers;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,13 +7,12 @@ using System.Net.Security;
 using System.Net.Sockets;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using ISO8583Net.Message;
 using ISO8583Net.Packager;
 using ISO8583Net.Server.Pipeline;
-using ISO8583Net.Utilities;
+using ISO8583Net.Server.Pipeline.Messages;
 using Microsoft.Extensions.Logging;
 
 namespace ISO8583Net.Server;
@@ -26,20 +23,17 @@ namespace ISO8583Net.Server;
 /// </summary>
 public sealed class Iso8583TcpServer : IIso8583Server
 {
-    private const int LengthPrefixSize = 2;
-
     private TcpListener? _listener;
     private CancellationTokenSource? _cts;
     private ISOMessagePackager? _packager;
-    private PipelineHost? _pipelineHost;
+    private readonly PipelineHost _pipelineHost;
 
-    /// <summary>
-    /// Tracks streams for SignOn/Echo/SignOff (temporary — Sprint 4 moves these to writer channels).
-    /// </summary>
-    private readonly ConcurrentDictionary<int, Stream> _streams = new();
-
+    public Iso8583TcpServer(PipelineHost pipelineHost)
+    {
+        _pipelineHost = pipelineHost;
+    }
     public bool IsRunning => _listener != null;
-    public int ConnectionCount => _pipelineHost?.ConnectionCount ?? 0;
+    public int ConnectionCount => _pipelineHost.ConnectionCount;
     public int SignOnIntervalSeconds { get; set; }
     public bool SendSignOnOnConnect { get; set; }
     public bool EnablePeriodicSignOn { get; set; }
@@ -77,9 +71,8 @@ public sealed class Iso8583TcpServer : IIso8583Server
             Log($"TLS enabled. Client cert required: {Tls.RequireClientCert}");
         }
 
-        // ── Create pipeline host ───────────────────────────────────────
-        var pipelineOptions = new PipelineOptions();
-        _pipelineHost = new PipelineHost(pipelineOptions, _packager!);
+        // ── Initialize pipeline host with packager ─────────────────────
+        _pipelineHost.SetPackager(_packager!);
 
         // ── Start listener ──────────────────────────────────────────────
         _cts = CancellationTokenSource.CreateLinkedTokenSource(ct);
@@ -119,25 +112,19 @@ public sealed class Iso8583TcpServer : IIso8583Server
     public async Task SendSignOnAsync(CancellationToken ct = default)
     {
         Log("─── Manual SignOn Request (all connections) ───");
-        var tasks = _streams.Select(kvp =>
-            SendSignOnRequestToStreamAsync(kvp.Value, kvp.Key, "801", "SignOn", ct));
-        await Task.WhenAll(tasks);
+        await _pipelineHost.BroadcastSignOnRequestAsync("801", ct);
     }
 
     public async Task SendEchoAsync(CancellationToken ct = default)
     {
         Log("─── Manual Echo Message (all connections) ───");
-        var tasks = _streams.Select(kvp =>
-            SendSignOnRequestToStreamAsync(kvp.Value, kvp.Key, "831", "Echo", ct));
-        await Task.WhenAll(tasks);
+        await _pipelineHost.BroadcastSignOnRequestAsync("831", ct);
     }
 
     public async Task SendSignOffAsync(bool disconnectAfter = false, CancellationToken ct = default)
     {
         Log("─── Manual SignOff Request (all connections) ───");
-        var tasks = _streams.Select(kvp =>
-            SendSignOnRequestToStreamAsync(kvp.Value, kvp.Key, "803", "SignOff", ct));
-        await Task.WhenAll(tasks);
+        await _pipelineHost.BroadcastSignOnRequestAsync("803", ct);
 
         if (disconnectAfter)
         {
@@ -148,9 +135,6 @@ public sealed class Iso8583TcpServer : IIso8583Server
 
     public IReadOnlyList<(int ConnNum, string RemoteEndpoint, DateTime ConnectedAt)> GetConnections()
     {
-        if (_pipelineHost == null)
-            return Array.Empty<(int, string, DateTime)>();
-
         return _pipelineHost.GetStats()
             .Select(s => (s.ConnectionNumber, s.RemoteEndpoint, s.ConnectedAt))
             .ToList();
@@ -169,7 +153,7 @@ public sealed class Iso8583TcpServer : IIso8583Server
                 int connNum = Interlocked.Increment(ref connectionCount);
 
                 Log($"[#{connNum}] Client connected: {client.Client.RemoteEndPoint}");
-                OnStatusChanged?.Invoke($"Active connections: {_pipelineHost?.ConnectionCount ?? 0}");
+                OnStatusChanged?.Invoke($"Active connections: {_pipelineHost.ConnectionCount}");
 
                 _ = HandleClientAsync(client, connNum, ct);
             }
@@ -189,27 +173,25 @@ public sealed class Iso8583TcpServer : IIso8583Server
 
             string remoteEndpoint = client.Client.RemoteEndPoint?.ToString() ?? "unknown";
 
-            // Track stream for SignOn/Echo/SignOff (Sprint 4 moves to writer channels)
-            _streams.TryAdd(connNum, stream);
-
             try
             {
+                // ── Delegate to pipeline host ────────────────────────
+                var pipeline = _pipelineHost.Accept(stream, connNum, remoteEndpoint, ct);
+
                 // ── Send initial SignOn on connect ───────────────────
                 if (SendSignOnOnConnect)
                 {
-                    await SendInitialSignOnAsync(stream, connNum, ct);
+                    var signOnMsg = _pipelineHost.BuildSignOnMessage(connNum, "801");
+                    var outbound = OutboundMessage.FromISOMessage(signOnMsg, connNum);
+                    await pipeline.SendAsync(outbound, ct);
                 }
-
-                // ── Delegate to pipeline host ────────────────────────
-                var pipeline = _pipelineHost!.Accept(stream, connNum, remoteEndpoint, ct);
 
                 // Wait until reader exits (disconnect)
                 await pipeline.StopAsync(TimeSpan.FromSeconds(5));
             }
             finally
             {
-                _streams.TryRemove(connNum, out _);
-                _pipelineHost?.Remove(connNum);
+                _pipelineHost.Remove(connNum);
             }
         }
         catch (OperationCanceledException) { }
@@ -218,119 +200,8 @@ public sealed class Iso8583TcpServer : IIso8583Server
         {
             stream?.Dispose();
             client.Dispose();
-            OnStatusChanged?.Invoke($"Active connections: {_pipelineHost?.ConnectionCount ?? 0}");
+            OnStatusChanged?.Invoke($"Active connections: {_pipelineHost.ConnectionCount}");
         }
-    }
-
-    // ═══════════════════════════════════════════════════════════════════════
-    //  ISO Parsing (used by SignOn response building — Sprint 4 refactor)
-    // ═══════════════════════════════════════════════════════════════════════
-
-    private (string dump, ISOMessage? msg) ParseMessage(int connNum, byte[] data)
-    {
-        try
-        {
-            var msg = new ISOMessage(new NullLogger(), _packager!);
-            msg.UnPack(data);
-
-            var sb = new StringBuilder();
-            sb.AppendLine(msg.ToString());
-            return (sb.ToString(), msg);
-        }
-        catch (Exception ex)
-        {
-            return ($"PARSE ERROR: {ex.Message}", null);
-        }
-    }
-
-    // ═══════════════════════════════════════════════════════════════════════
-    //  SignOn Response (kept for manual API calls — Sprint 4 refactor)
-    // ═══════════════════════════════════════════════════════════════════════
-
-    private async Task SendSignOnResponse(
-        Stream stream, int connNum, ISOMessage request, CancellationToken ct)
-    {
-        try
-        {
-            Log($"[#{connNum}] Building SignOn response (1800 → 1814)...");
-
-            request.Set(0, "1814");
-            request.Set(39, "000");
-
-            byte[] responseBytes = request.Pack();
-            var framed = new byte[LengthPrefixSize + responseBytes.Length];
-            framed[0] = (byte)(responseBytes.Length >> 8);
-            framed[1] = (byte)(responseBytes.Length & 0xFF);
-            Array.Copy(responseBytes, 0, framed, LengthPrefixSize, responseBytes.Length);
-
-            Log(FormatHexDump(connNum, framed));
-
-            await stream.WriteAsync(framed, 0, framed.Length, ct);
-            await stream.FlushAsync(ct);
-
-            Log($"[#{connNum}] SignOn response sent.");
-        }
-        catch (Exception ex)
-        {
-            Log($"[#{connNum}] Failed to send SignOn response: {ex.Message}");
-        }
-    }
-
-    // ═══════════════════════════════════════════════════════════════════════
-    //  Periodic SignOn (kept — Sprint 4 replaces with PeriodicTimer)
-    // ═══════════════════════════════════════════════════════════════════════
-
-    private async Task SendInitialSignOnAsync(Stream stream, int connNum, CancellationToken ct)
-    {
-        await SendSignOnRequestToStreamAsync(stream, connNum, "801", "SignOn (Initial)", ct);
-    }
-
-    private async Task SendEchoToStreamAsync(Stream stream, int connNum, CancellationToken ct)
-    {
-        await SendSignOnRequestToStreamAsync(stream, connNum, "831", "Echo (Periodic)", ct);
-    }
-
-    private async Task SendSignOnRequestToStreamAsync(
-        Stream stream, int connNum, string f24Value, string label, CancellationToken ct)
-    {
-        try
-        {
-            Log($"[#{connNum}] ── {label} ──");
-
-            var request = BuildSignOnRequest(connNum, f24Value);
-            Log($"[#{connNum}] {label} content:");
-            Log(request.ToString());
-
-            byte[] reqBytes = request.Pack();
-
-            var framed = new byte[LengthPrefixSize + reqBytes.Length];
-            framed[0] = (byte)(reqBytes.Length >> 8);
-            framed[1] = (byte)(reqBytes.Length & 0xFF);
-            Array.Copy(reqBytes, 0, framed, LengthPrefixSize, reqBytes.Length);
-
-            Log($"[#{connNum}] Sending {label} ({reqBytes.Length} bytes, LI=0x{reqBytes.Length:X4})...");
-            Log(FormatHexDump(connNum, framed));
-
-            await stream.WriteAsync(framed, 0, framed.Length, ct);
-            await stream.FlushAsync(ct);
-        }
-        catch (Exception ex)
-        {
-            Log($"[#{connNum}] {label} send failed: {ex.Message}");
-        }
-    }
-
-    /// <summary>
-    /// Builds a standard SignOn request (MTI 1800) using the loaded dialect.
-    /// </summary>
-    private ISOMessage BuildSignOnRequest(int connNum, string f24Value = "801")
-    {
-        var msg = new ISOMessage(new NullLogger(), _packager!);
-        msg.Set(0, "1800");
-        msg.Set(7, DateTime.UtcNow.ToString("MMddHHmmss"));
-        msg.Set(11, $"{connNum:D6}");
-        msg.Set(24, f24Value);
-        return msg;
     }
 
     // ═══════════════════════════════════════════════════════════════════════
@@ -410,50 +281,6 @@ public sealed class Iso8583TcpServer : IIso8583Server
     // ═══════════════════════════════════════════════════════════════════════
     //  Helpers
     // ═══════════════════════════════════════════════════════════════════════
-
-    private static string FormatHexDump(int connNum, ReadOnlySpan<byte> data)
-    {
-        return FormatHexDumpImpl(connNum, data, hasLI: false);
-    }
-
-    private static string FormatHexDumpWithLI(int connNum, ReadOnlySpan<byte> li, ReadOnlySpan<byte> data)
-    {
-        // Combine LI + data into a single buffer for the dump
-        Span<byte> combined = stackalloc byte[li.Length + data.Length];
-        li.CopyTo(combined);
-        data.CopyTo(combined.Slice(li.Length));
-        return FormatHexDumpImpl(connNum, combined, hasLI: true);
-    }
-
-    private static string FormatHexDumpImpl(int connNum, ReadOnlySpan<byte> data, bool hasLI)
-    {
-        var sb = new StringBuilder();
-        sb.AppendLine($"[#{connNum}] ── Hex Dump ({data.Length} bytes) ──");
-        for (int off = 0; off < data.Length; off += 16)
-        {
-            int r = Math.Min(16, data.Length - off);
-            sb.Append($"{off:X4}  ");
-            for (int i = 0; i < 16; i++)
-            {
-                if (i < r) sb.Append($"{data[off + i]:X2} ");
-                else sb.Append("   ");
-                if (i == 7) sb.Append(' ');
-            }
-            sb.Append(" |");
-            for (int i = 0; i < r; i++)
-            {
-                byte b = data[off + i];
-                // Mark LI bytes with a different indicator
-                if (hasLI && off + i < 2)
-                    sb.Append(b is >= 32 and < 127 ? (char)b : '·');
-                else
-                    sb.Append(b is >= 32 and < 127 ? (char)b : '.');
-            }
-            sb.AppendLine("|");
-        }
-        if (hasLI) sb.AppendLine($"        LI = 0x{data[0]:X2}{data[1]:X2} = {((data[0] << 8) | data[1])}");
-        return sb.ToString();
-    }
 
     private void Log(string message) => OnLog?.Invoke(message);
 

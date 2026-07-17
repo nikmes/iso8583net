@@ -1,10 +1,14 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using ISO8583Net.Message;
 using ISO8583Net.Packager;
 using ISO8583Net.Server.Pipeline;
+using ISO8583Net.Server.Pipeline.Handlers;
+using ISO8583Net.Server.Pipeline.Messages;
 using Xunit;
 
 namespace ISO8583Net.Tests;
@@ -13,8 +17,12 @@ public sealed class PipelineTests
 {
     private static ISOMessagePackager CreatePackager()
     {
-        // Use built-in VISA dialect (no file needed)
         return new ISOMessagePackager(new NullTestLogger());
+    }
+
+    private static HandlerRegistry CreateRegistry()
+    {
+        return new HandlerRegistry(new[] { new EchoHandler() });
     }
 
     [Fact]
@@ -30,14 +38,15 @@ public sealed class PipelineTests
         };
 
         var packager = CreatePackager();
-        var host = new PipelineHost(options, packager);
+        var host = new PipelineHost(options, CreateRegistry());
+        host.SetPackager(packager);
 
         // Create an in-memory stream pair to simulate a socket
         using var clientStream = new MemoryStream();
         using var serverStream = new PassthroughStream(clientStream);
 
         // Build a valid ISO message using the packager
-        var msg = new global::ISO8583Net.Message.ISOMessage(new NullTestLogger(), packager);
+        var msg = new ISOMessage(new NullTestLogger(), packager);
         msg.Set(0, "1800");
         msg.Set(7, DateTime.UtcNow.ToString("MMddHHmmss"));
         msg.Set(11, "000001");
@@ -55,7 +64,7 @@ public sealed class PipelineTests
 
         using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
 
-        // Act — start pipeline (reader → parser → echo bridge → writer)
+        // Act — start pipeline (reader → parser → dispatcher → writer)
         var pipeline = host.Accept(serverStream, 1, "127.0.0.1:0", cts.Token);
 
         // Wait for the message to be processed and echoed
@@ -64,8 +73,7 @@ public sealed class PipelineTests
         // Stop the pipeline
         await pipeline.StopAsync(TimeSpan.FromSeconds(2));
 
-        // Assert — the echoed frame should be in the client stream
-        // Parser echo bridge re-packs, so the output should match the original packed bytes
+        // Assert
         Assert.True(pipeline.Stats.MessagesReceived >= 1);
         Assert.True(pipeline.Stats.MessagesSent >= 1);
         Assert.Equal(0, pipeline.Stats.ParseErrors);
@@ -83,7 +91,8 @@ public sealed class PipelineTests
         };
 
         var packager = CreatePackager();
-        var host = new PipelineHost(options, packager);
+        var host = new PipelineHost(options, CreateRegistry());
+        host.SetPackager(packager);
         using var clientStream = new MemoryStream();
         using var serverStream = new PassthroughStream(clientStream);
 
@@ -128,7 +137,8 @@ public sealed class PipelineTests
         };
 
         var packager = CreatePackager();
-        var host = new PipelineHost(options, packager);
+        var host = new PipelineHost(options, CreateRegistry());
+        host.SetPackager(packager);
         using var clientStream = new MemoryStream();
         using var serverStream = new PassthroughStream(clientStream);
 
@@ -137,7 +147,7 @@ public sealed class PipelineTests
         clientStream.WriteByte(0x00);
 
         // Real message
-        var msg = new global::ISO8583Net.Message.ISOMessage(new NullTestLogger(), packager);
+        var msg = new ISOMessage(new NullTestLogger(), packager);
         msg.Set(0, "1800");
         msg.Set(7, DateTime.UtcNow.ToString("MMddHHmmss"));
         msg.Set(11, "000001");
@@ -170,7 +180,8 @@ public sealed class PipelineTests
         };
 
         var packager = CreatePackager();
-        var host = new PipelineHost(options, packager);
+        var host = new PipelineHost(options, CreateRegistry());
+        host.SetPackager(packager);
         using var clientStream = new MemoryStream();
         using var serverStream = new PassthroughStream(clientStream);
 
@@ -181,7 +192,7 @@ public sealed class PipelineTests
         clientStream.Write(corrupt, 0, corrupt.Length);
 
         // Send a valid message after the corrupt one
-        var msg = new global::ISO8583Net.Message.ISOMessage(new NullTestLogger(), packager);
+        var msg = new ISOMessage(new NullTestLogger(), packager);
         msg.Set(0, "1800");
         msg.Set(7, DateTime.UtcNow.ToString("MMddHHmmss"));
         msg.Set(11, "000001");
@@ -200,7 +211,7 @@ public sealed class PipelineTests
 
         Assert.True(pipeline.Stats.MessagesReceived >= 2);
         Assert.Equal(1, pipeline.Stats.ParseErrors);
-        // The valid message should still be echoed
+        // The valid message should still be echoed by the catch-all handler
         Assert.True(pipeline.Stats.MessagesSent >= 1);
     }
 
@@ -217,14 +228,15 @@ public sealed class PipelineTests
         };
 
         var packager = CreatePackager();
-        var host = new PipelineHost(options, packager);
+        var host = new PipelineHost(options, CreateRegistry());
+        host.SetPackager(packager);
         using var clientStream = new MemoryStream();
         using var serverStream = new PassthroughStream(clientStream);
 
         // Send 10 messages
         for (int i = 0; i < 10; i++)
         {
-            var msg = new global::ISO8583Net.Message.ISOMessage(new NullTestLogger(), packager);
+            var msg = new ISOMessage(new NullTestLogger(), packager);
             msg.Set(0, "1800");
             msg.Set(7, DateTime.UtcNow.ToString("MMddHHmmss"));
             msg.Set(11, $"{i + 1:D6}");
@@ -256,6 +268,19 @@ public sealed class PipelineTests
         public void Log<TState>(Microsoft.Extensions.Logging.LogLevel logLevel,
             Microsoft.Extensions.Logging.EventId eventId, TState state,
             Exception? exception, Func<TState, Exception?, string> formatter) { }
+    }
+
+    /// <summary>
+    /// Echoes every message back (catch-all handler for pipeline tests).
+    /// </summary>
+    private sealed class EchoHandler : IMessageHandler
+    {
+        public IReadOnlySet<string> SupportedMTIs { get; } = new HashSet<string> { "*" };
+
+        public Task<ISOMessage?> HandleAsync(MessageContext context, CancellationToken ct)
+        {
+            return Task.FromResult<ISOMessage?>(context.Request);
+        }
     }
 
     /// <summary>

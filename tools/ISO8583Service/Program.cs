@@ -1,6 +1,8 @@
 using System;
 using System.Threading.Tasks;
 using ISO8583Net.Server;
+using ISO8583Net.Server.Pipeline;
+using ISO8583Net.Server.Pipeline.Handlers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -33,7 +35,19 @@ internal static class Program
             builder.Services.Configure<ServerOptions>(
                 builder.Configuration.GetSection(ServerOptions.SectionName));
 
+            builder.Services.Configure<PipelineOptions>(
+                builder.Configuration.GetSection("Iso8583Pipeline"));
+
+            // Pipeline handler registration (add custom handlers here)
+            builder.Services.AddSingleton<IMessageHandler, DefaultHandler>();
+
+            // Pipeline infrastructure
+            builder.Services.AddSingleton<HandlerRegistry>();
+            builder.Services.AddSingleton<PipelineHost>();
+
+            // Server
             builder.Services.AddSingleton<IIso8583Server, Iso8583TcpServer>();
+            builder.Services.AddHostedService<PeriodicSignOnService>();
             builder.Services.AddHostedService<Iso8583HostedService>();
             builder.Services.AddControllers();
             builder.Services.AddOpenApi();

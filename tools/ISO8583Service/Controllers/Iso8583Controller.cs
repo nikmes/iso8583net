@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ISO8583Net.Server;
+using ISO8583Net.Server.Pipeline;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -14,29 +15,35 @@ namespace ISO8583Service.Controllers;
 public class Iso8583Controller : ControllerBase
 {
     private readonly IIso8583Server _server;
+    private readonly PipelineHost _pipelineHost;
     private readonly ServerOptions _options;
     private readonly ILogger<Iso8583Controller> _logger;
 
     public Iso8583Controller(
         IIso8583Server server,
+        PipelineHost pipelineHost,
         IOptions<ServerOptions> options,
         ILogger<Iso8583Controller> logger)
     {
         _server = server;
+        _pipelineHost = pipelineHost;
         _options = options.Value;
         _logger = logger;
     }
 
     /// <summary>
-    /// GET /api/iso8583/status — Returns current server status and configuration.
+    /// GET /api/iso8583/status — Returns current server status, pipeline stats, and configuration.
     /// </summary>
     [HttpGet("status")]
     public IActionResult GetStatus()
     {
+        var pipelineStats = _pipelineHost.GetStats();
+
         return Ok(new
         {
             IsRunning = _server.IsRunning,
             ConnectionCount = _server.ConnectionCount,
+            HandlerCount = _pipelineHost.HandlerCount,
             ConnectedClients = _server.GetConnections()
                 .Select(c => new
                 {
@@ -44,6 +51,17 @@ public class Iso8583Controller : ControllerBase
                     RemoteEndpoint = c.RemoteEndpoint,
                     ConnectedAt = c.ConnectedAt.ToString("O")
                 }),
+            PipelineStats = new
+            {
+                TotalConnections = pipelineStats.Count,
+                TotalBytesRead = pipelineStats.Sum(s => s.BytesReceived),
+                TotalMessagesRead = pipelineStats.Sum(s => s.MessagesReceived),
+                TotalBytesWritten = pipelineStats.Sum(s => s.BytesSent),
+                TotalMessagesWritten = pipelineStats.Sum(s => s.MessagesSent),
+                TotalParseErrors = pipelineStats.Sum(s => s.ParseErrors),
+                InFlight = pipelineStats.Sum(s => s.InFlight),
+                HandlerErrors = pipelineStats.Sum(s => s.HandlerErrors)
+            },
             Config = new
             {
                 _options.Port,

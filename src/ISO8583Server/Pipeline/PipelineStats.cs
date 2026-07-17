@@ -14,6 +14,7 @@ public sealed class PipelineStats
     private long _handlerErrors;
     private long _bytesReceived;
     private long _bytesSent;
+    private int _inFlight;
 
     /// <summary>Connection number.</summary>
     public int ConnectionNumber { get; init; }
@@ -43,7 +44,11 @@ public sealed class PipelineStats
     public long BytesSent => Interlocked.Read(ref _bytesSent);
 
     /// <summary>Currently in-flight messages (being processed by handlers).</summary>
-    public int InFlight { get; set; }
+    public int InFlight
+    {
+        get => Volatile.Read(ref _inFlight);
+        set => Volatile.Write(ref _inFlight, value);
+    }
 
     /// <summary>Current write queue depth (messages waiting to be written).</summary>
     public int WriteQueueLength { get; set; }
@@ -54,6 +59,8 @@ public sealed class PipelineStats
     public void IncrementMessagesSent() => Interlocked.Increment(ref _messagesSent);
     public void IncrementParseErrors() => Interlocked.Increment(ref _parseErrors);
     public void IncrementHandlerErrors() => Interlocked.Increment(ref _handlerErrors);
+    public void IncrementInFlight() => Interlocked.Increment(ref _inFlight);
+    public void DecrementInFlight() => Interlocked.Decrement(ref _inFlight);
     public void AddBytesReceived(long count) => Interlocked.Add(ref _bytesReceived, count);
     public void AddBytesSent(long count) => Interlocked.Add(ref _bytesSent, count);
 }
