@@ -120,7 +120,7 @@ public sealed class ConnectionPipeline : IAsyncDisposable
         catch (TimeoutException) { /* timeout */ }
 
         // Complete the outbound channel so writer drains and exits
-        _outboundChannel.Writer.Complete();
+        _outboundChannel.Writer.TryComplete();
         await _writerTask;
     }
 

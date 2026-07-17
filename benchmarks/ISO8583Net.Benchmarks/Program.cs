@@ -29,8 +29,8 @@ namespace ISO8583NetBenchmark
     {
         static void Main(string[] args)
         {
-            // Run all benchmarks with shared config
-            BenchmarkRunner.Run(typeof(Program).Assembly, new BenchmarkConfig());
+            // Run benchmarks with shared config, honoring --filter and other CLI args
+            BenchmarkSwitcher.FromAssembly(typeof(Program).Assembly).Run(args, new BenchmarkConfig());
         }
     }
 }
