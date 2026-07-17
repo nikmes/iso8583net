@@ -122,37 +122,6 @@ byte[] packed = message.PackPooled(); // Uses ArrayPool<byte>.Shared internally
 
 ## Solution Structure
 
-```mermaid
-graph TD
-    subgraph src["src/"]
-        ISO8583Net["ISO8583Net<br/>Core Library"]
-        ISO8583Server["ISO8583Server<br/>TCP Server Library"]
-    end
-    subgraph tests["tests/"]
-        ISO8583Net_Tests["ISO8583Net.Tests<br/>xUnit Test Suite"]
-    end
-    subgraph samples["samples/"]
-        SimpleTest["SimpleTest<br/>Console Demo"]
-        TestClient["TestClient<br/>WinForms Client"]
-        TestServer["TestServer<br/>WinForms Server"]
-    end
-    subgraph benchmarks["benchmarks/"]
-        Benchmarks["ISO8583Net.Benchmarks<br/>BenchmarkDotNet"]
-    end
-    subgraph tools["tools/"]
-        ISO8583Service["ISO8583Service<br/>ASP.NET Hosted Service"]
-    end
-
-    ISO8583Server --> ISO8583Net
-    ISO8583Net_Tests --> ISO8583Net
-    SimpleTest --> ISO8583Net
-    TestClient --> ISO8583Net
-    TestServer --> ISO8583Net
-    TestServer --> ISO8583Server
-    Benchmarks --> ISO8583Net
-    ISO8583Service --> ISO8583Server
-```
-
 ```
 iso8583net/
 ├── src/

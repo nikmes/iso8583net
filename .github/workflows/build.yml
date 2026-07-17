@@ -1,0 +1,29 @@
+name: Build & Test
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore
+        run: dotnet restore iso8583net.sln
+
+      - name: Build
+        run: dotnet build iso8583net.sln --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test tests/ISO8583Net.Tests/ISO8583Tests.csproj --configuration Release --no-build --verbosity normal
