@@ -14,6 +14,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using ISO8583Net.Message;
 using ISO8583Net.Packager;
+using ISO8583Net.Server.Pipeline;
 using ISO8583Net.Utilities;
 using Microsoft.Extensions.Logging;
 
@@ -25,19 +26,20 @@ namespace ISO8583Net.Server;
 /// </summary>
 public sealed class Iso8583TcpServer : IIso8583Server
 {
-    private const int MaxMessageSize = 4096;
     private const int LengthPrefixSize = 2;
 
     private TcpListener? _listener;
     private CancellationTokenSource? _cts;
     private ISOMessagePackager? _packager;
-    private int _connectionCount;
+    private PipelineHost? _pipelineHost;
 
-    /// <summary>Tracks active client connections (connNum → metadata + stream).</summary>
-    private readonly ConcurrentDictionary<int, ClientConnection> _connections = new();
+    /// <summary>
+    /// Tracks streams for SignOn/Echo/SignOff (temporary — Sprint 4 moves these to writer channels).
+    /// </summary>
+    private readonly ConcurrentDictionary<int, Stream> _streams = new();
 
     public bool IsRunning => _listener != null;
-    public int ConnectionCount => _connections.Count;
+    public int ConnectionCount => _pipelineHost?.ConnectionCount ?? 0;
     public int SignOnIntervalSeconds { get; set; }
     public bool SendSignOnOnConnect { get; set; }
     public bool EnablePeriodicSignOn { get; set; }
@@ -75,6 +77,10 @@ public sealed class Iso8583TcpServer : IIso8583Server
             Log($"TLS enabled. Client cert required: {Tls.RequireClientCert}");
         }
 
+        // ── Create pipeline host ───────────────────────────────────────
+        var pipelineOptions = new PipelineOptions();
+        _pipelineHost = new PipelineHost(pipelineOptions);
+
         // ── Start listener ──────────────────────────────────────────────
         _cts = CancellationTokenSource.CreateLinkedTokenSource(ct);
         _listener = new TcpListener(IPAddress.Any, port);
@@ -99,6 +105,13 @@ public sealed class Iso8583TcpServer : IIso8583Server
         _cts?.Cancel();
         _listener?.Stop();
         _listener = null;
+
+        if (_pipelineHost != null)
+        {
+            Log("Draining pipelines...");
+            await _pipelineHost.StopAllAsync();
+        }
+
         Log("Server stopped.");
         OnStatusChanged?.Invoke("Idle");
     }
@@ -106,24 +119,24 @@ public sealed class Iso8583TcpServer : IIso8583Server
     public async Task SendSignOnAsync(CancellationToken ct = default)
     {
         Log("─── Manual SignOn Request (all connections) ───");
-        var tasks = _connections.Select(kvp =>
-            SendSignOnRequestToStreamAsync(kvp.Value.Stream, kvp.Key, "801", "SignOn", ct));
+        var tasks = _streams.Select(kvp =>
+            SendSignOnRequestToStreamAsync(kvp.Value, kvp.Key, "801", "SignOn", ct));
         await Task.WhenAll(tasks);
     }
 
     public async Task SendEchoAsync(CancellationToken ct = default)
     {
         Log("─── Manual Echo Message (all connections) ───");
-        var tasks = _connections.Select(kvp =>
-            SendSignOnRequestToStreamAsync(kvp.Value.Stream, kvp.Key, "831", "Echo", ct));
+        var tasks = _streams.Select(kvp =>
+            SendSignOnRequestToStreamAsync(kvp.Value, kvp.Key, "831", "Echo", ct));
         await Task.WhenAll(tasks);
     }
 
     public async Task SendSignOffAsync(bool disconnectAfter = false, CancellationToken ct = default)
     {
         Log("─── Manual SignOff Request (all connections) ───");
-        var tasks = _connections.Select(kvp =>
-            SendSignOnRequestToStreamAsync(kvp.Value.Stream, kvp.Key, "803", "SignOff", ct));
+        var tasks = _streams.Select(kvp =>
+            SendSignOnRequestToStreamAsync(kvp.Value, kvp.Key, "803", "SignOff", ct));
         await Task.WhenAll(tasks);
 
         if (disconnectAfter)
@@ -135,23 +148,28 @@ public sealed class Iso8583TcpServer : IIso8583Server
 
     public IReadOnlyList<(int ConnNum, string RemoteEndpoint, DateTime ConnectedAt)> GetConnections()
     {
-        return _connections.Select(kvp =>
-            (kvp.Key, kvp.Value.RemoteEndpoint, kvp.Value.ConnectedAt)).ToList();
+        if (_pipelineHost == null)
+            return Array.Empty<(int, string, DateTime)>();
+
+        return _pipelineHost.GetStats()
+            .Select(s => (s.ConnectionNumber, s.RemoteEndpoint, s.ConnectedAt))
+            .ToList();
     }
 
     // ═══════════════════════════════════════════════════════════════════════
 
     private async Task AcceptLoopAsync(CancellationToken ct)
     {
+        int connectionCount = 0;
         try
         {
             while (!ct.IsCancellationRequested && _listener != null)
             {
                 var client = await _listener.AcceptTcpClientAsync(ct);
-                int connNum = Interlocked.Increment(ref _connectionCount);
+                int connNum = Interlocked.Increment(ref connectionCount);
 
                 Log($"[#{connNum}] Client connected: {client.Client.RemoteEndPoint}");
-                OnStatusChanged?.Invoke($"Active connections: {_connectionCount}");
+                OnStatusChanged?.Invoke($"Active connections: {_pipelineHost?.ConnectionCount ?? 0}");
 
                 _ = HandleClientAsync(client, connNum, ct);
             }
@@ -170,111 +188,28 @@ public sealed class Iso8583TcpServer : IIso8583Server
             if (stream == null) return;
 
             string remoteEndpoint = client.Client.RemoteEndPoint?.ToString() ?? "unknown";
-            var connInfo = new ClientConnection(stream, remoteEndpoint);
-            _connections.TryAdd(connNum, connInfo);
+
+            // Track stream for SignOn/Echo/SignOff (Sprint 4 moves to writer channels)
+            _streams.TryAdd(connNum, stream);
 
             try
             {
-                var lengthBuf = new byte[LengthPrefixSize];
-                DateTime lastSignOn = DateTime.MinValue;
-
                 // ── Send initial SignOn on connect ───────────────────
                 if (SendSignOnOnConnect)
                 {
                     await SendInitialSignOnAsync(stream, connNum, ct);
-                    lastSignOn = DateTime.UtcNow;
                 }
 
-                while (!ct.IsCancellationRequested)
-                {
-                    // ── Periodic Echo sender ─────────────────────────
-                    if (EnablePeriodicSignOn &&
-                        SignOnIntervalSeconds > 0 &&
-                        (DateTime.UtcNow - lastSignOn).TotalSeconds >= SignOnIntervalSeconds)
-                    {
-                        await SendEchoToStreamAsync(stream, connNum, ct);
-                        lastSignOn = DateTime.UtcNow;
-                    }
+                // ── Delegate to pipeline host ────────────────────────
+                var pipeline = _pipelineHost!.Accept(stream, connNum, remoteEndpoint, ct);
 
-                    // ── Read next message (1s timeout to check SignOn) ─
-                    bool hasMsg;
-                    try
-                    {
-                        using var readCts = new CancellationTokenSource(TimeSpan.FromSeconds(1));
-                        using var linked = CancellationTokenSource.CreateLinkedTokenSource(ct, readCts.Token);
-                        await ReadExactlyAsync(stream, lengthBuf, LengthPrefixSize, linked.Token);
-                        hasMsg = true;
-                    }
-                    catch (OperationCanceledException) when (!ct.IsCancellationRequested)
-                    {
-                        hasMsg = false;
-                    }
-                    catch (EndOfStreamException) { Log($"[#{connNum}] Disconnected."); return; }
-
-                    if (!hasMsg) continue;
-
-                    int msgLen = (lengthBuf[0] << 8) | lengthBuf[1];
-
-                    if (msgLen <= 0)
-                    {
-                        // LI=0 is a common ISO8583/TCP keepalive/heartbeat — silently ignore
-                        continue;
-                    }
-
-                    if (msgLen > MaxMessageSize)
-                    {
-                        Log($"[#{connNum}] LI bytes: 0x{lengthBuf[0]:X2}{lengthBuf[1]:X2} → {msgLen} bytes expected");
-                        Log($"[#{connNum}] ⚠ Invalid length: {msgLen} (0x{ISOUtils.Bytes2Hex(lengthBuf, LengthPrefixSize)}), skipping...");
-
-                        // Skip the oversized payload to stay in sync (capped to prevent DoS)
-                        int toSkip = Math.Min(msgLen, MaxMessageSize);
-                        var skipBuf = ArrayPool<byte>.Shared.Rent(toSkip);
-                        try { await ReadExactlyAsync(stream, skipBuf, toSkip, ct); }
-                        catch (EndOfStreamException) { Log($"[#{connNum}] Disconnected during skip."); return; }
-                        finally { ArrayPool<byte>.Shared.Return(skipBuf); }
-                        Log($"[#{connNum}] Skipped {toSkip} oversized bytes.");
-                        continue;
-                    }
-
-                    byte[] buf = ArrayPool<byte>.Shared.Rent(msgLen);
-                    try
-                    {
-                        await ReadExactlyAsync(stream, buf, msgLen, ct);
-
-                        Log($"[#{connNum}] Received {msgLen} bytes (LI=0x{lengthBuf[0]:X2}{lengthBuf[1]:X2})");
-                        string hexDump = FormatHexDumpWithLI(connNum, lengthBuf, buf.AsSpan(0, msgLen));
-                        Log(hexDump);
-
-                        // ── Diagnostic: check if more data is immediately available ──
-                        try
-                        {
-                            using var peekCts = new CancellationTokenSource(TimeSpan.FromMilliseconds(10));
-                            var peekBuf = new byte[1];
-                            int extra = await stream.ReadAsync(peekBuf, 0, 1, peekCts.Token);
-                            if (extra > 0)
-                                Log($"[#{connNum}] ⚠ EXTRA DATA available after reading {msgLen} bytes (at least 1 more byte: 0x{peekBuf[0]:X2})");
-                        }
-                        catch (OperationCanceledException) { /* no extra data — expected */ }
-
-                        var span = buf.AsSpan(0, msgLen);
-
-                        var (parsed, msg) = ParseMessage(connNum, span.ToArray());
-                        Log($"[#{connNum}] ── Parsed Message ──\n{parsed}");
-
-                        OnMessageParsed?.Invoke(connNum, span.ToArray(), hexDump, parsed);
-
-                        // ── Auto-respond to SignOn (MTI 1800) ───────────
-                        if (msg != null && msg.GetFieldValue(0) == "1800")
-                        {
-                            await SendSignOnResponse(stream, connNum, msg, ct);
-                        }
-                    }
-                    finally { ArrayPool<byte>.Shared.Return(buf); }
-                }
+                // Wait until reader exits (disconnect)
+                await pipeline.StopAsync(TimeSpan.FromSeconds(5));
             }
             finally
             {
-                _connections.TryRemove(connNum, out _);
+                _streams.TryRemove(connNum, out _);
+                _pipelineHost?.Remove(connNum);
             }
         }
         catch (OperationCanceledException) { }
@@ -283,13 +218,12 @@ public sealed class Iso8583TcpServer : IIso8583Server
         {
             stream?.Dispose();
             client.Dispose();
-            Interlocked.Decrement(ref _connectionCount);
-            OnStatusChanged?.Invoke($"Active connections: {_connectionCount}");
+            OnStatusChanged?.Invoke($"Active connections: {_pipelineHost?.ConnectionCount ?? 0}");
         }
     }
 
     // ═══════════════════════════════════════════════════════════════════════
-    //  ISO Parsing
+    //  ISO Parsing (used by SignOn response building — Sprint 4 refactor)
     // ═══════════════════════════════════════════════════════════════════════
 
     private (string dump, ISOMessage? msg) ParseMessage(int connNum, byte[] data)
@@ -310,13 +244,9 @@ public sealed class Iso8583TcpServer : IIso8583Server
     }
 
     // ═══════════════════════════════════════════════════════════════════════
-    //  SignOn Response
+    //  SignOn Response (kept for manual API calls — Sprint 4 refactor)
     // ═══════════════════════════════════════════════════════════════════════
 
-    /// <summary>
-    /// Builds and sends a SignOn response (MTI 1814, Field 39 = "00")
-    /// by copying all fields from the incoming SignOn request.
-    /// </summary>
     private async Task SendSignOnResponse(
         Stream stream, int connNum, ISOMessage request, CancellationToken ct)
     {
@@ -324,18 +254,10 @@ public sealed class Iso8583TcpServer : IIso8583Server
         {
             Log($"[#{connNum}] Building SignOn response (1800 → 1814)...");
 
-            // Copy incoming message and modify MTI + response code
             request.Set(0, "1814");
             request.Set(39, "000");
 
             byte[] responseBytes = request.Pack();
-
-            Log($"[#{connNum}] SignOn response content:");
-            Log(request.ToString());
-
-            Log($"[#{connNum}] Sending SignOn response ({responseBytes.Length} bytes, LI=0x{responseBytes.Length:X4})...");
-
-            // Prepend 2-byte big-endian length prefix and send
             var framed = new byte[LengthPrefixSize + responseBytes.Length];
             framed[0] = (byte)(responseBytes.Length >> 8);
             framed[1] = (byte)(responseBytes.Length & 0xFF);
@@ -355,28 +277,19 @@ public sealed class Iso8583TcpServer : IIso8583Server
     }
 
     // ═══════════════════════════════════════════════════════════════════════
-    //  Periodic SignOn
+    //  Periodic SignOn (kept — Sprint 4 replaces with PeriodicTimer)
     // ═══════════════════════════════════════════════════════════════════════
 
-    /// <summary>
-    /// Sends a SignOn request (MTI 1800, F24=801) on initial connect.
-    /// </summary>
     private async Task SendInitialSignOnAsync(Stream stream, int connNum, CancellationToken ct)
     {
         await SendSignOnRequestToStreamAsync(stream, connNum, "801", "SignOn (Initial)", ct);
     }
 
-    /// <summary>
-    /// Sends an Echo message (MTI 1800, F24=831) to a specific stream.
-    /// </summary>
     private async Task SendEchoToStreamAsync(Stream stream, int connNum, CancellationToken ct)
     {
         await SendSignOnRequestToStreamAsync(stream, connNum, "831", "Echo (Periodic)", ct);
     }
 
-    /// <summary>
-    /// Builds, frames, and sends a SignOn-style request (MTI 1800) to a stream.
-    /// </summary>
     private async Task SendSignOnRequestToStreamAsync(
         Stream stream, int connNum, string f24Value, string label, CancellationToken ct)
     {
@@ -498,17 +411,6 @@ public sealed class Iso8583TcpServer : IIso8583Server
     //  Helpers
     // ═══════════════════════════════════════════════════════════════════════
 
-    private static async Task ReadExactlyAsync(Stream stream, byte[] buf, int count, CancellationToken ct)
-    {
-        int off = 0;
-        while (off < count)
-        {
-            int n = await stream.ReadAsync(buf.AsMemory(off, count - off), ct);
-            if (n == 0) throw new EndOfStreamException($"Closed after {off}/{count} bytes.");
-            off += n;
-        }
-    }
-
     private static string FormatHexDump(int connNum, ReadOnlySpan<byte> data)
     {
         return FormatHexDumpImpl(connNum, data, hasLI: false);
@@ -626,20 +528,6 @@ public sealed class Iso8583TcpServer : IIso8583Server
     }
 
     /// <summary>Holds per-connection metadata and the stream for sending messages.</summary>
-    private sealed class ClientConnection
-    {
-        public Stream Stream { get; }
-        public string RemoteEndpoint { get; }
-        public DateTime ConnectedAt { get; }
-
-        public ClientConnection(Stream stream, string remoteEndpoint)
-        {
-            Stream = stream;
-            RemoteEndpoint = remoteEndpoint;
-            ConnectedAt = DateTime.UtcNow;
-        }
-    }
-
     /// <summary>Minimal silent logger for internal packager/parser use.</summary>
     private sealed class NullLogger : ILogger
     {
