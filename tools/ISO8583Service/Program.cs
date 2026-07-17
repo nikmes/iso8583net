@@ -9,6 +9,8 @@ using Microsoft.Extensions.Hosting;
 using Scalar.AspNetCore;
 using Serilog;
 
+using ISO8583Service.HealthChecks;
+
 namespace ISO8583Service;
 
 internal static class Program
@@ -51,12 +53,15 @@ internal static class Program
             builder.Services.AddHostedService<Iso8583HostedService>();
             builder.Services.AddControllers();
             builder.Services.AddOpenApi();
+            builder.Services.AddHealthChecks()
+                .AddCheck<PipelineHealthCheck>("pipeline", tags: new[] { "pipeline" });
 
             var app = builder.Build();
 
             app.MapControllers();
             app.MapOpenApi();
             app.MapScalarApiReference();
+            app.MapHealthChecks("/health");
 
             await app.RunAsync();
         }

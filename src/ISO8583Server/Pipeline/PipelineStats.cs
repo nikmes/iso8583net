@@ -59,6 +59,14 @@ public sealed class PipelineStats
     /// <summary>Peak write queue depth observed.</summary>
     public int MaxWriteQueueLength { get; set; }
 
+    /// <summary>Update write queue length and track peak.</summary>
+    public void UpdateWriteQueueLength(int length)
+    {
+        WriteQueueLength = length;
+        if (length > MaxWriteQueueLength)
+            MaxWriteQueueLength = length;
+    }
+
     // ── Increment helpers ──────────────────────────────────────────────
 
     public void IncrementMessagesReceived() => Interlocked.Increment(ref _messagesReceived);

@@ -10,6 +10,7 @@ using BenchmarkDotNet.Attributes;
 using ISO8583Net.Message;
 using ISO8583Net.Packager;
 using ISO8583Net.Server.Pipeline;
+using Microsoft.Extensions.Logging.Abstractions;
 using ISO8583Net.Server.Pipeline.Handlers;
 using ISO8583Net.Server.Pipeline.Messages;
 using Microsoft.Extensions.Logging;
@@ -152,7 +153,7 @@ namespace ISO8583NetBenchmark
                 DrainTimeoutSeconds = 5
             };
 
-            var host = new PipelineHost(options, _registry);
+            var host = new PipelineHost(options, _registry, NullLoggerFactory.Instance);
             host.SetPackager(_packager);
 
             using var clientStream = new MemoryStream();
@@ -231,7 +232,7 @@ namespace ISO8583NetBenchmark
                 DrainTimeoutSeconds = 10
             };
 
-            var host = new PipelineHost(options, _registry);
+            var host = new PipelineHost(options, _registry, NullLoggerFactory.Instance);
             host.SetPackager(_packager);
 
             using var clientStream = new MemoryStream();
@@ -313,7 +314,7 @@ namespace ISO8583NetBenchmark
                 DrainTimeoutSeconds = 10
             };
 
-            var host = new PipelineHost(options, _registry);
+            var host = new PipelineHost(options, _registry, NullLoggerFactory.Instance);
             host.SetPackager(_packager);
 
             using var clientStream = new MemoryStream();
@@ -394,7 +395,7 @@ namespace ISO8583NetBenchmark
                 DrainTimeoutSeconds = 10
             };
 
-            var host = new PipelineHost(options, registry);
+            var host = new PipelineHost(options, registry, NullLoggerFactory.Instance);
             host.SetPackager(_packager);
 
             // Feed messages into the pipeline as a batch

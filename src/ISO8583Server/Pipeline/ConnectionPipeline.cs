@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using ISO8583Net.Packager;
 using ISO8583Net.Server.Pipeline.Handlers;
 using ISO8583Net.Server.Pipeline.Messages;
+using Microsoft.Extensions.Logging;
 
 namespace ISO8583Net.Server.Pipeline;
 
@@ -26,6 +27,8 @@ public sealed class ConnectionPipeline : IAsyncDisposable
     private readonly Channel<ParsedMessage> _parsedChannel;
     private readonly Channel<OutboundMessage> _outboundChannel;
 
+    private readonly ILogger _logger;
+
     public PipelineStats Stats { get; }
 
     public ConnectionPipeline(
@@ -35,9 +38,11 @@ public sealed class ConnectionPipeline : IAsyncDisposable
         ISOMessagePackager packager,
         HandlerRegistry handlerRegistry,
         PipelineOptions options,
+        ILoggerFactory loggerFactory,
         CancellationToken parentCt)
     {
         _cts = CancellationTokenSource.CreateLinkedTokenSource(parentCt);
+        _logger = loggerFactory.CreateLogger($"Pipeline.Conn{connectionNumber}");
 
         Stats = new PipelineStats
         {
@@ -45,6 +50,12 @@ public sealed class ConnectionPipeline : IAsyncDisposable
             RemoteEndpoint = remoteEndpoint,
             ConnectedAt = DateTime.UtcNow
         };
+
+        // ── Circuit breaker for parser errors ─────────────────────────
+        var circuitBreaker = options.MaxParseErrorsBeforePause > 0
+            ? new CircuitBreakerState(options.MaxParseErrorsBeforePause,
+                TimeSpan.FromSeconds(options.ParserCooldownSeconds))
+            : null;
 
         // ── Create bounded channels ───────────────────────────────────
         _rawChannel = Channel.CreateBounded<RawMessage>(
@@ -71,15 +82,29 @@ public sealed class ConnectionPipeline : IAsyncDisposable
                 SingleReader = true    // single writer task
             });
 
+        // ── Create stage loggers ──────────────────────────────────────
+        var readerLogger = loggerFactory.CreateLogger($"Pipeline.Conn{connectionNumber}.Reader");
+        var parserLogger = loggerFactory.CreateLogger($"Pipeline.Conn{connectionNumber}.Parser");
+        var dispatcherLogger = loggerFactory.CreateLogger($"Pipeline.Conn{connectionNumber}.Dispatcher");
+        var writerLogger = loggerFactory.CreateLogger($"Pipeline.Conn{connectionNumber}.Writer");
+
         // ── Start stages ──────────────────────────────────────────────
-        _readerTask = ReaderStage.RunAsync(stream, _rawChannel.Writer, Stats, _cts.Token);
-        _writerTask = WriterStage.RunAsync(stream, _outboundChannel.Reader, Stats, _cts.Token);
+        _readerTask = ReaderStage.RunAsync(stream, _rawChannel.Writer, Stats, readerLogger,
+            circuitBreaker, _cts.Token);
+        _writerTask = WriterStage.RunAsync(stream, _outboundChannel.Reader, Stats, writerLogger, _cts.Token);
 
         _parserTask = ParserStage.RunAsync(
-            _rawChannel.Reader, _parsedChannel.Writer, packager, Stats, options, _cts.Token);
+            _rawChannel.Reader, _parsedChannel.Writer, packager, Stats, options, parserLogger,
+            circuitBreaker, _cts.Token);
 
         _dispatcherTask = DispatcherStage.RunAsync(
-            _parsedChannel.Reader, _outboundChannel.Writer, handlerRegistry, Stats, _cts.Token);
+            _parsedChannel.Reader, _outboundChannel.Writer, handlerRegistry, Stats, dispatcherLogger,
+            options, _cts.Token);
+
+        _logger.LogInformation("Pipeline created: conn={ConnNum}, endpoint={Endpoint}, " +
+            "parserConcurrency={Concurrency}, rawCap={RawCap}, outCap={OutCap}",
+            connectionNumber, remoteEndpoint, options.ParserConcurrency,
+            options.RawMessageCapacity, options.OutboundMessageCapacity);
     }
 
     /// <summary>
@@ -98,7 +123,9 @@ public sealed class ConnectionPipeline : IAsyncDisposable
     /// </summary>
     public async ValueTask SendAsync(OutboundMessage msg, CancellationToken ct = default)
     {
+        Stats.UpdateWriteQueueLength(_outboundChannel.Reader.Count);
         await _outboundChannel.Writer.WriteAsync(msg, ct);
+        Stats.UpdateWriteQueueLength(_outboundChannel.Reader.Count);
     }
 
     /// <summary>
@@ -106,6 +133,9 @@ public sealed class ConnectionPipeline : IAsyncDisposable
     /// </summary>
     public async Task StopAsync(TimeSpan drainTimeout)
     {
+        _logger.LogInformation("Pipeline conn={ConnNum} stopping, drainTimeout={Timeout}s",
+            ConnectionNumber, drainTimeout.TotalSeconds);
+
         // Signal all stages to stop
         _cts.Cancel();
 
@@ -116,17 +146,90 @@ public sealed class ConnectionPipeline : IAsyncDisposable
         {
             await Task.WhenAll(drainTasks).WaitAsync(drainCts.Token);
         }
-        catch (OperationCanceledException) { /* timeout */ }
-        catch (TimeoutException) { /* timeout */ }
+        catch (OperationCanceledException)
+        {
+            _logger.LogWarning("Pipeline conn={ConnNum} drain timed out after {Timeout}s",
+                ConnectionNumber, drainTimeout.TotalSeconds);
+        }
+        catch (TimeoutException)
+        {
+            _logger.LogWarning("Pipeline conn={ConnNum} drain timed out after {Timeout}s",
+                ConnectionNumber, drainTimeout.TotalSeconds);
+        }
 
         // Complete the outbound channel so writer drains and exits
         _outboundChannel.Writer.TryComplete();
         await _writerTask;
+
+        _logger.LogInformation("Pipeline conn={ConnNum} stopped: recv={Recv}msgs/{RecvBytes}B, " +
+            "sent={Sent}msgs/{SentBytes}B, parseErrs={ParseErrs}, handlerErrs={HandlerErrs}",
+            ConnectionNumber,
+            Stats.MessagesReceived, Stats.BytesReceived,
+            Stats.MessagesSent, Stats.BytesSent,
+            Stats.ParseErrors, Stats.HandlerErrors);
     }
 
     public async ValueTask DisposeAsync()
     {
         await StopAsync(TimeSpan.FromSeconds(5));
         _cts.Dispose();
+    }
+}
+
+/// <summary>
+/// Connection-level circuit breaker for parser errors.
+/// Shared between ReaderStage (checks IsOpen) and ParserStage (reports errors).
+/// Thread-safe via Interlocked.
+/// </summary>
+internal sealed class CircuitBreakerState
+{
+    private int _consecutiveErrors;
+    private readonly int _threshold;
+    private readonly TimeSpan _cooldown;
+    private long _openedAtTicks;
+
+    public CircuitBreakerState(int threshold, TimeSpan cooldown)
+    {
+        _threshold = threshold;
+        _cooldown = cooldown;
+    }
+
+    /// <summary>Whether the circuit is open (blocking reads).</summary>
+    public bool IsOpen
+    {
+        get
+        {
+            var openedAt = Interlocked.Read(ref _openedAtTicks);
+            if (openedAt == 0) return false;
+            var elapsed = DateTime.UtcNow - new DateTime(openedAt, DateTimeKind.Utc);
+            if (elapsed >= _cooldown)
+            {
+                Reset();
+                return false;
+            }
+            return true;
+        }
+    }
+
+    /// <summary>Called by parser on parse failure.</summary>
+    public void RecordError()
+    {
+        if (Interlocked.Increment(ref _consecutiveErrors) >= _threshold)
+        {
+            Interlocked.Exchange(ref _openedAtTicks, DateTime.UtcNow.Ticks);
+        }
+    }
+
+    /// <summary>Called by parser on parse success.</summary>
+    public void RecordSuccess()
+    {
+        Interlocked.Exchange(ref _consecutiveErrors, 0);
+    }
+
+    /// <summary>Reset the circuit breaker to closed state.</summary>
+    public void Reset()
+    {
+        Interlocked.Exchange(ref _consecutiveErrors, 0);
+        Interlocked.Exchange(ref _openedAtTicks, 0);
     }
 }

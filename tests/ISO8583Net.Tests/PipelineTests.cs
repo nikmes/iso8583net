@@ -13,6 +13,7 @@ using ISO8583Net.Server.Pipeline.Handlers;
 using ISO8583Net.Server.Pipeline.Messages;
 using ISO8583Service.Controllers;
 using ISO8583Service;
+using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Xunit;
 
@@ -43,7 +44,7 @@ public sealed class PipelineTests
         };
 
         var packager = CreatePackager();
-        var host = new PipelineHost(options, CreateRegistry());
+        var host = new PipelineHost(options, CreateRegistry(), NullLoggerFactory.Instance);
         host.SetPackager(packager);
 
         // Create an in-memory stream pair to simulate a socket
@@ -96,7 +97,7 @@ public sealed class PipelineTests
         };
 
         var packager = CreatePackager();
-        var host = new PipelineHost(options, CreateRegistry());
+        var host = new PipelineHost(options, CreateRegistry(), NullLoggerFactory.Instance);
         host.SetPackager(packager);
         using var clientStream = new MemoryStream();
         using var serverStream = new PassthroughStream(clientStream);
@@ -142,7 +143,7 @@ public sealed class PipelineTests
         };
 
         var packager = CreatePackager();
-        var host = new PipelineHost(options, CreateRegistry());
+        var host = new PipelineHost(options, CreateRegistry(), NullLoggerFactory.Instance);
         host.SetPackager(packager);
         using var clientStream = new MemoryStream();
         using var serverStream = new PassthroughStream(clientStream);
@@ -185,7 +186,7 @@ public sealed class PipelineTests
         };
 
         var packager = CreatePackager();
-        var host = new PipelineHost(options, CreateRegistry());
+        var host = new PipelineHost(options, CreateRegistry(), NullLoggerFactory.Instance);
         host.SetPackager(packager);
         using var clientStream = new MemoryStream();
         using var serverStream = new PassthroughStream(clientStream);
@@ -233,7 +234,7 @@ public sealed class PipelineTests
         };
 
         var packager = CreatePackager();
-        var host = new PipelineHost(options, CreateRegistry());
+        var host = new PipelineHost(options, CreateRegistry(), NullLoggerFactory.Instance);
         host.SetPackager(packager);
         using var clientStream = new MemoryStream();
         using var serverStream = new PassthroughStream(clientStream);
@@ -286,7 +287,7 @@ public sealed class PipelineTests
         var catchAllHandler = new CountingHandler("*");
         var registry = new HandlerRegistry(new IMessageHandler[] { mti0200Handler, catchAllHandler });
 
-        var host = new PipelineHost(options, registry);
+        var host = new PipelineHost(options, registry, NullLoggerFactory.Instance);
         host.SetPackager(packager);
         using var clientStream = new MemoryStream();
         using var serverStream = new PassthroughStream(clientStream);
@@ -353,7 +354,7 @@ public sealed class PipelineTests
         var delayHandler = new DelayingHandler(TimeSpan.FromMilliseconds(delayMs));
         var registry = new HandlerRegistry(new IMessageHandler[] { delayHandler });
 
-        var host = new PipelineHost(options, registry);
+        var host = new PipelineHost(options, registry, NullLoggerFactory.Instance);
         host.SetPackager(packager);
         using var clientStream = new MemoryStream();
         using var serverStream = new PassthroughStream(clientStream);
@@ -411,7 +412,7 @@ public sealed class PipelineTests
 
         var packager = CreatePackager();
         var registry = CreateRegistry();
-        var host = new PipelineHost(options, registry);
+        var host = new PipelineHost(options, registry, NullLoggerFactory.Instance);
         host.SetPackager(packager);
         using var clientStream = new MemoryStream();
         using var serverStream = new PassthroughStream(clientStream);
@@ -447,7 +448,7 @@ public sealed class PipelineTests
 
         var packager = CreatePackager();
         var registry = CreateRegistry();
-        var host = new PipelineHost(options, registry);
+        var host = new PipelineHost(options, registry, NullLoggerFactory.Instance);
         host.SetPackager(packager);
         using var clientStream = new MemoryStream();
         using var serverStream = new PassthroughStream(clientStream);
@@ -487,7 +488,7 @@ public sealed class PipelineTests
 
         var options = new PipelineOptions();
         var registry = CreateRegistry();
-        var host = new PipelineHost(options, registry);
+        var host = new PipelineHost(options, registry, NullLoggerFactory.Instance);
         var serverOptions = Options.Create(new ServerOptions());
 
         var controller = new Iso8583Controller(
@@ -511,7 +512,7 @@ public sealed class PipelineTests
 
         var options = new PipelineOptions();
         var registry = CreateRegistry();
-        var host = new PipelineHost(options, registry);
+        var host = new PipelineHost(options, registry, NullLoggerFactory.Instance);
         var serverOptions = Options.Create(new ServerOptions());
 
         var controller = new Iso8583Controller(
@@ -535,7 +536,7 @@ public sealed class PipelineTests
 
         var options = new PipelineOptions();
         var registry = CreateRegistry();
-        var host = new PipelineHost(options, registry);
+        var host = new PipelineHost(options, registry, NullLoggerFactory.Instance);
         var serverOptions = Options.Create(new ServerOptions());
 
         var controller = new Iso8583Controller(

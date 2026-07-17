@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 using ISO8583Net.Server.Pipeline.Messages;
+using Microsoft.Extensions.Logging;
 
 namespace ISO8583Net.Server.Pipeline;
 
@@ -22,13 +23,17 @@ internal static class WriterStage
     /// <param name="stream">The TLS-wrapped (or raw) network stream.</param>
     /// <param name="input">Channel to read outbound messages from.</param>
     /// <param name="stats">Per-connection statistics to update.</param>
+    /// <param name="logger">Structured logger for this stage.</param>
     /// <param name="ct">Cancellation token for shutdown.</param>
     public static async Task RunAsync(
         Stream stream,
         ChannelReader<OutboundMessage> input,
         PipelineStats stats,
+        ILogger logger,
         CancellationToken ct)
     {
+        logger.LogDebug("Writer stage started");
+
         try
         {
             await foreach (var msg in input.ReadAllAsync(ct))
@@ -39,7 +44,11 @@ internal static class WriterStage
         catch (OperationCanceledException) { /* graceful shutdown */ }
         catch (Exception ex)
         {
-            // Future: inject ILogger
+            logger.LogError(ex, "Writer stage error");
+        }
+        finally
+        {
+            logger.LogDebug("Writer stage completed");
         }
     }
 

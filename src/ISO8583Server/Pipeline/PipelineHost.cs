@@ -22,9 +22,11 @@ public sealed class PipelineHost
 {
     private readonly PipelineOptions _options;
     private readonly HandlerRegistry _handlerRegistry;
+    private readonly ILoggerFactory _loggerFactory;
     private readonly ConcurrentDictionary<int, ConnectionPipeline> _pipelines = new();
     private ISOMessagePackager? _packager;
     private int _sequenceCounter;
+    private readonly ILogger _logger;
 
     private static readonly ILogger NullLoggerInstance = new NullSessionLogger();
 
@@ -39,10 +41,12 @@ public sealed class PipelineHost
     /// Constructs the host. The packager is set later via <see cref="SetPackager"/>
     /// once the dialect is loaded in <see cref="Iso8583TcpServer.StartAsync"/>.
     /// </summary>
-    public PipelineHost(PipelineOptions options, HandlerRegistry handlerRegistry)
+    public PipelineHost(PipelineOptions options, HandlerRegistry handlerRegistry, ILoggerFactory loggerFactory)
     {
         _options = options;
         _handlerRegistry = handlerRegistry;
+        _loggerFactory = loggerFactory;
+        _logger = loggerFactory.CreateLogger<PipelineHost>();
     }
 
     /// <summary>
@@ -73,8 +77,11 @@ public sealed class PipelineHost
         string remoteEndpoint,
         CancellationToken ct)
     {
+        _logger.LogInformation("Accepting connection #{ConnNum} from {Endpoint}",
+            connectionNumber, remoteEndpoint);
+
         var pipeline = new ConnectionPipeline(
-            stream, connectionNumber, remoteEndpoint, _packager!, _handlerRegistry, _options, ct);
+            stream, connectionNumber, remoteEndpoint, _packager!, _handlerRegistry, _options, _loggerFactory, ct);
 
         _pipelines.TryAdd(connectionNumber, pipeline);
         return pipeline;

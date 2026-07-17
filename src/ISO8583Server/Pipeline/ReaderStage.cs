@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 using ISO8583Net.Server.Pipeline.Messages;
+using Microsoft.Extensions.Logging;
 
 namespace ISO8583Net.Server.Pipeline;
 
@@ -17,6 +18,7 @@ internal static class ReaderStage
 {
     private const int LengthPrefixSize = 2;
     private const int MaxMessageSize = 4096;
+    private static readonly TimeSpan CircuitBreakerPollInterval = TimeSpan.FromMilliseconds(100);
 
     /// <summary>
     /// Run the reader loop until cancelled or stream closes.
@@ -24,19 +26,36 @@ internal static class ReaderStage
     /// <param name="stream">The TLS-wrapped (or raw) network stream.</param>
     /// <param name="output">Channel to push raw frames into.</param>
     /// <param name="stats">Per-connection statistics to update.</param>
+    /// <param name="logger">Structured logger for this stage.</param>
+    /// <param name="circuitBreaker">Optional connection-level circuit breaker.</param>
     /// <param name="ct">Cancellation token for shutdown.</param>
     public static async Task RunAsync(
         Stream stream,
         ChannelWriter<RawMessage> output,
         PipelineStats stats,
+        ILogger logger,
+        CircuitBreakerState? circuitBreaker,
         CancellationToken ct)
     {
         var lengthBuf = new byte[LengthPrefixSize];
+        logger.LogDebug("Reader stage started");
 
         try
         {
             while (!ct.IsCancellationRequested)
             {
+                // ── Check circuit breaker ─────────────────────────────
+                if (circuitBreaker is { IsOpen: true })
+                {
+                    logger.LogWarning("Circuit breaker open — reader paused for parser cooldown");
+                    try
+                    {
+                        await Task.Delay(CircuitBreakerPollInterval, ct);
+                    }
+                    catch (OperationCanceledException) { break; }
+                    continue;
+                }
+
                 // ── Read 2-byte length prefix ─────────────────────────
                 try
                 {
@@ -55,7 +74,7 @@ internal static class ReaderStage
 
                 if (msgLen > MaxMessageSize)
                 {
-                    // Skip oversized payload to stay in sync (capped to prevent DoS)
+                    logger.LogWarning("Oversized message ({Len}B) — skipping", msgLen);
                     int toSkip = Math.Min(msgLen, MaxMessageSize);
                     var skipBuf = ArrayPool<byte>.Shared.Rent(toSkip);
                     try
@@ -78,7 +97,6 @@ internal static class ReaderStage
 
                     var raw = new RawMessage(buf, msgLen, stats.ConnectionNumber, DateTime.UtcNow);
 
-                    // Push to channel — will asynchronously wait if bounded channel is full
                     await output.WriteAsync(raw, ct);
                     stats.IncrementMessagesReceived();
                     // Buffer ownership transfers to consumer — do NOT return here
@@ -98,12 +116,12 @@ internal static class ReaderStage
         catch (OperationCanceledException) { /* graceful shutdown */ }
         catch (Exception ex)
         {
-            // Log via callback? For now, just mark complete.
-            // Future: inject ILogger or use OnLog callback
+            logger.LogError(ex, "Reader stage error");
         }
         finally
         {
             output.Complete();
+            logger.LogDebug("Reader stage completed");
         }
     }
 

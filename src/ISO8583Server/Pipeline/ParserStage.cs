@@ -27,6 +27,8 @@ internal static class ParserStage
     /// <param name="packager">The loaded dialect packager.</param>
     /// <param name="stats">Per-connection statistics.</param>
     /// <param name="options">Pipeline options (concurrency, error thresholds).</param>
+    /// <param name="logger">Structured logger for this stage.</param>
+    /// <param name="circuitBreaker">Optional shared circuit breaker.</param>
     /// <param name="ct">Cancellation token for shutdown.</param>
     public static async Task RunAsync(
         ChannelReader<RawMessage> input,
@@ -34,18 +36,23 @@ internal static class ParserStage
         ISOMessagePackager packager,
         PipelineStats stats,
         PipelineOptions options,
+        ILogger logger,
+        CircuitBreakerState? circuitBreaker,
         CancellationToken ct)
     {
         int concurrency = Math.Max(1, options.ParserConcurrency);
         var tasks = new Task[concurrency];
 
+        logger.LogDebug("Parser stage starting with {Concurrency} task(s)", concurrency);
+
         for (int i = 0; i < concurrency; i++)
         {
-            tasks[i] = RunSingleParserAsync(input, output, packager, stats, options, ct);
+            tasks[i] = RunSingleParserAsync(input, output, packager, stats, logger, circuitBreaker, ct);
         }
 
         await Task.WhenAll(tasks);
         output.Complete();
+        logger.LogDebug("Parser stage completed");
     }
 
     private static async Task RunSingleParserAsync(
@@ -53,11 +60,10 @@ internal static class ParserStage
         ChannelWriter<ParsedMessage> output,
         ISOMessagePackager packager,
         PipelineStats stats,
-        PipelineOptions options,
+        ILogger logger,
+        CircuitBreakerState? circuitBreaker,
         CancellationToken ct)
     {
-        int consecutiveErrors = 0;
-
         try
         {
             await foreach (var raw in input.ReadAllAsync(ct))
@@ -66,36 +72,25 @@ internal static class ParserStage
                 {
                     var parsed = Parse(raw, packager, stats);
                     await output.WriteAsync(parsed, ct);
-                    consecutiveErrors = 0;
+                    circuitBreaker?.RecordSuccess();
                 }
                 catch (Exception ex)
                 {
-                    consecutiveErrors++;
                     stats.IncrementParseErrors();
+                    circuitBreaker?.RecordError();
 
-                    // Push an error entry so the dispatcher can log/handle it
-                    var errorMsg = new ParsedMessage(
-                        message: null!,
-                        connectionNumber: raw.ConnectionNumber,
-                        hexDump: ISOUtils.Bytes2Hex(raw.Data.ToArray()),
-                        remoteEndpoint: stats.RemoteEndpoint,
-                        parsedAt: DateTime.UtcNow);
-
-                    // Mark as error by not writing (or we could write a special error parsed message)
-                    // For now, just log and continue
-
-                    // Circuit breaker: if too many consecutive errors, pause
-                    if (options.MaxParseErrorsBeforePause > 0 &&
-                        consecutiveErrors >= options.MaxParseErrorsBeforePause)
+                    if (circuitBreaker is { IsOpen: true })
                     {
-                        await Task.Delay(
-                            TimeSpan.FromSeconds(options.ParserCooldownSeconds), ct);
-                        consecutiveErrors = 0;
+                        logger.LogWarning("Circuit breaker tripped — {Errors} consecutive parse errors",
+                            stats.ParseErrors);
+                    }
+                    else
+                    {
+                        logger.LogDebug(ex, "Parse error on conn {ConnNum}", stats.ConnectionNumber);
                     }
                 }
                 finally
                 {
-                    // Always return the rented buffer
                     raw.Return();
                 }
             }

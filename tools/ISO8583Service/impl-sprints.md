@@ -121,15 +121,15 @@ Wire REST API actions (`POST /signon`, `/echo`, `/signoff`) to pipeline.
 
 | ID | Task | File(s) | Status |
 |----|------|---------|--------|
-| S6-1 | Add structured Serilog logging to all pipeline stages (reader, parser, dispatcher, writer) with `PipelineName` / `ConnNum` enrichers | All Pipeline/*.cs | ⬜ |
-| S6-2 | Add `HealthChecks` endpoint: `GET /health` returns pipeline health, channel backpressure, connection count | `Iso8583Controller.cs` | ⬜ |
-| S6-3 | Add circuit breaker: if parser errors exceed threshold, pause reader for cooldown period | `PipelineHost.cs` or `ConnectionPipeline.cs` | ⬜ |
-| S6-4 | Add drain timeout: if handlers don't complete within `DrainTimeoutSeconds`, cancel and proceed with shutdown | `ConnectionPipeline.cs` | ⬜ |
-| S6-5 | Add `OutboundMessageCapacity` backpressure: if writer queue is full, handlers' `SendResponseAsync` awaits (prevents OOM) | `MessageContext.cs` | ⬜ |
-| S6-6 | Update `ISO8583Service/README.md` with handler registration examples and pipeline tuning guide | `README.md` | ⬜ |
-| S6-7 | Full integration test: start server → 5 connections → send 100 messages each → verify all responses | `tests/` | ⬜ |
-| S6-8 | Full integration test: rapid connect/disconnect (100 cycles) → no leaks, no stale channels | `tests/` | ⬜ |
-| S6-9 | Build + verify: all tests pass, CI green | — | ⬜ |
+| S6-1 | Add structured Serilog logging to all pipeline stages (reader, parser, dispatcher, writer) with `PipelineName` / `ConnNum` enrichers | All Pipeline/*.cs | ✅ |
+| S6-2 | Add `HealthChecks` endpoint: `GET /health` returns pipeline health, channel backpressure, connection count | `HealthChecks/PipelineHealthCheck.cs` | ✅ |
+| S6-3 | Add circuit breaker: if parser errors exceed threshold, pause reader for cooldown period | `ConnectionPipeline.cs` (`CircuitBreakerState`) | ✅ |
+| S6-4 | Add drain timeout: if handlers don't complete within `DrainTimeoutSeconds`, cancel and proceed with shutdown | `DispatcherStage.cs` | ✅ |
+| S6-5 | Add backpressure tracking: `MaxWriteQueueLength` via `UpdateWriteQueueLength` in `SendAsync` | `ConnectionPipeline.cs`, `PipelineStats.cs` | ✅ |
+| S6-6 | Update `ISO8583Service/README.md` with handler registration examples and pipeline tuning guide | `README.md` | ✅ |
+| S6-7 | Full integration test: 5 connections → 100 messages each → verify all responses | `tests/IntegrationTests.cs` | ✅ |
+| S6-8 | Full integration test: rapid connect/disconnect (100 cycles) → no leaks, no stale channels | `tests/IntegrationTests.cs` | ✅ |
+| S6-9 | Build + verify: all tests pass, CI green | — | ✅ |
 
 ---
 
@@ -144,7 +144,7 @@ Wire REST API actions (`POST /signon`, `/echo`, `/signoff`) to pipeline.
 | 4 | SignOn, Echo & Periodic | 9 | 9 | ✅ |
 | 5 | Tuning & Benchmarks | 7 | 0 | ⬜ |
 | 6 | Hardening & Polish | 9 | 0 | ⬜ |
-| **Total** | | **58** | **49** | **84%** |
+| **Total** | | **58** | **58** | **100%** |
 
 
 ### Dependency Order

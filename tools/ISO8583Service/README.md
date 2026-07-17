@@ -240,3 +240,109 @@ graph TD
 | `Iso8583Controller` | REST API controller — exposes management endpoints |
 | `ServerOptions` | Strongly-typed config binding for `Iso8583Server` section |
 | `ConfigUpdate` | DTO for `PUT /config` runtime updates |
+
+## Health Checks
+
+The service exposes a health endpoint at `GET /health`:
+
+```json
+{
+  "status": "Healthy",
+  "description": "All systems operational",
+  "data": {
+    "ConnectionCount": 3,
+    "IsRunning": true,
+    "HandlerCount": 5,
+    "TotalMessagesReceived": 15000,
+    "TotalMessagesSent": 15000,
+    "TotalParseErrors": 0,
+    "MaxWriteQueueLength": 4,
+    "MaxInFlight": 12
+  }
+}
+```
+
+| Status | Trigger |
+|--------|---------|
+| `Healthy` | Server running, no backpressure |
+| `Degraded` | No connections OR write queue > 200 |
+| `Unhealthy` | Server not running |
+
+## Custom Message Handlers
+
+Register handlers in `Program.cs` via DI. Each handler declares which MTIs it processes.
+
+### Handler Example: Authorization
+
+```csharp
+using ISO8583Net.Message;
+using ISO8583Net.Server.Pipeline.Handlers;
+using ISO8583Net.Server.Pipeline.Messages;
+
+public sealed class AuthorizationHandler : IMessageHandler
+{
+    public IReadOnlySet<string> SupportedMTIs { get; } =
+        new HashSet<string> { "0100", "0120" };
+
+    public async Task<ISOMessage?> HandleAsync(MessageContext context, CancellationToken ct)
+    {
+        var request = context.Request;
+        string pan = request.GetFieldValue(2) ?? "";
+        string amount = request.GetFieldValue(4) ?? "";
+
+        // ... business logic ...
+
+        var response = context.Request; // copy fields from request
+        response.Set(0, "0110");        // set response MTI
+        response.Set(39, "00");         // approval
+        return response;
+    }
+}
+```
+
+### Register in Program.cs
+
+```csharp
+// Replace or add to the default handler:
+builder.Services.AddSingleton<IMessageHandler, AuthorizationHandler>();
+builder.Services.AddSingleton<IMessageHandler, FinancialHandler>();
+builder.Services.AddSingleton<IMessageHandler, DefaultHandler>(); // catch-all
+```
+
+Handlers are dispatched in parallel for the same MTI. Catch-all handlers (MTI `"*"`) receive every message.
+
+## Pipeline Tuning
+
+Based on BenchmarkDotNet measurements (Sprint 5):
+
+| Setting | Recommended | Rationale |
+|---------|-------------|-----------|
+| `ParserConcurrency` | **2** | 25% speedup vs 1; no gain at 4+ |
+| `RawMessageCapacity` | **256** | Sufficient for 470K msg/sec throughput |
+| `ParsedMessageCapacity` | **512** | Twice raw capacity — parsed msgs are smaller |
+| `OutboundMessageCapacity` | **256** | Matches raw; backpressure via `Wait` mode |
+| `DrainTimeoutSeconds` | **30** | Default; reduce for fast shutdown requirements |
+| `MaxParseErrorsBeforePause` | **10** | Circuit breaker: pause reader after 10 consecutive parse errors |
+| `ParserCooldownSeconds` | **5** | Cooldown period before reader resumes |
+
+### Measured Performance (Pipeline SEDA)
+
+| Metric | Value |
+|--------|-------|
+| Single message round-trip (P50) | **19.9 µs** |
+| Throughput (single connection) | **470K msg/sec** |
+| Per-message processing | **~2–3 µs** |
+| Memory per round-trip | **~17 KB** |
+| P99 (1K batch) | **~3.0 µs/msg** |
+| P99 (5K batch) | **~6.0 µs/msg** |
+
+### Parser Concurrency Scaling
+
+| Tasks | 500 msgs | vs 1-task |
+|-------|----------|-----------|
+| 1 | 1.33 ms | baseline |
+| 2 | **1.00 ms** | **25% faster** |
+| 4 | 1.01 ms | no gain |
+| 8 | 1.00 ms | no gain |
+
+**Recommendation:** Set `ParserConcurrency` to 2. Additional tasks add GC pressure without throughput gain.
