@@ -9,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Scalar.AspNetCore;
 using Serilog;
 
+using ISO8583Service.Handlers;
 using ISO8583Service.HealthChecks;
 
 namespace ISO8583Service;
@@ -40,8 +41,24 @@ internal static class Program
             builder.Services.Configure<PipelineOptions>(
                 builder.Configuration.GetSection("Iso8583Pipeline"));
 
-            // Pipeline handler registration (add custom handlers here)
+            // ── Pipeline handlers ──────────────────────────────────────────
+            // Catch-all (1800 → 1814 echo; unknown MTIs → passthrough)
             builder.Services.AddSingleton<IMessageHandler, DefaultHandler>();
+
+            // Network management (1804 → 1814; logon/logoff/key-change/echo)
+            builder.Services.AddSingleton<IMessageHandler, NetworkManagementHandler>();
+
+            // Authorization (1100 → 1110)
+            builder.Services.AddSingleton<IMessageHandler, AuthorizationHandler>();
+            builder.Services.AddSingleton<IMessageHandler, AuthorizationAdviceHandler>();
+
+            // Financial (1200 → 1210)
+            builder.Services.AddSingleton<IMessageHandler, FinancialHandler>();
+            builder.Services.AddSingleton<IMessageHandler, FinancialAdviceHandler>();
+
+            // Reversal (1400 → 1410)
+            builder.Services.AddSingleton<IMessageHandler, ReversalHandler>();
+            builder.Services.AddSingleton<IMessageHandler, ReversalAdviceHandler>();
 
             // Pipeline infrastructure
             builder.Services.AddSingleton<HandlerRegistry>();
