@@ -5,6 +5,7 @@ using ISO8583Net.Server.Pipeline;
 using ISO8583Net.Server.Pipeline.Handlers;
 using ISO8583Net.Server.Pipeline.Messages;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Scalar.AspNetCore;
@@ -62,8 +63,13 @@ internal static class Program
             builder.Services.AddSingleton<IMessageHandler, ReversalHandler>();
             builder.Services.AddSingleton<IMessageHandler, ReversalAdviceHandler>();
 
-            // Message tracing — logs every raw/parsed/responded ISO message
-            builder.Services.AddSingleton<IMessageTracer, FileMessageTracer>();
+            // Message tracing — persists every ISO 8583 message to PostgreSQL
+            builder.Services.AddSingleton<IMessageTracer, EfMessageTracer>();
+
+            // EF Core DbContext for the trace database
+            builder.Services.AddDbContext<MessageTraceDbContext>(options =>
+                options.UseNpgsql(
+                    builder.Configuration["ConnectionStrings:MessageTraceDb"]));
 
             // Pipeline infrastructure
             builder.Services.AddSingleton<HandlerRegistry>();
