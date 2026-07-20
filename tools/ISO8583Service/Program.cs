@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using ISO8583Net.Server;
 using ISO8583Net.Server.Pipeline;
 using ISO8583Net.Server.Pipeline.Handlers;
+using ISO8583Net.Server.Pipeline.Messages;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -11,6 +12,7 @@ using Serilog;
 
 using ISO8583Service.Handlers;
 using ISO8583Service.HealthChecks;
+using ISO8583Service.Tracing;
 
 namespace ISO8583Service;
 
@@ -59,6 +61,9 @@ internal static class Program
             // Reversal (1400 → 1410)
             builder.Services.AddSingleton<IMessageHandler, ReversalHandler>();
             builder.Services.AddSingleton<IMessageHandler, ReversalAdviceHandler>();
+
+            // Message tracing — logs every raw/parsed/responded ISO message
+            builder.Services.AddSingleton<IMessageTracer, FileMessageTracer>();
 
             // Pipeline infrastructure
             builder.Services.AddSingleton<HandlerRegistry>();

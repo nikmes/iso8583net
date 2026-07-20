@@ -39,6 +39,7 @@ public sealed class ConnectionPipeline : IAsyncDisposable
         HandlerRegistry handlerRegistry,
         PipelineOptions options,
         ILoggerFactory loggerFactory,
+        IMessageTracer? tracer,
         CancellationToken parentCt)
     {
         _cts = CancellationTokenSource.CreateLinkedTokenSource(parentCt);
@@ -95,11 +96,11 @@ public sealed class ConnectionPipeline : IAsyncDisposable
 
         _parserTask = ParserStage.RunAsync(
             _rawChannel.Reader, _parsedChannel.Writer, packager, Stats, options, parserLogger,
-            circuitBreaker, _cts.Token);
+            circuitBreaker, tracer, _cts.Token);
 
         _dispatcherTask = DispatcherStage.RunAsync(
             _parsedChannel.Reader, _outboundChannel.Writer, handlerRegistry, Stats, dispatcherLogger,
-            options, _cts.Token);
+            options, tracer, _cts.Token);
 
         _logger.LogInformation("Pipeline created: conn={ConnNum}, endpoint={Endpoint}, " +
             "parserConcurrency={Concurrency}, rawCap={RawCap}, outCap={OutCap}",

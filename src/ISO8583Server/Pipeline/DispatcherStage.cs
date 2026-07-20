@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
@@ -30,6 +31,7 @@ internal static class DispatcherStage
         PipelineStats stats,
         ILogger logger,
         PipelineOptions options,
+        IMessageTracer? tracer,
         CancellationToken ct)
     {
         var inFlight = new List<Task>();
@@ -58,7 +60,7 @@ internal static class DispatcherStage
                 // Fire handlers in parallel
                 foreach (var handler in handlers)
                 {
-                    var task = HandleMessageAsync(handler, ctx, stats, logger, ct);
+                    var task = HandleMessageAsync(handler, ctx, stats, logger, tracer, ct);
                     inFlight.Add(task);
                 }
 
@@ -105,22 +107,39 @@ internal static class DispatcherStage
 
     private static async Task HandleMessageAsync(
         IMessageHandler handler, MessageContext ctx, PipelineStats stats,
-        ILogger logger, CancellationToken ct)
+        ILogger logger, IMessageTracer? tracer, CancellationToken ct)
     {
         stats.IncrementInFlight();
+        var sw = Stopwatch.StartNew();
+        string requestMti = GetMtiSafe(ctx.Request);
+
         try
         {
             var response = await handler.HandleAsync(ctx, ct);
+            sw.Stop();
+
             if (response != null)
             {
                 await ctx.SendResponseAsync(response, ct);
+
+                string responseMti = GetMtiSafe(response);
+                string f39 = response.GetFieldValue(39) ?? "???";
+
+                tracer?.OnMessageResponded(requestMti, responseMti, f39,
+                    ctx.ConnectionNumber, sw.ElapsedMilliseconds);
+            }
+            else
+            {
+                tracer?.OnNoResponse(requestMti, ctx.ConnectionNumber);
             }
         }
         catch (Exception ex)
         {
+            sw.Stop();
             stats.IncrementHandlerErrors();
             logger.LogError(ex, "Handler error on MTI {MTI}, conn={ConnNum}",
-                GetMtiSafe(ctx.Request), ctx.ConnectionNumber);
+                requestMti, ctx.ConnectionNumber);
+            tracer?.OnHandlerError(requestMti, ctx.ConnectionNumber, ex.Message);
         }
         finally
         {

@@ -29,6 +29,7 @@ internal static class ParserStage
     /// <param name="options">Pipeline options (concurrency, error thresholds).</param>
     /// <param name="logger">Structured logger for this stage.</param>
     /// <param name="circuitBreaker">Optional shared circuit breaker.</param>
+    /// <param name="tracer">Optional message tracer for diagnostics.</param>
     /// <param name="ct">Cancellation token for shutdown.</param>
     public static async Task RunAsync(
         ChannelReader<RawMessage> input,
@@ -38,6 +39,7 @@ internal static class ParserStage
         PipelineOptions options,
         ILogger logger,
         CircuitBreakerState? circuitBreaker,
+        IMessageTracer? tracer,
         CancellationToken ct)
     {
         int concurrency = Math.Max(1, options.ParserConcurrency);
@@ -47,7 +49,8 @@ internal static class ParserStage
 
         for (int i = 0; i < concurrency; i++)
         {
-            tasks[i] = RunSingleParserAsync(input, output, packager, stats, logger, circuitBreaker, ct);
+            tasks[i] = RunSingleParserAsync(input, output, packager, stats, logger,
+                circuitBreaker, tracer, ct);
         }
 
         await Task.WhenAll(tasks);
@@ -62,6 +65,7 @@ internal static class ParserStage
         PipelineStats stats,
         ILogger logger,
         CircuitBreakerState? circuitBreaker,
+        IMessageTracer? tracer,
         CancellationToken ct)
     {
         try
@@ -73,11 +77,25 @@ internal static class ParserStage
                     var parsed = Parse(raw, packager, stats);
                     await output.WriteAsync(parsed, ct);
                     circuitBreaker?.RecordSuccess();
+
+                    // Trace successful parse
+                    if (tracer != null)
+                    {
+                        string mti = ExtractMti(parsed.Message);
+                        int fieldCount = CountFields(parsed.Message);
+                        tracer.OnMessageReceived(mti, parsed.HexDump, fieldCount,
+                            raw.ConnectionNumber, stats.RemoteEndpoint);
+                    }
                 }
                 catch (Exception ex)
                 {
                     stats.IncrementParseErrors();
                     circuitBreaker?.RecordError();
+
+                    // Trace parse error
+                    tracer?.OnParseError(
+                        ISOUtils.Bytes2Hex(raw.Data.ToArray()),
+                        raw.ConnectionNumber, ex.Message);
 
                     if (circuitBreaker is { IsOpen: true })
                     {
@@ -128,5 +146,29 @@ internal static class ParserStage
         public bool IsEnabled(LogLevel logLevel) => false;
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state,
             Exception? exception, Func<TState, Exception?, string> formatter) { }
+    }
+
+    /// <summary>Extract MTI from a parsed message (safe — returns "???" on failure).</summary>
+    private static string ExtractMti(ISOMessage msg)
+    {
+        try { return msg.GetFieldValue(0) ?? "???"; }
+        catch { return "???"; }
+    }
+
+    /// <summary>Count populated fields in a parsed message.</summary>
+    private static int CountFields(ISOMessage msg)
+    {
+        int count = 0;
+        try
+        {
+            // Count fields 1–128 in the bitmap
+            for (int i = 1; i <= 128; i++)
+            {
+                try { if (msg.GetFieldValue(i) != null) count++; }
+                catch { /* field not in bitmap */ }
+            }
+        }
+        catch { /* best effort */ }
+        return count;
     }
 }
