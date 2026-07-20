@@ -63,13 +63,24 @@ internal static class Program
             builder.Services.AddSingleton<IMessageHandler, ReversalHandler>();
             builder.Services.AddSingleton<IMessageHandler, ReversalAdviceHandler>();
 
-            // Message tracing — persists every ISO 8583 message to PostgreSQL
-            builder.Services.AddSingleton<IMessageTracer, EfMessageTracer>();
+            // Message tracing — configurable provider
+            var traceEnabled = string.Equals(
+                builder.Configuration["MessageTrace:Enabled"], "true", StringComparison.OrdinalIgnoreCase);
+            var traceProvider = builder.Configuration["MessageTrace:Provider"];
 
-            // EF Core DbContext for the trace database
-            builder.Services.AddDbContext<MessageTraceDbContext>(options =>
-                options.UseNpgsql(
-                    builder.Configuration["ConnectionStrings:MessageTraceDb"]));
+            if (traceEnabled && traceProvider == "PostgreSQL")
+            {
+                // EF Core + Npgsql — persists every ISO 8583 message to PostgreSQL
+                builder.Services.AddSingleton<IMessageTracer, EfMessageTracer>();
+                builder.Services.AddDbContext<MessageTraceDbContext>(options =>
+                    options.UseNpgsql(
+                        builder.Configuration["ConnectionStrings:MessageTraceDb"]));
+            }
+            else
+            {
+                // File-based tracer via Serilog (zero external dependencies)
+                builder.Services.AddSingleton<IMessageTracer, FileMessageTracer>();
+            }
 
             // Pipeline infrastructure
             builder.Services.AddSingleton<HandlerRegistry>();
