@@ -4,9 +4,9 @@
 [![NuGet](https://img.shields.io/nuget/v/ISO8583Net?label=NuGet)](https://www.nuget.org/packages/ISO8583Net/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-A highly configurable .NET library for building and parsing **ISO 8583** financial transaction messages. ISO 8583 dialects are defined using **JSON configuration files** — no code changes needed to switch between different financial network specifications.
+A high-performance .NET library for building and parsing **ISO 8583** financial transaction messages, plus an **ASP.NET Core hosted service** with a multi-stage SEDA pipeline, pluggable handlers, and Serilog message tracing.
 
-> **Version 2.0.0** — migrated from XML to JSON dialect definitions with System.Text.Json polymorphic deserialization.
+> **Version 2.0.0** — JSON dialect definitions, polymorphic deserialization, and a fully async staged event-driven pipeline.
 
 ---
 
@@ -14,18 +14,20 @@ A highly configurable .NET library for building and parsing **ISO 8583** financi
 
 | Feature | Description |
 |---------|-------------|
-| **JSON Dialect Configuration** | Define field layouts, message types, and encoding rules in JSON files — no recompilation needed. Built-in VISA dialect included as an embedded resource. |
+| **JSON Dialect Configuration** | Define field layouts, message types, and encoding rules in JSON — no recompilation. Built-in VISA and D8 G2B dialects included. |
 | **Multiple Encodings** | `BCD`, `BCDU` (unpacked BCD), `ASCII`, `EBCDIC`, `BIN` (binary), and `Z` (track 2 encoding) |
 | **Variable & Fixed Length Fields** | Full support for fixed-length and variable-length fields with configurable length indicators |
 | **Bitmap Handling** | Automatic primary, secondary, and tertiary bitmap management (fields 1–192) |
-| **Bitmap Sub-Fields** | Configurable bitmap-driven sub-fields (e.g., VISA F62, F63, F126) for complex nested structures |
+| **Bitmap Sub-Fields** | Configurable bitmap-driven sub-fields with their own bitmaps (e.g. VISA F62, F63, F126) |
 | **BER-TLV Parsing** | Built-in BER-TLV parser for EMV data (field 55) with recursive construction support |
 | **Message Headers** | Pre-built VISA header (22 bytes) and D8 ISO 8583:1993 header (21 bytes ASCII). Extensible via custom header packagers. |
-| **Message Type Definitions** | Define MTIs with field participation flags (Mandatory/Optional/Conditional) per message type |
 | **Field Interpreters** | Indexed-value interpreters for decoding field sub-components with human-readable labels |
-| **High Performance** | Span-based bitmap enumeration, delegate dispatch for encodings, field object reuse, pre-sized `StringBuilder` in `ToString()`, `ArrayPool<byte>` support via `PackPooled()` |
-| **TCP Server** | Built-in async TCP server with TLS/mTLS support, periodic SignOn, Echo, SignOff, and connection monitoring |
-| **Logging** | Integrates with `Microsoft.Extensions.Logging` — use Serilog, NLog, or any compatible provider |
+| **SEDA Pipeline** | Five-stage async pipeline (Reader → Parser → Dispatcher → Handlers → Writer) with bounded channels, backpressure control, and circuit breaking |
+| **Pluggable Handlers** | `IMessageHandler` interface with built-in `BaseRequestHandler`, `BaseAdviceHandler`, and `NetworkManagementHandler` base classes. Route by MTI. |
+| **Message Tracing** | `IMessageTracer` interface hooks into the pipeline. `FileMessageTracer` logs every raw, parsed, and responded message via Serilog. |
+| **REST API** | Built-in `/status` and `/health` endpoints exposing pipeline metrics, channel backpressure, handler stats, and overall health |
+| **TCP Server** | Async TCP server with TLS/mTLS, periodic SignOn/Echo/SignOff, connection lifecycle management, and graceful shutdown |
+| **High Performance** | Span-based bitmap enumeration, delegate dispatch for encodings, `ArrayPool<byte>` support (`PackPooled()`), zero-alloc code paths |
 | **Cross-Platform** | Targets .NET 10.0 — runs on Windows, Linux, and macOS |
 
 ---
@@ -50,6 +52,8 @@ dotnet build
 
 ## Usage Example
 
+### Core Library — Build & Parse Messages
+
 ```csharp
 using ISO8583Net.Message;
 using ISO8583Net.Packager;
@@ -57,7 +61,6 @@ using ISO8583Net.Utilities;
 using Microsoft.Extensions.Logging;
 using Serilog;
 
-// Set up logging
 var serilogLogger = new LoggerConfiguration()
     .MinimumLevel.Debug()
     .WriteTo.Console()
@@ -91,7 +94,6 @@ m.Set(64, "ABCDEF1234567890");      // Message Authentication Code (MAC)
 m.Set(70, "123");                   // Network Management Information Code
 m.Set(132, "ABABABAB");             // Field in tertiary bitmap
 
-// Inspect the message
 Console.WriteLine(m.ToString());
 
 // Pack to bytes
@@ -104,19 +106,27 @@ unpacked.UnPack(packedBytes);
 Console.WriteLine(unpacked.ToString());
 ```
 
-### Using a Custom Dialect
+### Load a Custom Dialect
 
 ```csharp
-// Load from a JSON file on disk
 var packager = new ISOMessagePackager(logger, "path/to/my-dialect.json");
 var msg = new ISOMessage(logger, packager);
 ```
 
-### Using ArrayPool for Performance
+### Pooled Packing for Hot Paths
 
 ```csharp
 byte[] packed = message.PackPooled(); // Uses ArrayPool<byte>.Shared internally
 ```
+
+### Run the Full Service
+
+```bash
+cd tools/ISO8583Service
+dotnet run
+```
+
+This starts the ASP.NET Core hosted service on port 8583 (configurable in `appsettings.json`) with the D8 G2B dialect, all handlers registered, Serilog tracing, REST `/status` and `/health` endpoints, and Scalar API docs at `/scalar/v1`.
 
 ---
 
@@ -126,27 +136,46 @@ byte[] packed = message.PackPooled(); // Uses ArrayPool<byte>.Shared internally
 iso8583net/
 ├── src/
 │   ├── ISO8583Net/              # Core library (NuGet package)
-│   │   ├── ISOMessage/          # ISOMessage — the main API
+│   │   ├── ISOMessage/          # ISOMessage — main public API
 │   │   ├── ISOPackager/         # JSON dialect loader, field packagers
 │   │   ├── ISOField/            # Field types (flat, bitmap, sub-fields, BER-TLV)
 │   │   ├── ISOHeader/           # VISA & D8 message headers
-│   │   ├── ISOInterpreter/      # Field value interpreters
-│   │   ├── ISOEnums/            # Enums: encoding, padding, content types
+│   │   ├── ISOInterpreter/      # Indexed-value field interpreters
+│   │   ├── ISOEnums/            # Encoding, padding, content type enums
 │   │   ├── ISOUtils/            # High-speed hex, BCD, EBCDIC converters
-│   │   └── ISODialects/         # Built-in dialect JSON files
-│   └── ISO8583Server/           # Async TCP server library with TLS
+│   │   └── ISODialects/         # Embedded dialect JSON files
+│   └── ISO8583Server/           # SEDA pipeline server library
+│       └── Pipeline/
+│           ├── ReaderStage.cs       # Socket → RawMessage channel
+│           ├── ParserStage.cs       # RawMessage → ParsedMessage (ISOMessage.UnPack)
+│           ├── DispatcherStage.cs   # Route by MTI → handlers, aggregate responses
+│           ├── WriterStage.cs       # OutboundMessage → socket
+│           ├── ConnectionPipeline.cs  # Per-connection orchestrator
+│           ├── PipelineHost.cs      # Accept loop, DI, lifecycle
+│           ├── PipelineOptions.cs   # Capacities, concurrency, timeouts
+│           ├── PipelineStats.cs     # Metrics (JSON-serializable)
+│           ├── Handlers/            # IMessageHandler + base classes
+│           └── Messages/            # RawMessage, ParsedMessage, OutboundMessage, MessageContext, IMessageTracer
 ├── tests/
-│   └── ISO8583Net.Tests/        # xUnit test suite (8 tests)
+│   └── ISO8583Net.Tests/        # xUnit suite (22 tests: pipeline, bitmaps, utilities, integration)
 ├── samples/
-│   ├── SimpleTest/              # Console demo application
-│   ├── TestClient/              # WinForms test client GUI
-│   └── TestServer/              # WinForms test server GUI
+│   ├── SimpleTest/              # Console demo
+│   ├── TestClient/              # WinForms GUI test client
+│   └── TestServer/              # WinForms GUI test server
 ├── benchmarks/
-│   └── ISO8583Net.Benchmarks/   # BenchmarkDotNet benchmarks (32 benchmarks)
+│   └── ISO8583Net.Benchmarks/   # BenchmarkDotNet (32 benchmarks)
 ├── tools/
-│   └── ISO8583Service/          # ASP.NET Core hosted service
+│   └── ISO8583Service/          # ASP.NET Core hosted service (handlers, tracing, REST API)
+│       ├── Handlers/            # Concrete handlers: Authorization, Financial, Reversal (+advice variants)
+│       ├── Tracing/             # FileMessageTracer (Serilog)
+│       ├── HealthChecks/        # Custom health checks
+│       └── Controllers/         # REST API controllers
 ├── docs/
-│   └── specs/                   # Dialect technical specifications
+│   ├── handler-development-guide.md   # Complete handler developer guide (Mermaid diagrams)
+│   └── specs/                         # Dialect technical specifications
+├── tools/ISO8583Service/
+│   ├── arch-design.md                 # SEDA architecture proposal
+│   └── impl-sprints.md                # Implementation sprint tracking
 └── deploy/                      # Linux deployment scripts & systemd unit
 ```
 
@@ -156,86 +185,20 @@ iso8583net/
 
 | Dialect | File | Description |
 |---------|------|-------------|
-| **VISA BASE I** | `src/ISO8583Net/ISODialects/visa.json` | VISA financial message format with 22-byte header, up to 192 fields. Embedded as default resource. |
-| **D8 G2B ISO 8583:1993** | `src/ISO8583Net/ISODialects/d8-iso8583.json` | D8 G2B Payment Platform with 21-byte ASCII header, Fixed TLV in field 48, BER-TLV in field 55. |
+| **VISA BASE I** | `src/ISO8583Net/ISODialects/visa.json` | VISA financial message format, 22-byte header, up to 192 fields. Embedded default. |
+| **D8 G2B ISO 8583:1993** | `src/ISO8583Net/ISODialects/d8-iso8583.json` | D8 G2B Payment Platform, 21-byte ASCII header, Fixed TLV in F48, BER-TLV in F55. |
 
 ### Writing a Custom Dialect
 
-Create a JSON file with the following structure:
+Create a JSON file using `$type` discriminators:
 
-```json
-{
-  "name": "My Custom Dialect",
-  "version": "1.0",
-  "description": "Acme Payment Switch",
-  "totalFields": 128,
-  "headerPackager": "ISOHeaderVisaPackager",
-  "messages": [
-    {
-      "type": "0100",
-      "name": "Authorization Request",
-      "f000": "M",
-      "f001": "M",
-      "f002": "M",
-      "f003": "M",
-      "f004": "M",
-      "f007": "M",
-      "f011": "M"
-    }
-  ],
-  "fields": [
-    {
-      "$type": "simple",
-      "number": 2,
-      "name": "Primary Account Number",
-      "lengthFormat": "VAR",
-      "lengthLength": 2,
-      "length": 19,
-      "contentFormat": "N",
-      "contentCoding": "BCD",
-      "contentPadding": "LEFT"
-    },
-    {
-      "$type": "bitmapSubFields",
-      "number": 62,
-      "name": "Additional Data",
-      "totalSubFields": 12,
-      "lengthFormat": "VAR",
-      "lengthLength": 3,
-      "length": 999,
-      "subFields": [
-        {
-          "$type": "simple",
-          "number": 1,
-          "name": "CVV Check Result",
-          "length": 1,
-          "contentFormat": "AN",
-          "contentCoding": "ASCII",
-          "interpreter": {
-            "type": "ISOIndexedValueInterpreter",
-            "indexes": [
-              {
-                "index": 0,
-                "length": 1,
-                "description": "CVV Check Result",
-                "values": [
-                  { "value": "Y", "description": "CVV Match" },
-                  { "value": "N", "description": "CVV Mismatch" }
-                ]
-              }
-            ]
-          }
-        }
-      ]
-    }
-  ]
-}
-```
+| `$type` | Purpose |
+|---------|---------|
+| `"simple"` | Standard flat field |
+| `"bitmap"` | Bitmap field (field 1) |
+| `"bitmapSubFields"` | Bitmap-driven sub-fields with nested bitmaps |
 
-Field types available via the `$type` discriminator:
-- `"simple"` — standard flat field
-- `"bitmap"` — bitmap field (field 1)
-- `"bitmapSubFields"` — bitmap-driven sub-fields with their own bitmaps
+See the [VISA dialect](src/ISO8583Net/ISODialects/visa.json) and [D8 dialect](src/ISO8583Net/ISODialects/d8-iso8583.json) for complete examples.
 
 ---
 
@@ -252,33 +215,133 @@ Field types available via the `$type` discriminator:
 
 ---
 
-## TCP Server
+## SEDA Pipeline Architecture
 
-The `ISO8583Server` project provides a production-ready async TCP server:
+The service uses a five-stage **Staged Event-Driven Architecture** per connection, connected by bounded `System.Threading.Channels`:
+
+```mermaid
+flowchart LR
+    R["🔵 Reader<br/>Socket I/O<br/>Length-prefixed frames"] -->|RawMessage| P["🟢 Parser<br/>ISOMessage.UnPack<br/>CPU-bound"]
+    P -->|ParsedMessage| D["🟡 Dispatcher<br/>Route by MTI<br/>→ handlers"]
+    D -->|fire-and-forget| H["🟠 Handlers<br/>Business logic<br/>async / parallel"]
+    H -->|OutboundMessage| W["🔴 Writer<br/>Socket I/O<br/>Frame + send"]
+    W -->|TCP socket| R
+
+    D -.->|lookup| Registry["HandlerRegistry<br/>MTI → List&lt;IMessageHandler&gt;"]
+    H -.->|trace| Tracer["IMessageTracer<br/>Serilog logging"]
+```
+
+Each stage runs independently, enabling **message pipelining**: while one message is being parsed, the next is already being read from the socket. Bounded channels provide natural backpressure — when downstream is slow, upstream producers block.
+
+For a full walkthrough, see [arch-design.md](tools/ISO8583Service/arch-design.md).
+
+---
+
+## Handler Framework
+
+Implement business logic by extending base handler classes. The pipeline handles all I/O, framing, parsing, routing, backpressure, and shutdown — you just process the message.
+
+```mermaid
+classDiagram
+    class IMessageHandler {
+        &lt;&lt;interface&gt;&gt;
+        +SupportedMTIs : HashSet&lt;string&gt;
+        +HandleAsync(MessageContext) Task
+    }
+    class BaseRequestHandler {
+        +HandleAsync(MessageContext) Task
+        +ProcessRequestAsync(ISOMessage, ISOMessage, MessageContext) Task*
+    }
+    class BaseAdviceHandler {
+        +HandleAsync(MessageContext) Task
+        +ProcessAdviceAsync(ISOMessage, MessageContext) Task*
+    }
+    class NetworkManagementHandler {
+        +SupportedMTIs : 0800, 0810
+        +HandleAsync(MessageContext) Task
+    }
+    class DefaultHandler {
+        +SupportedMTIs : * (catch-all)
+        +HandleAsync(MessageContext) Task
+    }
+
+    IMessageHandler <|-- BaseRequestHandler
+    IMessageHandler <|-- BaseAdviceHandler
+    IMessageHandler <|-- NetworkManagementHandler
+    IMessageHandler <|-- DefaultHandler
+```
+
+### Quick Handler Example
 
 ```csharp
-var server = new Iso8583TcpServer(logger, "path/to/dialect.json");
-
-// Enable TLS
-server.Tls = new TlsOptions
+public class AuthorizationHandler : BaseRequestHandler
 {
-    CertPath = "server.crt",
-    KeyPath = "server.key",
-    RequireClientCert = true,
-    CaCertPath = "ca.crt"
-};
+    public AuthorizationHandler(ILogger<AuthorizationHandler> logger) : base(logger) { }
 
-// Periodic SignOn
-server.SignOnIntervalSeconds = 300;
-server.SendSignOnOnConnect = true;
+    public override HashSet<string> SupportedMTIs => new() { "0100" };
 
-// Handle parsed messages
-server.OnMessageParsed += (connNum, rawBytes, hexDump, fieldDump) =>
-{
-    Console.WriteLine($"Message from connection {connNum}:\n{fieldDump}");
-};
+    protected override Task ProcessRequestAsync(
+        ISOMessage request, ISOMessage response, MessageContext context)
+    {
+        // Your business logic here — check funds, validate card, etc.
+        response.Set(39, "00"); // Approval
+        return Task.CompletedTask;
+    }
+}
+```
 
-await server.StartAsync(port: 8583);
+### Registering Handlers
+
+```csharp
+builder.Services.AddSingleton<IMessageHandler, AuthorizationHandler>();
+builder.Services.AddSingleton<IMessageHandler, FinancialHandler>();
+builder.Services.AddSingleton<IMessageHandler, ReversalHandler>();
+// ... etc.
+
+// Message tracing
+builder.Services.AddSingleton<IMessageTracer, FileMessageTracer>();
+```
+
+The active D8 G2B handlers are:
+
+| Handler | MTIs | Base Class | Direction |
+|---------|------|------------|-----------|
+| `AuthorizationHandler` | 0100 | `BaseRequestHandler` | Request → Response (0110) |
+| `AuthorizationAdviceHandler` | 0120 | `BaseAdviceHandler` | Advice (fire-and-forget) |
+| `FinancialHandler` | 0200 | `BaseRequestHandler` | Request → Response (0210) |
+| `FinancialAdviceHandler` | 0220 | `BaseAdviceHandler` | Advice (fire-and-forget) |
+| `ReversalHandler` | 0400 | `BaseRequestHandler` | Request → Response (0410) |
+| `ReversalAdviceHandler` | 0420 | `BaseAdviceHandler` | Advice (fire-and-forget) |
+| `NetworkManagementHandler` | 0800 | `IMessageHandler` | Echo/SignOn/SignOff |
+| `DefaultHandler` | * | `IMessageHandler` | Catch-all (auto-approve) |
+
+**Full developer guide:** [docs/handler-development-guide.md](docs/handler-development-guide.md)
+
+---
+
+## Message Tracing
+
+Every message flowing through the pipeline can be traced via the `IMessageTracer` interface. The built-in `FileMessageTracer` logs structured events using Serilog:
+
+```
+RECV | MTI=1100 | Conn=1 | Fields=17 | ...
+SEND | MTI=1110 | Conn=1 | Fields=5 | Elapsed=1.23ms | ...
+```
+
+| Hook Point | Method | When |
+|------------|--------|------|
+| After parse | `OnMessageReceived` | Message successfully unpacked |
+| Parse failure | `OnParseError` | Invalid bytes received |
+| After handler | `OnMessageResponded` | Response sent to client |
+| No response | `OnNoResponse` | Handler chose not to respond (e.g. advice) |
+| Handler error | `OnHandlerError` | Exception in business logic |
+
+```csharp
+// Zero-overhead default (JIT-eliminated)
+public class NoopMessageTracer : IMessageTracer { }
+
+// Serilog-based (registered in DI)
+builder.Services.AddSingleton<IMessageTracer, FileMessageTracer>();
 ```
 
 ---
@@ -287,35 +350,48 @@ await server.StartAsync(port: 8583);
 
 *Measured with BenchmarkDotNet v0.15.8 on Intel Core i9-14900K, .NET 10.0.10, Windows 11.*
 
-### End-to-End Message Roundtrip (Pack + UnPack)
+### Pipeline Throughput
 
-| Method                      | Mean       | Allocated |
-|---------------------------- |-----------:|----------:|
-| PackUnpack_1stBitmap        | 1,824.7 ns |   9.63 KB |
-| PackUnpack_2ndBitmap        | 1,983.9 ns |   9.97 KB |
-| PackUnpack_3rdBitmap        | 2,235.4 ns |  10.16 KB |
-| PackUnpack_WithSubfields    | 2,229.3 ns |  12.09 KB |
-| PackUnpack_1stBitmap_Pooled | 1,795.4 ns |   7.61 KB |
+| Scenario | Throughput |
+|----------|-----------:|
+| Single connection, parse + dispatch | ~470,000 msg/sec |
+| 100 connections (SEDA pipeline) | ~270,000 msg/sec |
+
+### Message Roundtrip (Pack + UnPack)
+
+| Method | Mean | Allocated |
+|--------|-----:|----------:|
+| PackUnpack_1stBitmap | 1,824.7 ns | 9.63 KB |
+| PackUnpack_2ndBitmap | 1,983.9 ns | 9.97 KB |
+| PackUnpack_3rdBitmap | 2,235.4 ns | 10.16 KB |
+| PackUnpack_WithSubfields | 2,229.3 ns | 12.09 KB |
+| PackUnpack_1stBitmap_Pooled | 1,795.4 ns | 7.61 KB |
 
 ### Pack-Only / Unpack-Only
 
-| Method                  | Mean       | Allocated |
-|------------------------ |-----------:|----------:|
-| PackOnly_1stBitmap      | 1,011.9 ns |   5.37 KB |
-| PackOnly_1stBitmap_Pooled | **874.9 ns** |   **3.34 KB** |
-| PackOnly_2ndBitmap      |   992.3 ns |   5.51 KB |
-| UnpackOnly_1stBitmap    | 1,947.3 ns |   4.18 KB |
+| Method | Mean | Allocated |
+|--------|-----:|----------:|
+| PackOnly_1stBitmap | 1,011.9 ns | 5.37 KB |
+| PackOnly_1stBitmap_Pooled | **874.9 ns** | **3.34 KB** |
+| UnpackOnly_1stBitmap | 1,947.3 ns | 4.18 KB |
 
-### Low-Level Encoding (per operation)
+### Low-Level Encoding
 
-| Method         | Mean       | Allocated |
-|--------------- |-----------:|----------:|
-| Hex2Bytes_16   |   6.632 ns |      32 B |
-| Ascii2Bcd_16   |   6.270 ns |      40 B |
-| Ascii2Bytes_32 |  12.921 ns |      88 B |
-| Bcd2Ascii_16   |  17.066 ns |      96 B |
+| Method | Mean | Allocated |
+|--------|-----:|----------:|
+| Hex2Bytes_16 | 6.632 ns | 32 B |
+| Ascii2Bcd_16 | 6.270 ns | 40 B |
+| Bcd2Ascii_16 | 17.066 ns | 96 B |
 
-Full benchmark reports and charts are in the [benchmarks/ISO8583Net.Benchmarks/BenchmarkDotNet.Artifacts/](benchmarks/ISO8583Net.Benchmarks/BenchmarkDotNet.Artifacts/) directory.
+Full reports and charts: [benchmarks/ISO8583Net.Benchmarks/BenchmarkDotNet.Artifacts/](benchmarks/ISO8583Net.Benchmarks/BenchmarkDotNet.Artifacts/)
+
+---
+
+## Documentation
+
+- 📘 [Handler Development Guide](docs/handler-development-guide.md) — comprehensive guide with Mermaid diagrams
+- 🏗️ [Architecture Design](tools/ISO8583Service/arch-design.md) — SEDA pipeline proposal and rationale
+- 📋 [Implementation Sprints](tools/ISO8583Service/impl-sprints.md) — sprint-by-sprint build log
 
 ---
 
