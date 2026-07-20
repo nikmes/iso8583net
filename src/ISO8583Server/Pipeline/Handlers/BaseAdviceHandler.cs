@@ -41,8 +41,8 @@ public abstract class BaseAdviceHandler : IMessageHandler
     public async Task<ISOMessage?> HandleAsync(MessageContext context, CancellationToken ct)
     {
         var request = context.Request;
-        _logger.LogDebug("Acknowledging {MTI} advice, conn={ConnNum}",
-            AdviceMTI, context.ConnectionNumber);
+
+        _logger.LogDebug("Acknowledging {MTI} advice, conn={ConnNum}", AdviceMTI, context.ConnectionNumber);
 
         try
         {
@@ -60,8 +60,7 @@ public abstract class BaseAdviceHandler : IMessageHandler
     /// Override to perform post-processing after acknowledging the advice
     /// (e.g. SAF clearing, reconciliation, audit logging).
     /// </summary>
-    protected virtual Task OnAcknowledgedAsync(MessageContext context, CancellationToken ct)
-        => Task.CompletedTask;
+    protected virtual Task OnAcknowledgedAsync(MessageContext context, CancellationToken ct) => Task.CompletedTask;
 
     /// <summary>
     /// Build the acknowledgment response. Sets response MTI and F39="400".
