@@ -132,6 +132,37 @@ public sealed class ConnectionPipeline : IAsyncDisposable
     /// <summary>
     /// Graceful shutdown: cancel stages, drain remaining writes, wait for tasks.
     /// </summary>
+    /// <summary>
+    /// Waits for the pipeline to close naturally (reader exits when client disconnects).
+    /// Does NOT cancel the CTS — unlike StopAsync.
+    /// </summary>
+    public async Task WaitForCloseAsync()
+    {
+        _logger.LogDebug("Pipeline conn={ConnNum} waiting for natural close", ConnectionNumber);
+
+        try
+        {
+            // Wait for reader + parser + dispatcher
+            await Task.WhenAll(_readerTask, _parserTask, _dispatcherTask);
+        }
+        catch (OperationCanceledException) { /* expected if parent cancels */ }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Pipeline conn={ConnNum} stage error during wait", ConnectionNumber);
+        }
+
+        // Now complete outbound and wait for writer
+        _outboundChannel.Writer.TryComplete();
+        await _writerTask;
+
+        _logger.LogInformation("Pipeline conn={ConnNum} naturally closed: recv={Recv}msgs/{RecvBytes}B, " +
+            "sent={Sent}msgs/{SentBytes}B, parseErrs={ParseErrs}, handlerErrs={HandlerErrs}",
+            ConnectionNumber,
+            Stats.MessagesReceived, Stats.BytesReceived,
+            Stats.MessagesSent, Stats.BytesSent,
+            Stats.ParseErrors, Stats.HandlerErrors);
+    }
+
     public async Task StopAsync(TimeSpan drainTimeout)
     {
         _logger.LogInformation("Pipeline conn={ConnNum} stopping, drainTimeout={Timeout}s",

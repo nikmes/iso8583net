@@ -44,6 +44,10 @@ internal static class Program
             builder.Services.Configure<PipelineOptions>(
                 builder.Configuration.GetSection("Iso8583Pipeline"));
 
+            // Register PipelineOptions as a direct injectable singleton
+            builder.Services.AddSingleton(sp =>
+                sp.GetRequiredService<Microsoft.Extensions.Options.IOptions<PipelineOptions>>().Value);
+
             // ── Pipeline handlers ──────────────────────────────────────────
             // Catch-all (1800 → 1814 echo; unknown MTIs → passthrough)
             builder.Services.AddSingleton<IMessageHandler, DefaultHandler>();

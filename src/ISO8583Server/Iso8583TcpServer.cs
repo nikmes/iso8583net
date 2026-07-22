@@ -186,8 +186,8 @@ public sealed class Iso8583TcpServer : IIso8583Server
                     await pipeline.SendAsync(outbound, ct);
                 }
 
-                // Wait until reader exits (disconnect)
-                await pipeline.StopAsync(TimeSpan.FromSeconds(5));
+                // Wait until reader exits (client disconnects)
+                await pipeline.WaitForCloseAsync();
             }
             finally
             {
