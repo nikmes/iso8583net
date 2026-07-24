@@ -202,6 +202,10 @@ namespace ISO8583Net.Packager
 
                 case ISOFieldCoding.Z:
                     break;
+
+                case ISOFieldCoding.TLV:
+                    // TLV fields contain hex string data; byte count = hex length / 2
+                    break;
             }
 
             // validate length of field value based on length field coding
@@ -292,12 +296,17 @@ namespace ISO8583Net.Packager
             else if (m_isoFieldDefinition.lengthFormat == ISOFieldLengthFormat.VAR)
             {
                 // variable length format, check how many units of m_isoFieldDefinition.m_lengthCoding we should use
+                int varLengthValue = isoFieldValue.Length;
+                // TLV content: hex string Length represents 2 chars per byte, so byte count = Length/2
+                if (m_isoFieldDefinition.contentCoding == ISOFieldCoding.TLV)
+                    varLengthValue = isoFieldValue.Length / 2;
+
                 switch (m_isoFieldDefinition.lengthCoding)
                 {
                     case ISOFieldCoding.BIN:
                         // convert HexDigits to bytes - lengthlength = number of hexadecimal digits
                         //if (Logger.IsEnabled(LogLevel.Debug)) Logger.LogDebug("ISOField [" + m_number + "] is of variable length and of BINARY format with lengthIndicator=[" + m_isoFieldDefinition.m_lengthLength + "] bytes");
-                        ISOUtils.Int2Bytes(isoFieldValue.Length, packedBytes, ref index, m_isoFieldDefinition.lengthLength);
+                        ISOUtils.Int2Bytes(varLengthValue, packedBytes, ref index, m_isoFieldDefinition.lengthLength);
                         break;
 
                     case ISOFieldCoding.ASCII:

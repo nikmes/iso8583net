@@ -40,7 +40,9 @@
         /// <summary>ISO field data are encoded in BIN (Binary)</summary>        
         BIN,
         /// <summary>ISO field data are encoded in Z (Track2 Encoding)</summary>       
-        Z
+        Z,
+        /// <summary>TLV-encoded data where VAR length is in bytes (not nibbles)</summary>
+        TLV
     }
 
     /// <summary>ISO field data paddding method.</summary>

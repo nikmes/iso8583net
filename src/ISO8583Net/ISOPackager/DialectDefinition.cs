@@ -324,6 +324,11 @@ namespace ISO8583Net.Packager
                     packager.PackContent = (v, b, ref i, _) => ISOUtils.Hex2Bytes(v, b, ref i);
                     packager.UnpackContent = (b, ref i, len) => ISOUtils.Bytes2Hex(b, ref i, len / 2);
                     break;
+                case ISOFieldCoding.TLV:
+                    // TLV data: VAR length is in bytes (not nibbles). Content stored as hex.
+                    packager.PackContent = (v, b, ref i, _) => ISOUtils.Hex2Bytes(v, b, ref i);
+                    packager.UnpackContent = (b, ref i, len) => ISOUtils.Bytes2Hex(b, ref i, len);
+                    break;
                 case ISOFieldCoding.EBCDIC:
                     packager.PackContent = (v, b, ref i, _) => ISOUtils.Ascii2Ebcdic(v, b, ref i);
                     packager.UnpackContent = (b, ref i, len) => ISOUtils.Ebcdic2Ascii(b, ref i, len);

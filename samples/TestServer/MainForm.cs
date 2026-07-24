@@ -49,7 +49,7 @@ public sealed class MainForm : Form
         _dialectPathTextBox = new TextBox
         {
             Location = new Point(186, 12), Size = new Size(320, 23),
-            ReadOnly = true, BackColor = Color.White, Text = "(built-in VISA)"
+                    ReadOnly = true, BackColor = Color.White, Text = "d8-iso8583.json"
         };
         _dialectBrowseButton = new Button
         {

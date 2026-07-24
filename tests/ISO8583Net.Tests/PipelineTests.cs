@@ -702,35 +702,37 @@ public sealed class PipelineTests
     [Fact]
     public void Unpack_D8HexDump_1420_Message_ParsesWithoutError()
     {
-        // Arrange — hex dump from real D8 terminal (LI=0x0119 = 281 bytes, message=283 bytes after LI strip)
+        // Arrange — hex dump from real D8 terminal (Wireshark capture, after stripping LI=0x0119)
+        // Bitmap: 767425D58CE1A300 → fields: 2,3,4,6,7,10,11,12,14,19,22,24,25,26,28,30,32,33,37,38,41,42,43,48,49,51,55,56
         const string hexDump =
             "49534F383538332D313939333031313030303030" +
-            "301420767425D58CE1A300001046337101000005" +
-            "0500000000000050000000000050000724092413" +
-            "6100000000358226072409241328110428353130" +
-            "3130313538202020200400402158122607240000" +
-            "0000500006457000064987503632303530393338" +
-            "3935383430333130393334393837353036383439" +
-            "383735303030303631373438332846554D494E4F" +
-            "523033332D412E2053414841524F56412032304E" +
-            "455720594F524B202020202055530033C1021020" +
-            "333030363134343432393133343433C1031D2020" +
-            "2020202020202020202020202020202020202020" +
-            "20202020202020203009780978000C9505800001" +
-            "00009F360200051E110038958426072409241306" +
-            "457000";
+            "301420767425D58CE1A300" +            // Header + MTI 1420 BCD + bitmap (8 bytes)
+            "1046337101000005" +                  // F2(len=16) F3(len=0x10=16)
+            "0500000000000050000000000050000724" + // F4 F6 F7 F10
+            "0924136100000000" +                  // F11 F12 F14
+            "35822607240924132811" +              // F19 F22 F24 F25
+            "04283531303130313538" +              // F26 F28
+            "2020202004" +                        // F30 (Track 2 field)
+            "0040215812260724000000" +            // F32 F33 F37
+            "0050000645507006498750" +            // F38 F41 F42
+            "36323035303933383935383430333130" +  // F42 content (PAN)
+            "3933343938373530363834393837353030" + // F42 content cont.
+            "3030363137343833" +                  // F42 content end
+            "2846554D494E4F523033332D412E205341" + // F43 (Card Acceptor)
+            "4841524F56412032304E455720594F524B" +
+            "20202020205553" +
+            "0033" +                              // F43 end + F48 start
+            "C102102033303036313434343239313334" + // F48 (Additional Data Private)
+            "3433C1031D" +
+            "2020202020202020202020202020202020" +
+            "202020202020202020202030" +
+            "09780978" +                          // F49 F51
+            "000C" +                              // F51 content (0x000C)
+            "95058000010000" +                    // F55 (BER-TLV)
+            "9F360200051E1100" +
+            "38958426072409241306457000";         // F56 (Network Data)
 
         byte[] packedBytes = ISO8583Net.Utilities.ISOUtils.Hex2Bytes(hexDump);
-
-        // DIAG: Verify first 35 bytes of packed array
-        System.Console.Error.WriteLine("========== TEST DIAG: First 35 bytes ==========");
-        for (int i = 0; i < 35 && i < packedBytes.Length; i++)
-        {
-            System.Console.Error.Write($"[{i:D2}]={packedBytes[i]:X2} ");
-            if (i % 8 == 7) System.Console.Error.WriteLine();
-        }
-        System.Console.Error.WriteLine();
-        System.Console.Error.WriteLine($"Total bytes: {packedBytes.Length}");
 
         // Load the D8 G2B dialect (the same one the service uses)
         string dialectPath = Path.Combine(
