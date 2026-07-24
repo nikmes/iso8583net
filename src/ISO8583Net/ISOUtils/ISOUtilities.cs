@@ -547,7 +547,7 @@ namespace ISO8583Net.Utilities
 
             for (int i = 0; i < charLength; i += 2)
             {
-                var val = lookup32[packedBytes[i / 2]];
+                var val = lookup32[packedBytes[index + i / 2]];
 
                 result[i] = (char)val;
 

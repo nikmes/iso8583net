@@ -694,4 +694,59 @@ public sealed class PipelineTests
         public IReadOnlyList<(int ConnNum, string RemoteEndpoint, DateTime ConnectedAt)> GetConnections()
             => Connections;
     }
+
+    /// <summary>
+    /// Parses a real D8 ISO 8583 message hex dump (1420 MTI, BER-TLV F55, etc.)
+    /// to verify the dialect unpacks correctly without IndexOutOfRangeException.
+    /// </summary>
+    [Fact]
+    public void Unpack_D8HexDump_1420_Message_ParsesWithoutError()
+    {
+        // Arrange — hex dump from real D8 terminal (LI=0x0119 = 281 bytes, message=283 bytes after LI strip)
+        const string hexDump =
+            "49534F383538332D313939333031313030303030" +
+            "301420767425D58CE1A300001046337101000005" +
+            "0500000000000050000000000050000724092413" +
+            "6100000000358226072409241328110428353130" +
+            "3130313538202020200400402158122607240000" +
+            "0000500006457000064987503632303530393338" +
+            "3935383430333130393334393837353036383439" +
+            "383735303030303631373438332846554D494E4F" +
+            "523033332D412E2053414841524F56412032304E" +
+            "455720594F524B202020202055530033C1021020" +
+            "333030363134343432393133343433C1031D2020" +
+            "2020202020202020202020202020202020202020" +
+            "20202020202020203009780978000C9505800001" +
+            "00009F360200051E110038958426072409241306" +
+            "457000";
+
+        byte[] packedBytes = ISO8583Net.Utilities.ISOUtils.Hex2Bytes(hexDump);
+
+        // DIAG: Verify first 35 bytes of packed array
+        System.Console.Error.WriteLine("========== TEST DIAG: First 35 bytes ==========");
+        for (int i = 0; i < 35 && i < packedBytes.Length; i++)
+        {
+            System.Console.Error.Write($"[{i:D2}]={packedBytes[i]:X2} ");
+            if (i % 8 == 7) System.Console.Error.WriteLine();
+        }
+        System.Console.Error.WriteLine();
+        System.Console.Error.WriteLine($"Total bytes: {packedBytes.Length}");
+
+        // Load the D8 G2B dialect (the same one the service uses)
+        string dialectPath = Path.Combine(
+            AppDomain.CurrentDomain.BaseDirectory,
+            "..", "..", "..", "..", "..",
+            "src", "ISO8583Net", "ISODialects", "d8-iso8583.json");
+        dialectPath = Path.GetFullPath(dialectPath);
+
+        var packager = new ISOMessagePackager(new NullTestLogger(), dialectPath);
+        var msg = new ISOMessage(new NullTestLogger(), packager);
+
+        // Act
+        msg.UnPack(packedBytes);
+            
+        // Assert
+        Assert.Equal("1420", msg.GetFieldValue(0));
+        Assert.NotNull(msg.GetFieldValue(1));
+    }
 }

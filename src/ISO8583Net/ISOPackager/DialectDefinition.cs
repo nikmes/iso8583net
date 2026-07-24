@@ -312,6 +312,7 @@ namespace ISO8583Net.Packager
             switch (fd.contentCoding)
             {
                 case ISOFieldCoding.BCD:
+                case ISOFieldCoding.Z: // Track 2 — nibble-packed BCD with '=' (0xD) support
                     packager.PackContent = (v, b, ref i, p) => ISOUtils.Ascii2Bcd(v, b, ref i, p);
                     packager.UnpackContent = (b, ref i, len) => ISOUtils.Bcd2Ascii(b, ref i, fd.contentPadding, len);
                     break;

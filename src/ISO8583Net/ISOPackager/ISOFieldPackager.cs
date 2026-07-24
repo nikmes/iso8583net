@@ -2,6 +2,7 @@
 using ISO8583Net.Types;
 using ISO8583Net.Utilities;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Text;
 
 namespace ISO8583Net.Packager
@@ -354,9 +355,11 @@ namespace ISO8583Net.Packager
         /// <param name="index"></param>
         public override void UnPack(ISOComponent isoField, byte[] packedBytes, ref int index)
         {
-            //if (Logger.IsEnabled(LogLevel.Debug)) Logger.LogDebug("Trying to Unpack Field [" + m_number.ToString().PadLeft(3, '0') + "]");
+            int startIndex = index;
+            int fieldsRemaining = packedBytes.Length - index;
 
             int lengthToRead = m_isoFieldDefinition.length;   // in type units
+
 
             // handle length type, size and coding
 
@@ -386,7 +389,8 @@ namespace ISO8583Net.Packager
                 {
                     // adjust legnthToRead
 
-                    lengthToRead = ISOUtils.Bytes2Int(packedBytes, ref index, m_isoFieldDefinition.lengthLength); // !!! hmmm this value is not bytes, it depends on content coding !! 
+                    int lenStartIdx = index;
+                    lengthToRead = ISOUtils.Bytes2Int(packedBytes, ref index, m_isoFieldDefinition.lengthLength); // !!! hmmm this value is not bytes, it depends on content coding !!
 
                     //if (Logger.IsEnabled(LogLevel.Debug)) Logger.LogDebug("Length of VARIABLE Field [" + m_number.ToString().PadLeft(3, '0') + "] is [" + lengthToRead + "]");
 
@@ -418,7 +422,18 @@ namespace ISO8583Net.Packager
                 }
                 else if (UnpackContent != null)
                 {
-                    isoField.value = UnpackContent(packedBytes, ref index, lengthToRead);
+                    try
+                    {
+                        isoField.value = UnpackContent(packedBytes, ref index, lengthToRead);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception(
+                            $"Unpack failed for F{m_number}: index={startIndex}, lengthToRead={lengthToRead}, " +
+                            $"remaining={fieldsRemaining}, lenFormat={m_isoFieldDefinition.lengthFormat}, " +
+                            $"lenCoding={m_isoFieldDefinition.lengthCoding}, lenLen={m_isoFieldDefinition.lengthLength}, " +
+                            $"contentCoding={m_isoFieldDefinition.contentCoding}", ex);
+                    }
                 }
             }
         }
