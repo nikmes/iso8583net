@@ -184,13 +184,22 @@ public sealed class ParserForm : Form
         _lastDialectPath = path;
 
         bool isBuiltIn = path == "(built-in VISA)" || string.IsNullOrWhiteSpace(path);
+
+        // Resolve relative paths to absolute so the log shows the exact file
+        string resolvedPath = path;
+        if (!isBuiltIn)
+        {
+            resolvedPath = System.IO.Path.GetFullPath(path);
+            Log($"Dialect file: {resolvedPath}", Color.Gray);
+        }
+
         try
         {
             var nullLog = new Microsoft.Extensions.Logging.Abstractions.NullLogger<ISOMessagePackager>();
             _packager = isBuiltIn
                 ? new ISOMessagePackager(nullLog)
-                : new ISOMessagePackager(nullLog, path);
-            Log($"Dialect: {(isBuiltIn ? "built-in VISA" : path)} ({_packager.GetTotalFields()} fields)", Color.Gray);
+                : new ISOMessagePackager(nullLog, resolvedPath);
+            Log($"Dialect loaded: {(isBuiltIn ? "built-in VISA" : resolvedPath)} ({_packager.GetTotalFields()} fields)", Color.Gray);
         }
         catch (Exception ex)
         {

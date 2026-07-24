@@ -913,7 +913,7 @@
       "description": "Amount of the original transaction being fully or partially reversed. Must match value in original 1100/1200 request. Decimal place implied by Field 49.",
       "lengthFormat": "FIXED",
       "lengthLength": 0,
-      "length": 10,
+      "length": 12,
       "lengthCoding": "BIN",
       "lengthPadding": "LEFT",
       "contentFormat": "N",
@@ -1127,7 +1127,7 @@
       "lengthCoding": "BIN",
       "lengthPadding": "LEFT",
       "contentFormat": "AN",
-      "contentCoding": "TLV",
+      "contentCoding": "BIN",
       "contentPadding": "LEFT"
     },
     {
@@ -1225,7 +1225,7 @@
       "lengthCoding": "BIN",
       "lengthPadding": "LEFT",
       "contentFormat": "AN",
-      "contentCoding": "TLV",
+      "contentCoding": "BIN",
       "contentPadding": "LEFT"
     },
     {

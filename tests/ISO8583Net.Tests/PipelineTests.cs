@@ -549,6 +549,76 @@ public sealed class PipelineTests
         Assert.Equal(0, mockServer.SendSignOnCallCount); // not called — no clients
     }
 
+    /// <summary>
+    /// Parses a real D8 ISO 8583:1993 1100 Authorisation Request hex dump
+    /// and verifies all fields unpack correctly.
+    /// </summary>
+    [Fact]
+    public void Unpack_D8HexDump_1100_AuthorisationRequest_ParsesWithoutError()
+    {
+        const string hexDump =
+            "00F449534F383538332D31393933303131303030303030" +
+            "1100" +
+            "7674255188E1A000" +
+            "1046337101000005" +
+            "0500000000000050000000000050000723" +
+            "1446096100000000" +
+            "5638132607231446092811" +
+            "04283130303032303638" +
+            "2020202001" +
+            "005812260723" +
+            "0645700006498750" +
+            "363230343134353633383133" +
+            "3439383735303638343938373530303030343333343732" +
+            "2846554D494E4F523033332D412E2053414841524F5641" +
+            "2032304E455720594F524B20202020205553" +
+            "003A" +
+            "C00703303030C0090100C0100108" +
+            "C1031D3030303220202020202020202020202020202020" +
+            "2020202020202020202030" +
+            "C20709202020202020202020" +
+            "09780978";
+
+        byte[] packedBytes = ISO8583Net.Utilities.ISOUtils.Hex2Bytes(hexDump);
+        byte[] msgBytes = packedBytes[2..]; // strip 0x00F4 (2-byte length prefix)
+
+        string dialectPath = Path.GetFullPath(Path.Combine(
+            AppDomain.CurrentDomain.BaseDirectory,
+            "..", "..", "..", "..", "..",
+            "src", "ISO8583Net", "ISODialects", "d8-iso8583.json"));
+
+        var packager = new ISOMessagePackager(new NullTestLogger(), dialectPath);
+        var msg = new ISOMessage(new NullTestLogger(), packager);
+
+        // Act
+        msg.UnPack(msgBytes);
+
+        // Assert
+        Assert.Equal("1100", msg.GetFieldValue(0));
+        Assert.Equal("7674255188E1A000", msg.GetFieldValue(1));
+        Assert.Equal("4633710100000505", msg.GetFieldValue(2));
+        Assert.Equal("000000005000", msg.GetFieldValue(4));
+        Assert.Equal("000000005000", msg.GetFieldValue(6));
+        Assert.Equal("0723144609", msg.GetFieldValue(7));
+        Assert.Equal("61000000", msg.GetFieldValue(10));
+        Assert.Equal("563813", msg.GetFieldValue(11));
+        Assert.Equal("260723144609", msg.GetFieldValue(12));
+        Assert.Equal("2811", msg.GetFieldValue(14));
+        Assert.Equal("10002068    ", msg.GetFieldValue(22));
+        Assert.Equal("100", msg.GetFieldValue(24));
+        Assert.Equal("5812", msg.GetFieldValue(26));
+        Assert.Equal("260723", msg.GetFieldValue(28));
+        Assert.Equal("457000", msg.GetFieldValue(32));
+        Assert.Equal("498750", msg.GetFieldValue(33));
+        Assert.Equal("620414563813", msg.GetFieldValue(37));
+        Assert.Equal("49875068", msg.GetFieldValue(41));
+        Assert.Equal("498750000433472", msg.GetFieldValue(42));
+        Assert.Equal("FUMINOR033-A. SAHAROVA 20NEW YORK     US", msg.GetFieldValue(43));
+        Assert.NotNull(msg.GetFieldValue(48)); // BER-TLV, verify present
+        Assert.Equal("020", msg.GetFieldValue(49));
+        Assert.Equal("020", msg.GetFieldValue(51));
+    }
+
     // ── Helpers ──────────────────────────────────────────────────────
 
     private sealed class CountingHandler : IMessageHandler
@@ -695,60 +765,4 @@ public sealed class PipelineTests
             => Connections;
     }
 
-    /// <summary>
-    /// Parses a real D8 ISO 8583 message hex dump (1420 MTI, BER-TLV F55, etc.)
-    /// to verify the dialect unpacks correctly without IndexOutOfRangeException.
-    /// </summary>
-    [Fact]
-    public void Unpack_D8HexDump_1420_Message_ParsesWithoutError()
-    {
-        // Arrange — hex dump from real D8 terminal (Wireshark capture, after stripping LI=0x0119)
-        // Bitmap: 767425D58CE1A300 → fields: 2,3,4,6,7,10,11,12,14,19,22,24,25,26,28,30,32,33,37,38,41,42,43,48,49,51,55,56
-        const string hexDump =
-            "49534F383538332D313939333031313030303030" +
-            "301420767425D58CE1A300" +            // Header + MTI 1420 BCD + bitmap (8 bytes)
-            "1046337101000005" +                  // F2(len=16) F3(len=0x10=16)
-            "0500000000000050000000000050000724" + // F4 F6 F7 F10
-            "0924136100000000" +                  // F11 F12 F14
-            "35822607240924132811" +              // F19 F22 F24 F25
-            "04283531303130313538" +              // F26 F28
-            "2020202004" +                        // F30 (Track 2 field)
-            "0040215812260724000000" +            // F32 F33 F37
-            "0050000645507006498750" +            // F38 F41 F42
-            "36323035303933383935383430333130" +  // F42 content (PAN)
-            "3933343938373530363834393837353030" + // F42 content cont.
-            "3030363137343833" +                  // F42 content end
-            "2846554D494E4F523033332D412E205341" + // F43 (Card Acceptor)
-            "4841524F56412032304E455720594F524B" +
-            "20202020205553" +
-            "0033" +                              // F43 end + F48 start
-            "C102102033303036313434343239313334" + // F48 (Additional Data Private)
-            "3433C1031D" +
-            "2020202020202020202020202020202020" +
-            "202020202020202020202030" +
-            "09780978" +                          // F49 F51
-            "000C" +                              // F51 content (0x000C)
-            "95058000010000" +                    // F55 (BER-TLV)
-            "9F360200051E1100" +
-            "38958426072409241306457000";         // F56 (Network Data)
-
-        byte[] packedBytes = ISO8583Net.Utilities.ISOUtils.Hex2Bytes(hexDump);
-
-        // Load the D8 G2B dialect (the same one the service uses)
-        string dialectPath = Path.Combine(
-            AppDomain.CurrentDomain.BaseDirectory,
-            "..", "..", "..", "..", "..",
-            "src", "ISO8583Net", "ISODialects", "d8-iso8583.json");
-        dialectPath = Path.GetFullPath(dialectPath);
-
-        var packager = new ISOMessagePackager(new NullTestLogger(), dialectPath);
-        var msg = new ISOMessage(new NullTestLogger(), packager);
-
-        // Act
-        msg.UnPack(packedBytes);
-            
-        // Assert
-        Assert.Equal("1420", msg.GetFieldValue(0));
-        Assert.NotNull(msg.GetFieldValue(1));
-    }
 }
