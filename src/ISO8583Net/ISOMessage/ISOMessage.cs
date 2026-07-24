@@ -17,6 +17,9 @@ namespace ISO8583Net.Message
     {
         /// <summary>The message packager that defines field layout and encoding.</summary>
         protected ISOMessagePackager m_isoMesssagePackager;
+
+        /// <summary>Gets the message packager used to pack/unpack this message.</summary>
+        public ISOMessagePackager Packager => m_isoMesssagePackager;
         /// <summary>The collection of ISO fields in this message.</summary>
         protected ISOMessageFields m_isoMessageFields;
         /// <summary>The header packager, or null if no header is configured.</summary>
@@ -244,6 +247,11 @@ namespace ISO8583Net.Message
             {
                 // unpack the isoHeader
                 m_isoHeaderPackager.UnPack(m_isoHeader, packedBytes, ref index);
+
+                // Header-only message (e.g. D8 error signal, sign-on with no body) —
+                // nothing left to parse as ISO8583.
+                if (index >= packedBytes.Length)
+                    return;
             }
 
             // unpack the isoMessage
@@ -286,6 +294,15 @@ namespace ISO8583Net.Message
         {
             throw new NotImplementedException();
         }
+        /// <summary>
+        /// Creates a clean response message with the same packager and header config,
+        /// but no fields set. Use for building responses instead of mutating the request.
+        /// </summary>
+        public ISOMessage CreateCleanResponse()
+        {
+            return new ISOMessage(Logger, m_isoMesssagePackager);
+        }
+
         /// <summary>
         /// 
         /// </summary>

@@ -330,6 +330,19 @@ namespace ISO8583Net.Packager
 
             if (!this.IsComposite())
             {
+                // Enforce dialect-declared length for FIXED fields to prevent byte misalignment.
+                // Pack writes value.Length bytes but UnPack reads declaredLength bytes —
+                // without this enforcement, short values cause cascading parse errors.
+                if (m_isoFieldDefinition.lengthFormat == ISOFieldLengthFormat.FIXED)
+                {
+                    string original = isoFieldValue;
+                    isoFieldValue = EnforceFixedLength(isoFieldValue, m_isoFieldDefinition.length, m_isoFieldDefinition.contentPadding);
+                    if (!ReferenceEquals(original, isoFieldValue))
+                    {
+                        Logger.LogWarning("Pack F{FieldNumber}: EnforceFixedLength modified value [{Original}]->[{Enforced}] (declaredLen={Len}, padding={Pad})",
+                            m_number, original, isoFieldValue, m_isoFieldDefinition.length, m_isoFieldDefinition.contentPadding);
+                    }
+                }
                 PackContent(isoFieldValue, packedBytes, ref index, m_isoFieldDefinition.contentPadding);
             }
         }
@@ -516,6 +529,30 @@ namespace ISO8583Net.Packager
                 Logger.LogTrace("Content Padding: " + m_isoFieldDefinition.contentPadding);
                 Logger.LogTrace("    Description: " + m_isoFieldDefinition.description);
             }
+        }
+
+        /// <summary>
+        /// Ensures a FIXED-length field value matches the dialect-declared length.
+        /// Pads or truncates according to the specified padding direction.
+        /// </summary>
+        private static string EnforceFixedLength(string value, int declaredLength, ISOFieldPadding padding)
+        {
+            if (value.Length == declaredLength)
+                return value;
+
+            if (value.Length > declaredLength)
+            {
+                // Truncate: for LEFT padding, keep rightmost chars; for RIGHT, keep leftmost
+                return padding == ISOFieldPadding.RIGHT
+                    ? value.Substring(0, declaredLength)
+                    : value.Substring(value.Length - declaredLength);
+            }
+
+            // Pad to declared length: numeric fields (LEFT padding) use '0', ASCII fields (RIGHT) use ' '
+            char padChar = padding == ISOFieldPadding.RIGHT ? ' ' : '0';
+            return padding == ISOFieldPadding.RIGHT
+                ? value.PadRight(declaredLength, padChar)
+                : value.PadLeft(declaredLength, padChar);
         }
     }
 }

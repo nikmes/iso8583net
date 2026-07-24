@@ -20,7 +20,7 @@ namespace ISO8583Net.Header
         /// <summary>Fixed header length in bytes.</summary>
         public const int HeaderLength = 21;
 
-        private const string ProtocolId = "G2B-ISO-1.00";
+        private const string ProtocolId = "ISO8583-1993";
 
         private byte[] _headerData = new byte[HeaderLength];
 
@@ -71,11 +71,11 @@ namespace ISO8583Net.Header
         /// <summary>Not Used / Reserved (positions 20-21). 2 ASCII.</summary>
         public string NotUsed
         {
-            get => Encoding.ASCII.GetString(_headerData, 18, 2);
+            get => Encoding.ASCII.GetString(_headerData, 19, 2);
             set
             {
                 var padded = value.PadRight(2)[..2];
-                Encoding.ASCII.GetBytes(padded, 0, 2, _headerData, 18);
+                Encoding.ASCII.GetBytes(padded, 0, 2, _headerData, 19);
             }
         }
 

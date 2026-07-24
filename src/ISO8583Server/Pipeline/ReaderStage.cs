@@ -1,6 +1,7 @@
 using System;
 using System.Buffers;
 using System.IO;
+using System.Text;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
@@ -95,6 +96,13 @@ internal static class ReaderStage
                     readOk = true;
                     stats.AddBytesReceived(LengthPrefixSize + msgLen);
 
+                    // ── Detailed hex dump (Info level for diagnostics) ──
+                    if (logger.IsEnabled(LogLevel.Information))
+                    {
+                        string hexDump = FormatHexDump(lengthBuf, buf, msgLen, stats.ConnectionNumber);
+                        logger.LogInformation("{HexDump}", hexDump);
+                    }
+
                     var raw = new RawMessage(buf, msgLen, stats.ConnectionNumber, DateTime.UtcNow);
 
                     await output.WriteAsync(raw, ct);
@@ -136,5 +144,68 @@ internal static class ReaderStage
             if (n == 0) throw new EndOfStreamException($"Stream closed after {off}/{count} bytes.");
             off += n;
         }
+    }
+
+    /// <summary>
+    /// Formats a hex dump like the old build:
+    ///   [#1] Received 41 bytes (LI=0x0029)
+    ///   [#1] ── Hex Dump (43 bytes) ──
+    ///   0000  00 29 47 32 42 ...  |·)G2B...|
+    ///           LI = 0x0029 = 41
+    /// </summary>
+    private static string FormatHexDump(byte[] lengthPrefix, byte[] data, int dataLen, int connNum)
+    {
+        int totalLen = LengthPrefixSize + dataLen;
+        var sb = new StringBuilder(4096);
+
+        sb.AppendLine($"[#{connNum}] Received {dataLen} bytes (LI=0x{dataLen:X4})");
+        sb.AppendLine($"[#{connNum}] ── Hex Dump ({totalLen} bytes) ──");
+
+        // Combine LI + data for a single hex dump
+        byte[] combined = new byte[totalLen];
+        Buffer.BlockCopy(lengthPrefix, 0, combined, 0, LengthPrefixSize);
+        Buffer.BlockCopy(data, 0, combined, LengthPrefixSize, dataLen);
+
+        for (int offset = 0; offset < totalLen; offset += 16)
+        {
+            sb.Append($"{offset:X4}  ");
+
+            // Hex bytes
+            for (int j = 0; j < 16; j++)
+            {
+                int pos = offset + j;
+                if (pos < totalLen)
+                    sb.Append($"{combined[pos]:X2} ");
+                else
+                    sb.Append("   ");
+            }
+
+            sb.Append(' ');
+
+            // ASCII representation
+            sb.Append('|');
+            for (int j = 0; j < 16; j++)
+            {
+                int pos = offset + j;
+                if (pos < totalLen)
+                {
+                    byte b = combined[pos];
+                    sb.Append(b >= 32 && b <= 126 ? (char)b : '.');
+                }
+                else
+                {
+                    sb.Append(' ');
+                }
+            }
+            sb.Append('|');
+
+            if (offset + 16 < totalLen)
+                sb.AppendLine();
+        }
+
+        sb.AppendLine();
+        sb.Append($"        LI = 0x{dataLen:X4} = {dataLen}");
+
+        return sb.ToString();
     }
 }

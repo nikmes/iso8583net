@@ -78,12 +78,20 @@ internal static class ParserStage
                     await output.WriteAsync(parsed, ct);
                     circuitBreaker?.RecordSuccess();
 
+                    // Log parsed message content like old build
+                    string mti = ExtractMti(parsed.Message);
+                    if (mti != "???")
+                    {
+                        logger.LogInformation("[#{ConnNum}] ── Parsed Message ──\n{Message}",
+                            raw.ConnectionNumber, parsed.Message.ToString());
+                    }
+
                     // Trace successful parse
                     if (tracer != null)
                     {
-                        string mti = ExtractMti(parsed.Message);
+                        string mti2 = ExtractMti(parsed.Message);
                         int fieldCount = CountFields(parsed.Message);
-                        tracer.OnMessageReceived(mti, parsed.HexDump, fieldCount,
+                        tracer.OnMessageReceived(mti2, parsed.HexDump, fieldCount,
                             raw.ConnectionNumber, stats.RemoteEndpoint);
                     }
                 }

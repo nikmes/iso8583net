@@ -35,6 +35,13 @@ public sealed class DefaultHandler : IMessageHandler
     {
         string? mti = context.Request.GetFieldValue(0);
 
+        if (mti is null)
+        {
+            _logger.LogWarning("DefaultHandler: Skipping header-only / corrupt message (no MTI), conn={ConnNum}",
+                context.ConnectionNumber);
+            return Task.FromResult<ISOMessage?>(null);
+        }
+
         if (mti == "1800")
         {
             // Echo with MTI 1814 + F39="000"
@@ -45,6 +52,16 @@ public sealed class DefaultHandler : IMessageHandler
                 context.ConnectionNumber);
 
             return Task.FromResult<ISOMessage?>(context.Request);
+        }
+
+        // D8 responds with 1810 to server-initiated SignOn (1800)
+        if (mti == "1810")
+        {
+            string? f39 = context.Request.GetFieldValue(39);
+            _logger.LogInformation("DefaultHandler: D8 SignOn response (MTI=1810, F39={F39}), conn={ConnNum}",
+                f39 ?? "?", context.ConnectionNumber);
+            // No further response — 1810 is the response to our 1800
+            return Task.FromResult<ISOMessage?>(null);
         }
 
         // For MTIs handled by specific handlers, this still fires

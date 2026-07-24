@@ -1,0 +1,39 @@
+# docker-compose.simulator.yml
+# Launches ISO8583Server + ISO8583Simulator together for end-to-end testing.
+# The simulator connects to the server via TCP/TLS on port 9443.
+#
+# Usage:
+#   docker compose -f docker-compose.simulator.yml up --build -d
+#   docker compose -f docker-compose.simulator.yml logs -f simulator
+#   docker compose -f docker-compose.simulator.yml down
+
+services:
+  iso8583server:
+    build:
+      context: ../../src/ISO8583Server
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "9443:9443"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 5s
+      retries: 10
+      start_period: 10s
+
+  simulator:
+    build:
+      context: ../..
+      dockerfile: tools/ISO8583Simulator/Dockerfile
+    environment:
+      - Simulator__Host=iso8583server
+      - Simulator__Port=9443
+      - Simulator__TlsEnabled=true
+      - Simulator__TlsAllowUntrusted=true
+      - Simulator__ResponseTimeoutSeconds=30
+      - Simulator__ConnectTimeoutSeconds=10
+    ports:
+      - "5000:8080"
+    depends_on:
+      iso8583server:
+        condition: service_healthy

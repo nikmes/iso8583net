@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Text;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
@@ -38,7 +39,7 @@ internal static class WriterStage
         {
             await foreach (var msg in input.ReadAllAsync(ct))
             {
-                await WriteMessageAsync(stream, msg, stats, ct);
+                await WriteMessageAsync(stream, msg, stats, logger, ct);
             }
         }
         catch (OperationCanceledException) { /* graceful shutdown */ }
@@ -53,7 +54,7 @@ internal static class WriterStage
     }
 
     private static async Task WriteMessageAsync(
-        Stream stream, OutboundMessage msg, PipelineStats stats, CancellationToken ct)
+        Stream stream, OutboundMessage msg, PipelineStats stats, ILogger logger, CancellationToken ct)
     {
         byte[] framed;
         int frameLength;
@@ -73,6 +74,15 @@ internal static class WriterStage
             framed[0] = (byte)(packed.Length >> 8);
             framed[1] = (byte)(packed.Length & 0xFF);
             Array.Copy(packed, 0, framed, LengthPrefixSize, packed.Length);
+
+            // ── Detailed hex dump for outgoing messages ──
+            if (logger.IsEnabled(LogLevel.Information))
+            {
+                int connNum = stats.ConnectionNumber;
+                logger.LogInformation("[#{ConnNum}] Sending {MsgLen} bytes (LI=0x{LI:X4})\n{HexDump}",
+                    connNum, packed.Length, packed.Length,
+                    FormatOutboundHexDump(framed, frameLength, connNum));
+            }
         }
         else
         {
@@ -83,5 +93,46 @@ internal static class WriterStage
         await stream.FlushAsync(ct);
         stats.AddBytesSent(frameLength);
         stats.IncrementMessagesSent();
+    }
+
+    private static string FormatOutboundHexDump(byte[] framed, int frameLength, int connNum)
+    {
+        var sb = new StringBuilder(4096);
+        sb.AppendLine($"[#{connNum}] ── Hex Dump ({frameLength} bytes) ──");
+
+        for (int offset = 0; offset < frameLength; offset += 16)
+        {
+            sb.Append($"{offset:X4}  ");
+
+            for (int j = 0; j < 16; j++)
+            {
+                int pos = offset + j;
+                if (pos < frameLength)
+                    sb.Append($"{framed[pos]:X2} ");
+                else
+                    sb.Append("   ");
+            }
+
+            sb.Append(' ');
+
+            sb.Append('|');
+            for (int j = 0; j < 16; j++)
+            {
+                int pos = offset + j;
+                if (pos < frameLength)
+                {
+                    byte b = framed[pos];
+                    sb.Append(b >= 32 && b <= 126 ? (char)b : '.');
+                }
+                else
+                    sb.Append(' ');
+            }
+            sb.Append('|');
+
+            if (offset + 16 < frameLength)
+                sb.AppendLine();
+        }
+
+        return sb.ToString();
     }
 }
