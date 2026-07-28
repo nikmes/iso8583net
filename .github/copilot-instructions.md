@@ -117,6 +117,22 @@ Two built-in tracers selected by config (`MessageTrace:Provider`):
 
 The default is `NoopMessageTracer` which JIT-eliminates to zero overhead.
 
+### Wire Protocol (D8 G2B)
+
+- Messages are framed with a **2-byte big-endian length prefix** (max payload: 4096 bytes). The length excludes the prefix itself.
+- A length prefix of `0x0000` is a keepalive heartbeat — reader silently discards it.
+- The D8 header is a 21-byte ASCII string: `G2B-ISO-1.00` (12) + source (2) + version (2) + error field (3) + reserved (2).
+- TLS/mTLS is configured via `Iso8583Server:TlsEnabled`, `TlsCertPath`, `TlsKeyPath`, and `TlsCaCertPath`.
+
+### Test Conventions
+
+Tests use **xUnit** with in-memory pipeline simulation — no real sockets needed:
+- Use `NullTestLogger` and `NullTestLogger<T>` (defined in test files) for constructing components without Serilog.
+- Use `PipelineHost` directly from `ISO8583Net.Server.Pipeline` to spin up a full SEDA pipeline against a `DuplexStream` (simulates a bidirectional socket in memory).
+- Construct `HandlerRegistry` manually with handler instances (e.g., `new HandlerRegistry(new[] { new EchoHandler() })`) rather than through DI.
+- For integration tests, construct messages with `ISOMessage`, pack them, wrap in a 2-byte length frame, write to the stream, and verify the framed response.
+- The CI runs on `windows-latest` (.NET 10.0.x), but the deploy target is `linux-x64`.
+
 ### Performance Patterns
 
 - `ISOMessage.PackPooled()` uses `ArrayPool<byte>.Shared` for reduced allocations on hot paths.

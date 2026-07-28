@@ -684,6 +684,20 @@
     },
     {
       "$type": "simple",
+      "number": 8,
+      "name": "Amount, Cardholder Billing Fee",
+      "description": "Fee amount charged to cardholder. 8-digit BCD. ISO 8583:1993, n 8.",
+      "lengthFormat": "FIXED",
+      "lengthLength": 0,
+      "length": 8,
+      "lengthCoding": "BIN",
+      "lengthPadding": "LEFT",
+      "contentFormat": "N",
+      "contentCoding": "BCD",
+      "contentPadding": "LEFT"
+    },
+    {
+      "$type": "simple",
       "number": 10,
       "name": "Conversion Rate, Cardholder Billing",
       "description": "Factor used in conversion from transaction to cardholder billing amount. Leftmost digit = number of decimal places, remaining 7 digits = rate. Must be inserted together with Fields 6 and 51.",
