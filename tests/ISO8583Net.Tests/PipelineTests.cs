@@ -587,6 +587,7 @@ public sealed class PipelineTests
         Assert.Equal("1100", msg.GetFieldValue(0));
         Assert.Equal("7674255188E1A000", msg.GetFieldValue(1));
         Assert.Equal("4633710100000505", msg.GetFieldValue(2));
+        Assert.Equal("000000", msg.GetFieldValue(3));
         Assert.Equal("000000005000", msg.GetFieldValue(4));
         Assert.Equal("000000005000", msg.GetFieldValue(6));
         Assert.Equal("0723144609", msg.GetFieldValue(7));
@@ -594,6 +595,7 @@ public sealed class PipelineTests
         Assert.Equal("563813", msg.GetFieldValue(11));
         Assert.Equal("260723144609", msg.GetFieldValue(12));
         Assert.Equal("2811", msg.GetFieldValue(14));
+        Assert.Equal("428", msg.GetFieldValue(19));
         Assert.Equal("10002068    ", msg.GetFieldValue(22));
         Assert.Equal("100", msg.GetFieldValue(24));
         Assert.Equal("5812", msg.GetFieldValue(26));
@@ -604,9 +606,9 @@ public sealed class PipelineTests
         Assert.Equal("49875068", msg.GetFieldValue(41));
         Assert.Equal("498750000433472", msg.GetFieldValue(42));
         Assert.Equal("FUMINOR033-A. SAHAROVA 20NEW YORK     US", msg.GetFieldValue(43));
-        Assert.NotNull(msg.GetFieldValue(48)); // BER-TLV, verify present
-        Assert.Equal("020", msg.GetFieldValue(49));
-        Assert.Equal("020", msg.GetFieldValue(51));
+        Assert.NotNull(msg.GetFieldValue(48)); // TLV, verify present
+        Assert.Equal("009", msg.GetFieldValue(49));
+        Assert.Equal("809", msg.GetFieldValue(51));
     }
 
     // ── Helpers ──────────────────────────────────────────────────────

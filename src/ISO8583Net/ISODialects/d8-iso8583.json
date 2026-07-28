@@ -537,7 +537,7 @@
       "description": "64-bit primary bitmap. Bit 1=1 indicates secondary bitmap (field 1 extended) is present. Bits 1-64 indicate presence of fields 1-64 respectively.",
       "lengthFormat": "FIXED",
       "lengthLength": 0,
-      "length": 16,
+      "length": 32,
       "lengthCoding": "BIN",
       "lengthPadding": "LEFT",
       "contentFormat": "HD",
@@ -1141,7 +1141,7 @@
       "lengthCoding": "BIN",
       "lengthPadding": "LEFT",
       "contentFormat": "AN",
-      "contentCoding": "BIN",
+      "contentCoding": "TLV",
       "contentPadding": "LEFT"
     },
     {
@@ -1239,7 +1239,7 @@
       "lengthCoding": "BIN",
       "lengthPadding": "LEFT",
       "contentFormat": "AN",
-      "contentCoding": "BIN",
+      "contentCoding": "TLV",
       "contentPadding": "LEFT"
     },
     {
