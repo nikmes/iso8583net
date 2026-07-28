@@ -29,15 +29,6 @@ public sealed class PipelineHost
     private int _sequenceCounter;
     private readonly ILogger _logger;
 
-    private static readonly ILogger NullLoggerInstance = new NullSessionLogger();
-
-    private sealed class NullSessionLogger : ILogger
-    {
-        public IDisposable? BeginScope<TState>(TState state) where TState : notnull => null;
-        public bool IsEnabled(LogLevel logLevel) => false;
-        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter) { }
-    }
-
     /// <summary>
     /// Constructs the host. The packager is set later via <see cref="SetPackager"/>
     /// once the dialect is loaded in <see cref="Iso8583TcpServer.StartAsync"/>.
@@ -125,8 +116,7 @@ public sealed class PipelineHost
         foreach (var pipeline in pipelines)
         {
             var msg = BuildRequest(pipeline.ConnectionNumber, f24Value);
-            var framed = FrameMessage(msg);
-            var outbound = OutboundMessage.FromPreFramed(framed, pipeline.ConnectionNumber);
+            var outbound = OutboundMessage.FromISOMessage(msg, pipeline.ConnectionNumber);
             tasks.Add(pipeline.SendAsync(outbound, ct).AsTask());
         }
 
@@ -149,25 +139,12 @@ public sealed class PipelineHost
     private ISOMessage BuildRequest(int connNum, string f24Value)
     {
         var seq = Interlocked.Increment(ref _sequenceCounter);
-        var msg = new ISOMessage(NullLoggerInstance, _packager!);
+        var msg = new ISOMessage(_logger, _packager!);
         msg.Set(0, "1800");
         msg.Set(7, DateTime.UtcNow.ToString("MMddHHmmss"));
         msg.Set(11, $"{seq:D6}");
         msg.Set(24, f24Value);
         return msg;
-    }
-
-    /// <summary>
-    /// Pack + frame an ISOMessage with 2-byte big-endian length prefix.
-    /// </summary>
-    private static byte[] FrameMessage(ISOMessage msg)
-    {
-        byte[] packed = msg.Pack();
-        byte[] framed = new byte[2 + packed.Length];
-        framed[0] = (byte)(packed.Length >> 8);
-        framed[1] = (byte)(packed.Length & 0xFF);
-        Array.Copy(packed, 0, framed, 2, packed.Length);
-        return framed;
     }
 
     /// <summary>

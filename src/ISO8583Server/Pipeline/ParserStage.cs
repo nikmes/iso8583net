@@ -74,7 +74,7 @@ internal static class ParserStage
             {
                 try
                 {
-                    var parsed = Parse(raw, packager, stats);
+                    var parsed = Parse(raw, packager, stats, logger);
                     await output.WriteAsync(parsed, ct);
                     circuitBreaker?.RecordSuccess();
 
@@ -125,10 +125,8 @@ internal static class ParserStage
     }
 
     private static ParsedMessage Parse(
-        RawMessage raw, ISOMessagePackager packager, PipelineStats stats)
+        RawMessage raw, ISOMessagePackager packager, PipelineStats stats, ILogger logger)
     {
-        // Use a silent logger — parsing shouldn't produce log noise in the hot path
-        var logger = NullParseLogger.Instance;
         var msg = new ISOMessage(logger, packager);
 
         // Copy data to a new array for UnPack (it expects byte[])
@@ -143,17 +141,6 @@ internal static class ParserStage
             hexDump: hexDump,
             remoteEndpoint: stats.RemoteEndpoint,
             parsedAt: DateTime.UtcNow);
-    }
-
-    /// <summary>Silent logger to avoid parse noise in the hot path.</summary>
-    private sealed class NullParseLogger : ILogger
-    {
-        public static readonly NullParseLogger Instance = new();
-
-        public IDisposable? BeginScope<TState>(TState state) where TState : notnull => null;
-        public bool IsEnabled(LogLevel logLevel) => false;
-        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state,
-            Exception? exception, Func<TState, Exception?, string> formatter) { }
     }
 
     /// <summary>Extract MTI from a parsed message (safe — returns "???" on failure).</summary>

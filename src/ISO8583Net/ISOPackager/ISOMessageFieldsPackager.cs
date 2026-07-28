@@ -100,19 +100,34 @@ namespace ISO8583Net.Packager
 
             m_fieldPackagerList[0].Pack(isoFields[0], packedBytes, ref i);
 
-            m_fieldPackagerList[1].Pack(isoFields[1], packedBytes, ref i);
-
+            // Bitmap (field 1) is variable-length based on which bits are set —
+            // write only the bytes actually needed (8/16/24) rather than the
+            // dialect's declared fixed length.
             var bitmap = isoFields[1] as ISOFieldBitmap;
-            Span<int> setFields = stackalloc int[193];
-            int count = bitmap.GetSetFields(setFields);
-
-            for (int k = 0; k < count; k++)
+            if (bitmap != null)
             {
-                int fieldNumber = setFields[k];
-                // Skip bitmap indicator bits (fields 65 and 129)
-                if (fieldNumber >= 2 && fieldNumber != BitmapBoundaries.SecondaryBitmapFlag && fieldNumber != BitmapBoundaries.TertiaryBitmapFlag)
+                byte[] bitmapBytes = bitmap.GetByteArray();
+                Buffer.BlockCopy(bitmapBytes, 0, packedBytes, i, bitmapBytes.Length);
+                i += bitmapBytes.Length;
+            }
+            else
+            {
+                m_fieldPackagerList[1].Pack(isoFields[1], packedBytes, ref i);
+            }
+
+            if (bitmap != null)
+            {
+                Span<int> setFields = stackalloc int[193];
+                int count = bitmap.GetSetFields(setFields);
+
+                for (int k = 0; k < count; k++)
                 {
-                    m_fieldPackagerList[fieldNumber].Pack(isoFields[fieldNumber], packedBytes, ref i);
+                    int fieldNumber = setFields[k];
+                    // Skip bitmap indicator bits (fields 65 and 129)
+                    if (fieldNumber >= 2 && fieldNumber != BitmapBoundaries.SecondaryBitmapFlag && fieldNumber != BitmapBoundaries.TertiaryBitmapFlag)
+                    {
+                        m_fieldPackagerList[fieldNumber].Pack(isoFields[fieldNumber], packedBytes, ref i);
+                    }
                 }
             }
         }

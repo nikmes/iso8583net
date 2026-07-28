@@ -27,7 +27,7 @@ internal static class Program
                 rollingInterval: RollingInterval.Day,
                 retainedFileCountLimit: 7,
                 outputTemplate: "{Timestamp:HH:mm:ss.fff} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
-            .MinimumLevel.Information()
+            .MinimumLevel.Debug()
             .CreateLogger();
 
         try

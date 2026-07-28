@@ -79,9 +79,10 @@ internal static class WriterStage
             if (logger.IsEnabled(LogLevel.Information))
             {
                 int connNum = stats.ConnectionNumber;
-                logger.LogInformation("[#{ConnNum}] Sending {MsgLen} bytes (LI=0x{LI:X4})\n{HexDump}",
+                logger.LogInformation("[#{ConnNum}] Sending {MsgLen} bytes (LI=0x{LI:X4})\n{HexDump}\n{FieldBreakdown}",
                     connNum, packed.Length, packed.Length,
-                    FormatOutboundHexDump(framed, frameLength, connNum));
+                    FormatOutboundHexDump(framed, frameLength, connNum),
+                    msg.Message.ToString());
             }
         }
         else
