@@ -54,10 +54,10 @@ builder.Services.AddSingleton<IMessageHandler, MyHandler>();
 
 **Base classes (in `ISO8583Net.Server.Pipeline.Handlers`):**
 
-- **`BaseRequestHandler`** — For request/response pairs (e.g., 1100→1110). Override `RequestMTI`, `ResponseMTI`, and `ProcessAsync()`. Automatically copies standard response fields (F2, F3, F4, F7, F11, F12, F22, F32, F37, F41, F42, F49) and sets F39 action code.
-- **`BaseAdviceHandler`** — For fire-and-forget advices (e.g., 1120→1130). Override `AdviceMTI`, `ResponseMTI`, and `OnAcknowledgedAsync()`.
-- **`NetworkManagementHandler`** — For 0800 (Echo/SignOn/SignOff). Override `HandleLogonAsync`, `HandleEchoAsync`, etc.
-- **`DefaultHandler`** — Catch-all (MTI `*`). Auto-echoes 1800 messages; passes through others.
+- **`BaseRequestHandler`** — Request/response pairs (e.g., 1100→1110). Override `RequestMTI`, `ResponseMTI`, and `ProcessAsync(MessageContext, CancellationToken)` returning `Task<ProcessResult>`. Use `ProcessResult.Approved()`, `.Declined()`, or `.FormatError()`. `BuildResponse()` calls `request.CreateCleanResponse()` — copies F2/F3/F4/F7/F11/F12/F22/F32/F37/F41/F42/F49, sets F39 action code, optional F38 approval code.
+- **`BaseAdviceHandler`** — Fire-and-forget advices (e.g., 1120→1130). Override `AdviceMTI`, `ResponseMTI`, `OnAcknowledgedAsync()`. **Mutates request in-place** (sets response MTI + F39="400"; no clean copy). Override `OnAcknowledgedAsync` for post-processing.
+- **`NetworkManagementHandler`** — MTI 1804→1814. Dispatches by F24: `HandleLogonAsync`(801), `HandleLogoffAsync`(802), `HandleKeyChangeAsync`(811), `HandleEchoAsync`(831).
+- **`DefaultHandler`** — Catch-all (MTI `*`). Auto-echoes 1800→1814; passes through unknowns.
 
 **Handlers do NOT touch sockets or framing.** They receive an `ISOMessage` via `MessageContext` and return an `ISOMessage` response (or null to skip). The pipeline handles all I/O.
 
@@ -71,6 +71,13 @@ Field layouts are defined in JSON files with `$type` discriminators:
 Built-in dialects: `visa.json` (VISA BASE I, embedded resource, the default), `d8-iso8583.json` (D8 G2B ISO 8583:1993).
 
 Load a custom dialect: `new ISOMessagePackager(logger, "path/to/dialect.json")`
+
+### REST API
+
+The ASP.NET Core service exposes:
+- `GET /api/iso8583/status` — Server status, pipeline stats per connection, config
+- `GET /health` — Health check endpoint (includes pipeline health check)
+- `GET /scalar/v1` — OpenAPI/Scalar API reference
 
 ## Key Conventions
 
@@ -102,6 +109,9 @@ Service project:
 - **No ordering guarantee** between messages on the same connection — each ISO 8583 message is self-contained (identified by STAN F11 + date F7). If ordering is needed, make the handler single-threaded.
 - Handlers accept `ILogger<T>?` via constructor injection (nullable, defaults to `NullLogger.Instance`).
 - Use `ISOMessage.Set(fieldNumber, stringValue)` to set fields and `ISOMessage.GetFieldValue(fieldNumber)` to read them. All values are strings.
+- **BaseRequestHandler pattern**: Override `ProcessAsync()` to return `ProcessResult.Approved()` (F39="000"), `.Declined()` (F39="100"), or `.FormatError()` (F39="902"). The framework calls `BuildResponse()` which creates a **clean response** via `request.CreateCleanResponse()` then copies only standard fields — not a full clone.
+- **BaseAdviceHandler pattern**: `BuildAcknowledgement()` mutates the request ISOMessage **in-place** — sets response MTI and F39="400" on the same object. No clean copy. Override `OnAcknowledgedAsync` for side effects.
+- Override `BuildResponse()` / `BuildAcknowledgement()` if you need to include additional fields in the response beyond the defaults.
 
 ### Configuration
 
@@ -131,6 +141,7 @@ Tests use **xUnit** with in-memory pipeline simulation — no real sockets neede
 - Use `PipelineHost` directly from `ISO8583Net.Server.Pipeline` to spin up a full SEDA pipeline against a `DuplexStream` (simulates a bidirectional socket in memory).
 - Construct `HandlerRegistry` manually with handler instances (e.g., `new HandlerRegistry(new[] { new EchoHandler() })`) rather than through DI.
 - For integration tests, construct messages with `ISOMessage`, pack them, wrap in a 2-byte length frame, write to the stream, and verify the framed response.
+- Use `pipeline.Stats.MessagesSent` to verify response counts in async integration tests.
 - The CI runs on `windows-latest` (.NET 10.0.x), but the deploy target is `linux-x64`.
 
 ### Performance Patterns
@@ -138,3 +149,10 @@ Tests use **xUnit** with in-memory pipeline simulation — no real sockets neede
 - `ISOMessage.PackPooled()` uses `ArrayPool<byte>.Shared` for reduced allocations on hot paths.
 - `ISOUtils` contains high-speed span-based converters (hex, BCD, EBCDIC) — use these, not manual conversion.
 - Benchmarks use BenchmarkDotNet in `benchmarks/ISO8583Net.Benchmarks/`.
+
+### Deployment
+
+```bash
+./deploy/deploy.sh <user@server>
+```
+Publishes self-contained linux-x64, rsyncs to remote, installs systemd unit.
