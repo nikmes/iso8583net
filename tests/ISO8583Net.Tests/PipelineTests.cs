@@ -611,6 +611,37 @@ public sealed class PipelineTests
         Assert.Equal("809", msg.GetFieldValue(51));
     }
 
+    /// <summary>
+    /// Verifies that Field 48 (Fixed TLV Format 2) is broken down into tags
+    /// by the FixedTlvInterpreter wired into the D8 dialect.
+    /// </summary>
+    [Fact]
+    public void FixedTlvInterpreter_D8Field48_BreaksDownTagsInToString()
+    {
+        string dialectPath = Path.GetFullPath(Path.Combine(
+            AppDomain.CurrentDomain.BaseDirectory,
+            "..", "..", "..", "..", "..",
+            "src", "ISO8583Net", "ISODialects", "d8-iso8583.json"));
+
+        var packager = new ISOMessagePackager(new NullTestLogger(), dialectPath);
+        var msg = new ISOMessage(new NullTestLogger(), packager);
+        msg.Set(0, "1100");
+        msg.Set(48, "C00703303030C0090100C0100108C1031D3030303220202020202020202020202020202020202020202020202030C20709202020202020202020");
+
+        string f48Output = msg.GetField(48).ToString();
+
+        Assert.Contains("[Tag C007]", f48Output);
+        Assert.Contains("ICC Additional POS information", f48Output);
+        Assert.Contains("[Tag C009]", f48Output);
+        Assert.Contains("Terminal Type", f48Output);
+        Assert.Contains("[Tag C010]", f48Output);
+        Assert.Contains("Point of Service Condition Code", f48Output);
+        Assert.Contains("[Tag C103]", f48Output);
+        Assert.Contains("Visa Additional Data - VIP Format Private-Use Field 1", f48Output);
+        Assert.Contains("[Tag C207]", f48Output);
+        Assert.Contains("VISA V.me data", f48Output);
+    }
+
     // ── Helpers ──────────────────────────────────────────────────────
 
     private sealed class CountingHandler : IMessageHandler

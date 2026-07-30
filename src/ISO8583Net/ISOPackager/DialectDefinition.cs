@@ -112,9 +112,30 @@ namespace ISO8583Net.Packager
 
         [JsonPropertyName("indexes")]
         public List<InterpreterIndexDto> Indexes { get; set; } = new();
+
+        /// <summary>Tag width in bytes for Fixed TLV interpreters.</summary>
+        public int TagWidthBytes { get; set; }
+
+        /// <summary>Length width in bytes for Fixed TLV interpreters.</summary>
+        public int LengthWidthBytes { get; set; }
+
+        /// <summary>Tag descriptions for Fixed TLV interpreters.</summary>
+        [JsonPropertyName("tags")]
+        public List<FixedTlvTagDto> Tags { get; set; } = new();
     }
 
-    public enum InterpreterType { ISOIndexedValueInterpreter }
+    public enum InterpreterType
+    {
+        ISOIndexedValueInterpreter,
+        FixedTlv
+    }
+
+    /// <summary>Tag description for Fixed TLV interpreters.</summary>
+    public class FixedTlvTagDto
+    {
+        public string Tag { get; set; } = "";
+        public string Description { get; set; } = "";
+    }
 
     public class InterpreterIndexDto
     {
@@ -294,16 +315,29 @@ namespace ISO8583Net.Packager
 
         private static ISOInterpreter BuildInterpreter(ILogger logger, InterpreterDto dto)
         {
-            var interp = new ISOIndexedValueInterpreter(logger);
-            foreach (var idx in dto.Indexes)
+            switch (dto.Type)
             {
-                interp.AddIndexLength(idx.Index, idx.Length);
-                var dic = new Dictionary<string, string> { { "", idx.Description } };
-                foreach (var v in idx.Values)
-                    dic[v.Value] = v.Description;
-                interp.AddIndexValueDescriptionDic(idx.Index, dic);
+                case InterpreterType.ISOIndexedValueInterpreter:
+                    var interp = new ISOIndexedValueInterpreter(logger);
+                    foreach (var idx in dto.Indexes)
+                    {
+                        interp.AddIndexLength(idx.Index, idx.Length);
+                        var dic = new Dictionary<string, string> { { "", idx.Description } };
+                        foreach (var v in idx.Values)
+                            dic[v.Value] = v.Description;
+                        interp.AddIndexValueDescriptionDic(idx.Index, dic);
+                    }
+                    return interp;
+
+                case InterpreterType.FixedTlv:
+                    var tagDescriptions = new Dictionary<string, string>();
+                    foreach (var tag in dto.Tags)
+                        tagDescriptions[tag.Tag] = tag.Description;
+                    return new FixedTlvInterpreter(logger, dto.TagWidthBytes, dto.LengthWidthBytes, tagDescriptions);
+
+                default:
+                    throw new NotSupportedException($"Interpreter type {dto.Type} is not supported.");
             }
-            return interp;
         }
 
         private static void SetEncodingDelegates(ISOPackager packager)
