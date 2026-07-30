@@ -19,12 +19,12 @@ A high-performance .NET library for building and parsing **ISO 8583** financial 
 | **Variable & Fixed Length Fields** | Full support for fixed-length and variable-length fields with configurable length indicators |
 | **Bitmap Handling** | Automatic primary, secondary, and tertiary bitmap management (fields 1–192) |
 | **Bitmap Sub-Fields** | Configurable bitmap-driven sub-fields with their own bitmaps (e.g. VISA F62, F63, F126) |
-| **BER-TLV Parsing** | Built-in BER-TLV parser for EMV data (field 55) with recursive construction support |
+| **BER-TLV Parsing & Logging** | Built-in BER-TLV parser for EMV data (field 55) with recursive construction support and human-readable tag descriptions |
 | **Message Headers** | Pre-built VISA header (22 bytes) and D8 ISO 8583:1993 header (21 bytes ASCII). Extensible via custom header packagers. |
-| **Field Interpreters** | Indexed-value interpreters for decoding field sub-components with human-readable labels |
+| **Field Interpreters** | Indexed-value, Fixed-TLV, and BER-TLV interpreters for decoding field sub-components with human-readable labels |
 | **SEDA Pipeline** | Five-stage async pipeline (Reader → Parser → Dispatcher → Handlers → Writer) with bounded channels, backpressure control, and circuit breaking |
 | **Pluggable Handlers** | `IMessageHandler` interface with built-in `BaseRequestHandler`, `BaseAdviceHandler`, and `NetworkManagementHandler` base classes. Route by MTI. |
-| **Message Tracing** | `IMessageTracer` interface hooks into the pipeline. `FileMessageTracer` logs every raw, parsed, and responded message via Serilog. |
+| **Message Tracing** | `IMessageTracer` interface hooks into the pipeline. `FileMessageTracer` logs every raw, parsed, and responded message via Serilog; optional `EfMessageTracer` persists traces to PostgreSQL. |
 | **REST API** | Built-in `/status` and `/health` endpoints exposing pipeline metrics, channel backpressure, handler stats, and overall health |
 | **TCP Server** | Async TCP server with TLS/mTLS, periodic SignOn/Echo/SignOff, connection lifecycle management, and graceful shutdown |
 | **High Performance** | Span-based bitmap enumeration, delegate dispatch for encodings, `ArrayPool<byte>` support (`PackPooled()`), zero-alloc code paths |
@@ -45,7 +45,15 @@ dotnet add package ISO8583Net --version 2.0.0
 ```bash
 git clone https://github.com/nikmes/iso8583net.git
 cd iso8583net
-dotnet build
+
+# On Windows (full solution)
+dotnet build iso8583net.sln
+
+# On Linux/macOS the WinForms samples do not build; build the core, server, service, and tests directly
+dotnet build src/ISO8583Net/ISO8583Net.csproj
+dotnet build src/ISO8583Server/ISO8583Server.csproj
+dotnet build tools/ISO8583Service/ISO8583Service.csproj
+dotnet test tests/ISO8583Net.Tests/ISO8583Tests.csproj
 ```
 
 ---
@@ -126,7 +134,10 @@ cd tools/ISO8583Service
 dotnet run
 ```
 
-This starts the ASP.NET Core hosted service on port 8583 (configurable in `appsettings.json`) with the D8 G2B dialect, all handlers registered, Serilog tracing, REST `/status` and `/health` endpoints, and Scalar API docs at `/scalar/v1`.
+This starts the ASP.NET Core hosted service with the D8 G2B dialect. By default:
+- ISO 8583 TCP server listens on port **9443** (configurable in `appsettings.json`).
+- REST API listens on port **5000** with endpoints `/api/iso8583/status`, `/api/iso8583/signon`, `/api/iso8583/signoff`, `/api/iso8583/echo`, `/api/iso8583/config`, plus `/health`.
+- Scalar API docs are available at `/scalar/v1` and the OpenAPI spec at `/openapi/v1.json`.
 
 ---
 
@@ -140,7 +151,7 @@ iso8583net/
 │   │   ├── ISOPackager/         # JSON dialect loader, field packagers
 │   │   ├── ISOField/            # Field types (flat, bitmap, sub-fields, BER-TLV)
 │   │   ├── ISOHeader/           # VISA & D8 message headers
-│   │   ├── ISOInterpreter/      # Indexed-value field interpreters
+│   │   ├── ISOInterpreter/      # Indexed-value, Fixed-TLV, and BER-TLV interpreters
 │   │   ├── ISOEnums/            # Encoding, padding, content type enums
 │   │   ├── ISOUtils/            # High-speed hex, BCD, EBCDIC converters
 │   │   └── ISODialects/         # Embedded dialect JSON files
@@ -148,7 +159,7 @@ iso8583net/
 │       └── Pipeline/
 │           ├── ReaderStage.cs       # Socket → RawMessage channel
 │           ├── ParserStage.cs       # RawMessage → ParsedMessage (ISOMessage.UnPack)
-│           ├── DispatcherStage.cs   # Route by MTI → handlers, aggregate responses
+│           ├── DispatcherStage.cs   # Route by MTI → handlers
 │           ├── WriterStage.cs       # OutboundMessage → socket
 │           ├── ConnectionPipeline.cs  # Per-connection orchestrator
 │           ├── PipelineHost.cs      # Accept loop, DI, lifecycle
@@ -157,25 +168,28 @@ iso8583net/
 │           ├── Handlers/            # IMessageHandler + base classes
 │           └── Messages/            # RawMessage, ParsedMessage, OutboundMessage, MessageContext, IMessageTracer
 ├── tests/
-│   └── ISO8583Net.Tests/        # xUnit suite (22 tests: pipeline, bitmaps, utilities, integration)
+│   └── ISO8583Net.Tests/        # xUnit suite (25 tests: pipeline, bitmaps, utilities, integration, dialect interpreters)
 ├── samples/
 │   ├── SimpleTest/              # Console demo
-│   ├── TestClient/              # WinForms GUI test client
-│   └── TestServer/              # WinForms GUI test server
+│   ├── HexParser/               # Hex parser CLI demo (Windows/WinForms)
+│   ├── TestClient/              # WinForms GUI test client (Windows only)
+│   └── TestServer/              # WinForms GUI test server (Windows only)
 ├── benchmarks/
-│   └── ISO8583Net.Benchmarks/   # BenchmarkDotNet (32 benchmarks)
+│   └── ISO8583Net.Benchmarks/   # BenchmarkDotNet suite
 ├── tools/
-│   └── ISO8583Service/          # ASP.NET Core hosted service (handlers, tracing, REST API)
-│       ├── Handlers/            # Concrete handlers: Authorization, Financial, Reversal (+advice variants)
-│       ├── Tracing/             # FileMessageTracer (Serilog)
-│       ├── HealthChecks/        # Custom health checks
-│       └── Controllers/         # REST API controllers
+│   ├── ISO8583Service/          # ASP.NET Core hosted service
+│   │   ├── Handlers/            # Concrete D8 handlers
+│   │   ├── Tracing/             # FileMessageTracer and optional EF Core PostgreSQL tracer
+│   │   ├── HealthChecks/        # Pipeline health checks
+│   │   ├── Controllers/         # REST API controllers
+│   │   ├── arch-design.md       # SEDA architecture proposal
+│   │   └── impl-sprints.md      # Implementation sprint tracking
+│   └── ISO8583Simulator/        # Standalone client simulator
+│       ├── Scenarios/           # Built-in test scenarios
+│       └── docker-compose.simulator.yml
 ├── docs/
-│   ├── handler-development-guide.md   # Complete handler developer guide (Mermaid diagrams)
+│   ├── handler-development-guide.md   # Complete handler developer guide
 │   └── specs/                         # Dialect technical specifications
-├── tools/ISO8583Service/
-│   ├── arch-design.md                 # SEDA architecture proposal
-│   └── impl-sprints.md                # Implementation sprint tracking
 └── deploy/                      # Linux deployment scripts & systemd unit
 ```
 
@@ -186,7 +200,7 @@ iso8583net/
 | Dialect | File | Description |
 |---------|------|-------------|
 | **VISA BASE I** | `src/ISO8583Net/ISODialects/visa.json` | VISA financial message format, 22-byte header, up to 192 fields. Embedded default. |
-| **D8 G2B ISO 8583:1993** | `src/ISO8583Net/ISODialects/d8-iso8583.json` | D8 G2B Payment Platform, 21-byte ASCII header, Fixed TLV in F48, BER-TLV in F55. |
+| **D8 G2B ISO 8583:1993** | `src/ISO8583Net/ISODialects/d8-iso8583.json` | D8 G2B Payment Platform, 21-byte ASCII header, Fixed-TLV interpreter in F48, BER-TLV interpreter in F55. |
 
 ### Writing a Custom Dialect
 
@@ -212,6 +226,49 @@ See the [VISA dialect](src/ISO8583Net/ISODialects/visa.json) and [D8 dialect](sr
 | `EBCDIC` | IBM EBCDIC encoding | Legacy mainframe systems |
 | `BIN` | Raw binary | MAC, bitmap, headers |
 | `Z` | Track 2 encoding | Magnetic stripe data |
+
+---
+
+## Structured Field Logging
+
+The D8 dialect includes interpreters that break complex TLV fields into human-readable tag listings when you call `ISOMessage.ToString()` or use the built-in `FileMessageTracer`.
+
+### Field 48 — Fixed TLV
+
+```csharp
+msg.Set(48, "C00703303030C0090100C0100108");
+Console.WriteLine(msg.GetField(48));
+```
+
+```
+F[048] [C00703303030C0090100C0100108]
+       [Tag C007] [ICC Additional POS information] [Len 3]
+            Hex:  303030
+            ASCII: 000
+       [Tag C009] [Terminal Type] [Len 1]
+            Hex:  00
+       [Tag C010] [Point of Service Condition Code] [Len 1]
+            Hex:  08
+```
+
+### Field 55 — BER-TLV (EMV)
+
+```csharp
+msg.Set(55, "5F2A0209789F02060000000100009F34031E0300");
+Console.WriteLine(msg.GetField(55));
+```
+
+```
+F[055] [5F2A0209789F02060000000100009F34031E0300]
+       [Tag 5F2A] [Transaction Currency Code] [Len 2]
+            Hex:  0978
+       [Tag 9F02] [Amount, Authorised] [Len 6]
+            Hex:  000000010000
+       [Tag 9F34] [Cardholder Verification Method (CVM) Results] [Len 3]
+            Hex:  1E0300
+```
+
+Tag descriptions are loaded from the dialect JSON; add any extra tags you need to the `interpreter.tags` array for field 48 or 55.
 
 ---
 
@@ -245,24 +302,28 @@ Implement business logic by extending base handler classes. The pipeline handles
 classDiagram
     class IMessageHandler {
         &lt;&lt;interface&gt;&gt;
-        +SupportedMTIs : HashSet&lt;string&gt;
-        +HandleAsync(MessageContext) Task
+        +SupportedMTIs : IReadOnlySet&lt;string&gt;
+        +HandleAsync(MessageContext, CancellationToken) Task
     }
     class BaseRequestHandler {
-        +HandleAsync(MessageContext) Task
-        +ProcessRequestAsync(ISOMessage, ISOMessage, MessageContext) Task*
+        +RequestMTI : string
+        +ResponseMTI : string
+        +HandleAsync(MessageContext, CancellationToken) Task
+        #ProcessAsync(MessageContext, CancellationToken) ProcessResult*
     }
     class BaseAdviceHandler {
-        +HandleAsync(MessageContext) Task
-        +ProcessAdviceAsync(ISOMessage, MessageContext) Task*
+        +AdviceMTI : string
+        +ResponseMTI : string
+        +HandleAsync(MessageContext, CancellationToken) Task
+        #OnAcknowledgedAsync(MessageContext, CancellationToken) Task*
     }
     class NetworkManagementHandler {
-        +SupportedMTIs : 0800, 0810
-        +HandleAsync(MessageContext) Task
+        +SupportedMTIs : 1804
+        +HandleAsync(MessageContext, CancellationToken) Task
     }
     class DefaultHandler {
         +SupportedMTIs : * (catch-all)
-        +HandleAsync(MessageContext) Task
+        +HandleAsync(MessageContext, CancellationToken) Task
     }
 
     IMessageHandler <|-- BaseRequestHandler
@@ -276,16 +337,16 @@ classDiagram
 ```csharp
 public class AuthorizationHandler : BaseRequestHandler
 {
-    public AuthorizationHandler(ILogger<AuthorizationHandler> logger) : base(logger) { }
+    public AuthorizationHandler(ILogger<AuthorizationHandler>? logger = null) : base(logger) { }
 
-    public override HashSet<string> SupportedMTIs => new() { "0100" };
+    public override string RequestMTI => "1100";
+    public override string ResponseMTI => "1110";
 
-    protected override Task ProcessRequestAsync(
-        ISOMessage request, ISOMessage response, MessageContext context)
+    protected override Task<ProcessResult> ProcessAsync(
+        MessageContext context, CancellationToken ct)
     {
         // Your business logic here — check funds, validate card, etc.
-        response.Set(39, "00"); // Approval
-        return Task.CompletedTask;
+        return Task.FromResult(ProcessResult.Approved("AUTH01"));
     }
 }
 ```
@@ -294,26 +355,29 @@ public class AuthorizationHandler : BaseRequestHandler
 
 ```csharp
 builder.Services.AddSingleton<IMessageHandler, AuthorizationHandler>();
+builder.Services.AddSingleton<IMessageHandler, AuthorizationAdviceHandler>();
 builder.Services.AddSingleton<IMessageHandler, FinancialHandler>();
+builder.Services.AddSingleton<IMessageHandler, FinancialAdviceHandler>();
 builder.Services.AddSingleton<IMessageHandler, ReversalHandler>();
-// ... etc.
+builder.Services.AddSingleton<IMessageHandler, ReversalAdviceHandler>();
 
-// Message tracing
-builder.Services.AddSingleton<IMessageTracer, FileMessageTracer>();
+// Catch-all and network management are also registered by default:
+builder.Services.AddSingleton<IMessageHandler, DefaultHandler>();
+builder.Services.AddSingleton<IMessageHandler, NetworkManagementHandler>();
 ```
 
 The active D8 G2B handlers are:
 
 | Handler | MTIs | Base Class | Direction |
 |---------|------|------------|-----------|
-| `AuthorizationHandler` | 0100 | `BaseRequestHandler` | Request → Response (0110) |
-| `AuthorizationAdviceHandler` | 0120 | `BaseAdviceHandler` | Advice (fire-and-forget) |
-| `FinancialHandler` | 0200 | `BaseRequestHandler` | Request → Response (0210) |
-| `FinancialAdviceHandler` | 0220 | `BaseAdviceHandler` | Advice (fire-and-forget) |
-| `ReversalHandler` | 0400 | `BaseRequestHandler` | Request → Response (0410) |
-| `ReversalAdviceHandler` | 0420 | `BaseAdviceHandler` | Advice (fire-and-forget) |
-| `NetworkManagementHandler` | 0800 | `IMessageHandler` | Echo/SignOn/SignOff |
-| `DefaultHandler` | * | `IMessageHandler` | Catch-all (auto-approve) |
+| `AuthorizationHandler` | 1100 | `BaseRequestHandler` | Request → Response (1110) |
+| `AuthorizationAdviceHandler` | 1120 | `BaseAdviceHandler` | Advice → Ack (1130) |
+| `FinancialHandler` | 1200 | `BaseRequestHandler` | Request → Response (1210) |
+| `FinancialAdviceHandler` | 1220 | `BaseAdviceHandler` | Advice → Ack (1230) |
+| `ReversalHandler` | 1400 | `BaseRequestHandler` | Request → Response (1410) |
+| `ReversalAdviceHandler` | 1420 | `BaseAdviceHandler` | Advice → Ack (1430) |
+| `NetworkManagementHandler` | 1804 | `IMessageHandler` | Logon/Logoff/KeyChange/Echo → 1814 |
+| `DefaultHandler` | * | `IMessageHandler` | Catch-all (1800→1814 echo, passthrough) |
 
 **Full developer guide:** [docs/handler-development-guide.md](docs/handler-development-guide.md)
 
@@ -321,7 +385,7 @@ The active D8 G2B handlers are:
 
 ## Message Tracing
 
-Every message flowing through the pipeline can be traced via the `IMessageTracer` interface. The built-in `FileMessageTracer` logs structured events using Serilog:
+Every message flowing through the pipeline can be traced via the `IMessageTracer` interface. `ISO8583Service` registers `FileMessageTracer` by default; it logs structured events via Serilog:
 
 ```
 RECV | MTI=1100 | Conn=1 | Fields=17 | ...
@@ -337,11 +401,12 @@ SEND | MTI=1110 | Conn=1 | Fields=5 | Elapsed=1.23ms | ...
 | Handler error | `OnHandlerError` | Exception in business logic |
 
 ```csharp
-// Zero-overhead default (JIT-eliminated)
-public class NoopMessageTracer : IMessageTracer { }
-
-// Serilog-based (registered in DI)
+// Default in ISO8583Service — zero configuration
 builder.Services.AddSingleton<IMessageTracer, FileMessageTracer>();
+
+// Optional: persist traces to PostgreSQL
+// "MessageTrace:Enabled"=true and "MessageTrace:Provider"="PostgreSQL" in appsettings.json
+builder.Services.AddSingleton<IMessageTracer, EfMessageTracer>();
 ```
 
 ---
@@ -392,12 +457,14 @@ Full reports and charts: [benchmarks/ISO8583Net.Benchmarks/BenchmarkDotNet.Artif
 - 📘 [Handler Development Guide](docs/handler-development-guide.md) — comprehensive guide with Mermaid diagrams
 - 🏗️ [Architecture Design](tools/ISO8583Service/arch-design.md) — SEDA pipeline proposal and rationale
 - 📋 [Implementation Sprints](tools/ISO8583Service/impl-sprints.md) — sprint-by-sprint build log
+- 🚀 [ISO8583Service README](tools/ISO8583Service/README.md) — service setup, REST API, and configuration
+- 🎮 [ISO8583Simulator README](tools/ISO8583Simulator/README.md) — simulator scenarios and usage
 
 ---
 
 ## License
 
-This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the **MIT License**.
 
 ---
 
