@@ -642,6 +642,44 @@ public sealed class PipelineTests
         Assert.Contains("VISA V.me data", f48Output);
     }
 
+    /// <summary>
+    /// Verifies that Field 55 (BER-TLV ICC data) is broken down into tags
+    /// by the BerTlvInterpreter wired into the D8 dialect.
+    /// </summary>
+    [Fact]
+    public void BerTlvInterpreter_D8Field55_BreaksDownTagsInToString()
+    {
+        string dialectPath = Path.GetFullPath(Path.Combine(
+            AppDomain.CurrentDomain.BaseDirectory,
+            "..", "..", "..", "..", "..",
+            "src", "ISO8583Net", "ISODialects", "d8-iso8583.json"));
+
+        var packager = new ISOMessagePackager(new NullTestLogger(), dialectPath);
+        var msg = new ISOMessage(new NullTestLogger(), packager);
+        msg.Set(0, "1100");
+
+        // Sample EMV BER-TLV data:
+        //   5F2A 02 0978          - Transaction Currency Code
+        //   9F02 06 000000010000  - Amount, Authorised
+        //   9F1A 02 0840          - Terminal Country Code
+        //   9F34 03 1E0300        - CVM Results
+        //   9F37 04 12345678      - Unpredictable Number
+        msg.Set(55, "5F2A0209789F02060000000100009F1A0208409F34031E03009F370412345678");
+
+        string f55Output = msg.GetField(55).ToString();
+
+        Assert.Contains("[Tag 5F2A]", f55Output);
+        Assert.Contains("Transaction Currency Code", f55Output);
+        Assert.Contains("[Tag 9F02]", f55Output);
+        Assert.Contains("Amount, Authorised", f55Output);
+        Assert.Contains("[Tag 9F1A]", f55Output);
+        Assert.Contains("Terminal Country Code", f55Output);
+        Assert.Contains("[Tag 9F34]", f55Output);
+        Assert.Contains("Cardholder Verification Method (CVM) Results", f55Output);
+        Assert.Contains("[Tag 9F37]", f55Output);
+        Assert.Contains("Unpredictable Number", f55Output);
+    }
+
     // ── Helpers ──────────────────────────────────────────────────────
 
     private sealed class CountingHandler : IMessageHandler

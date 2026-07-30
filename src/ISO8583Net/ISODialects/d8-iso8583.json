@@ -1318,7 +1318,37 @@
       "lengthPadding": "LEFT",
       "contentFormat": "AN",
       "contentCoding": "TLV",
-      "contentPadding": "LEFT"
+      "contentPadding": "LEFT",
+      "interpreter": {
+        "type": "BerTlv",
+        "tags": [
+          { "tag": "5F2A", "description": "Transaction Currency Code" },
+          { "tag": "71", "description": "Issuer Script Template 1" },
+          { "tag": "72", "description": "Issuer Script Template 2" },
+          { "tag": "82", "description": "Application Interchange Profile" },
+          { "tag": "84", "description": "Dedicated File Name" },
+          { "tag": "91", "description": "Issuer Authentication Data" },
+          { "tag": "95", "description": "Terminal Verification Results (TVR)" },
+          { "tag": "9A", "description": "Transaction Date" },
+          { "tag": "9C", "description": "Transaction Type" },
+          { "tag": "9F02", "description": "Amount, Authorised" },
+          { "tag": "9F03", "description": "Amount, Other" },
+          { "tag": "9F09", "description": "Application Version Number" },
+          { "tag": "9F10", "description": "Issuer Application Data" },
+          { "tag": "9F1A", "description": "Terminal Country Code" },
+          { "tag": "9F1E", "description": "Interface Device (IFD) Serial Number" },
+          { "tag": "9F26", "description": "Application Cryptogram" },
+          { "tag": "9F27", "description": "Cryptogram Information Data" },
+          { "tag": "9F33", "description": "Terminal Capability" },
+          { "tag": "9F34", "description": "Cardholder Verification Method (CVM) Results" },
+          { "tag": "9F35", "description": "Terminal Type" },
+          { "tag": "9F36", "description": "Application Transaction Counter (ATC)" },
+          { "tag": "9F37", "description": "Unpredictable Number" },
+          { "tag": "9F41", "description": "Transaction Sequence Counter" },
+          { "tag": "9F53", "description": "Transaction Category Code" },
+          { "tag": "9F6E", "description": "Form Factor Indicator (VISA) / PayPass Third Party Data (MasterCard)" }
+        ]
+      }
     },
     {
       "$type": "simple",

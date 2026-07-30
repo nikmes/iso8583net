@@ -119,19 +119,20 @@ namespace ISO8583Net.Packager
         /// <summary>Length width in bytes for Fixed TLV interpreters.</summary>
         public int LengthWidthBytes { get; set; }
 
-        /// <summary>Tag descriptions for Fixed TLV interpreters.</summary>
+        /// <summary>Tag descriptions for TLV interpreters.</summary>
         [JsonPropertyName("tags")]
-        public List<FixedTlvTagDto> Tags { get; set; } = new();
+        public List<TlvTagDto> Tags { get; set; } = new();
     }
 
     public enum InterpreterType
     {
         ISOIndexedValueInterpreter,
-        FixedTlv
+        FixedTlv,
+        BerTlv
     }
 
-    /// <summary>Tag description for Fixed TLV interpreters.</summary>
-    public class FixedTlvTagDto
+    /// <summary>Tag description for TLV interpreters (Fixed TLV and BER-TLV).</summary>
+    public class TlvTagDto
     {
         public string Tag { get; set; } = "";
         public string Description { get; set; } = "";
@@ -334,6 +335,12 @@ namespace ISO8583Net.Packager
                     foreach (var tag in dto.Tags)
                         tagDescriptions[tag.Tag] = tag.Description;
                     return new FixedTlvInterpreter(logger, dto.TagWidthBytes, dto.LengthWidthBytes, tagDescriptions);
+
+                case InterpreterType.BerTlv:
+                    var berTagDescriptions = new Dictionary<string, string>();
+                    foreach (var tag in dto.Tags)
+                        berTagDescriptions[tag.Tag] = tag.Description;
+                    return new BerTlvInterpreter(logger, berTagDescriptions);
 
                 default:
                     throw new NotSupportedException($"Interpreter type {dto.Type} is not supported.");

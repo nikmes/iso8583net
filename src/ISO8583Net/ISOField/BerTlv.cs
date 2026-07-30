@@ -1,4 +1,4 @@
-﻿using ISO8583Net.Utilities;
+using ISO8583Net.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,6 +36,20 @@ namespace ISO8583Net.Field
         public void Parse(byte[] encodedTLV)
         {
             _Parse(encodedTLV);
+        }
+
+        /// <summary>
+        /// Parses all top-level BER-TLV objects in the supplied buffer.
+        /// </summary>
+        public void ParseAll(byte[] encodedTLV)
+        {
+            int offset = 0;
+            while (offset < encodedTLV.Length)
+            {
+                byte[] remaining = new byte[encodedTLV.Length - offset];
+                Array.Copy(encodedTLV, offset, remaining, 0, remaining.Length);
+                offset += _Parse(remaining);
+            }
         }
 
         private int _Parse(byte[] encodedTLV)
