@@ -11,10 +11,7 @@ using ISO8583Net.Server;
 using ISO8583Net.Server.Pipeline;
 using ISO8583Net.Server.Pipeline.Handlers;
 using ISO8583Net.Server.Pipeline.Messages;
-using ISO8583Service.Controllers;
-using ISO8583Service;
 using Microsoft.Extensions.Logging.Abstractions;
-using Microsoft.Extensions.Options;
 using Xunit;
 
 namespace ISO8583Net.Tests;
@@ -468,87 +465,6 @@ public sealed class PipelineTests
         Assert.Equal(0, pipeline.Stats.HandlerErrors);
     }
 
-    // ═══════════════════════════════════════════════════════════════
-    //  S4-8: REST API — Iso8583Controller.SendSignOn
-    // ═══════════════════════════════════════════════════════════════
-
-    [Fact]
-    public async Task Controller_SendSignOn_CallsServerMethod()
-    {
-        var mockServer = new MockIso8583Server
-        {
-            IsRunning = true,
-            ConnectionCount = 2,
-            Connections = new List<(int, string, DateTime)>
-            {
-                (1, "192.168.1.1:12345", DateTime.UtcNow),
-                (2, "192.168.1.2:54321", DateTime.UtcNow)
-            }
-        };
-
-        var options = new PipelineOptions();
-        var registry = CreateRegistry();
-        var host = new PipelineHost(options, registry, NullLoggerFactory.Instance);
-        var serverOptions = Options.Create(new ServerOptions());
-
-        var controller = new Iso8583Controller(
-            mockServer, host, serverOptions,
-            new NullTestLogger<Iso8583Controller>());
-
-        var result = await controller.SendSignOn(CancellationToken.None);
-
-        Assert.IsType<Microsoft.AspNetCore.Mvc.OkObjectResult>(result);
-        Assert.Equal(1, mockServer.SendSignOnCallCount);
-    }
-
-    [Fact]
-    public async Task Controller_SendSignOn_ServerNotRunning_ReturnsBadRequest()
-    {
-        var mockServer = new MockIso8583Server
-        {
-            IsRunning = false,
-            ConnectionCount = 0
-        };
-
-        var options = new PipelineOptions();
-        var registry = CreateRegistry();
-        var host = new PipelineHost(options, registry, NullLoggerFactory.Instance);
-        var serverOptions = Options.Create(new ServerOptions());
-
-        var controller = new Iso8583Controller(
-            mockServer, host, serverOptions,
-            new NullTestLogger<Iso8583Controller>());
-
-        var result = await controller.SendSignOn(CancellationToken.None);
-
-        Assert.IsType<Microsoft.AspNetCore.Mvc.BadRequestObjectResult>(result);
-        Assert.Equal(0, mockServer.SendSignOnCallCount);
-    }
-
-    [Fact]
-    public async Task Controller_SendSignOn_NoClients_ReturnsOkWithMessage()
-    {
-        var mockServer = new MockIso8583Server
-        {
-            IsRunning = true,
-            ConnectionCount = 0
-        };
-
-        var options = new PipelineOptions();
-        var registry = CreateRegistry();
-        var host = new PipelineHost(options, registry, NullLoggerFactory.Instance);
-        var serverOptions = Options.Create(new ServerOptions());
-
-        var controller = new Iso8583Controller(
-            mockServer, host, serverOptions,
-            new NullTestLogger<Iso8583Controller>());
-
-        var result = await controller.SendSignOn(CancellationToken.None);
-
-        Assert.IsType<Microsoft.AspNetCore.Mvc.OkObjectResult>(result);
-        Assert.Equal(0, mockServer.SendSignOnCallCount); // not called — no clients
-    }
-
     /// <summary>
     /// Parses a real D8 ISO 8583:1993 1100 Authorisation Request hex dump
     /// and verifies all fields unpack correctly.
@@ -780,50 +696,6 @@ public sealed class PipelineTests
         public override Task FlushAsync(CancellationToken ct) => _readFrom.FlushAsync(ct);
         public override long Seek(long offset, SeekOrigin origin) => throw new NotSupportedException();
         public override void SetLength(long value) => throw new NotSupportedException();
-    }
-
-    /// <summary>Generic variant for controller tests.</summary>
-    private sealed class NullTestLogger<T> : Microsoft.Extensions.Logging.ILogger<T>
-    {
-        public IDisposable? BeginScope<TState>(TState state) where TState : notnull => null;
-        public bool IsEnabled(Microsoft.Extensions.Logging.LogLevel logLevel) => false;
-        public void Log<TState>(Microsoft.Extensions.Logging.LogLevel logLevel,
-            Microsoft.Extensions.Logging.EventId eventId, TState state,
-            Exception? exception, Func<TState, Exception?, string> formatter) { }
-    }
-
-    /// <summary>Minimal mock for the controller tests.</summary>
-    private sealed class MockIso8583Server : IIso8583Server
-    {
-        public bool IsRunning { get; set; }
-        public int ConnectionCount { get; set; }
-        public int SignOnIntervalSeconds { get; set; }
-        public bool SendSignOnOnConnect { get; set; }
-        public bool EnablePeriodicSignOn { get; set; }
-        public TlsOptions Tls { get; set; } = new();
-        public Action<string>? OnLog { get; set; }
-        public Action<string>? OnStatusChanged { get; set; }
-        public Action<int, byte[], string, string>? OnMessageParsed { get; set; }
-
-        public int SendSignOnCallCount;
-
-        public List<(int ConnNum, string RemoteEndpoint, DateTime ConnectedAt)> Connections { get; set; } = new();
-
-        public Task StartAsync(int port, string? dialectPath, CancellationToken ct = default)
-            => Task.CompletedTask;
-        public Task StopAsync() => Task.CompletedTask;
-
-        public Task SendSignOnAsync(CancellationToken ct = default)
-        {
-            Interlocked.Increment(ref SendSignOnCallCount);
-            return Task.CompletedTask;
-        }
-        public Task SendEchoAsync(CancellationToken ct = default) => Task.CompletedTask;
-        public Task SendSignOffAsync(bool disconnectAfter = false, CancellationToken ct = default)
-            => Task.CompletedTask;
-
-        public IReadOnlyList<(int ConnNum, string RemoteEndpoint, DateTime ConnectedAt)> GetConnections()
-            => Connections;
     }
 
 }

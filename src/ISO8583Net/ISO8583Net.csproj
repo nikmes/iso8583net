@@ -8,7 +8,7 @@
 		<PackageId>ISO8583Net</PackageId>
 		<Version>2.0.0</Version>
 		<Authors>nikmes</Authors>
-		<Description>A highly configurable .NET library for building and parsing ISO 8583 financial transaction messages. Supports XML-based dialect configuration, multiple encodings (BCD, ASCII, EBCDIC, BIN), bitmap handling, BER-TLV fields, and VISA header support.</Description>
+		<Description>A highly configurable .NET library for building and parsing ISO 8583 financial transaction messages. Supports JSON-based dialect configuration, multiple encodings (BCD, ASCII, EBCDIC, BIN), bitmap handling, BER-TLV fields, and VISA header support.</Description>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageProjectUrl>https://github.com/nikmes/iso8583net</PackageProjectUrl>
@@ -18,11 +18,11 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <None Remove="ISODialects\visa.json" />
+	  <None Remove="ISODialects\*.json" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <EmbeddedResource Include="ISODialects\visa.json" />
+	  <EmbeddedResource Include="ISODialects\*.json" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -2,7 +2,7 @@
 
 A practical guide to implementing business logic with ISO8583Service's
 handler framework. For architecture details, see
-[arch-design.md](../tools/ISO8583Service/arch-design.md).
+[arch-design.md](arch-design.md).
 
 ---
 
@@ -786,7 +786,7 @@ And that's it — the pipeline handles the rest.
 
 | Concept | Where |
 |---------|-------|
-| **Architecture doc** | `tools/ISO8583Service/arch-design.md` |
+| **Architecture doc** | `docs/arch-design.md` |
 | **Base request handler** | `src/ISO8583Server/Pipeline/Handlers/BaseRequestHandler.cs` |
 | **Base advice handler** | `src/ISO8583Server/Pipeline/Handlers/BaseAdviceHandler.cs` |
 | **Network management** | `src/ISO8583Server/Pipeline/Handlers/NetworkManagementHandler.cs` |

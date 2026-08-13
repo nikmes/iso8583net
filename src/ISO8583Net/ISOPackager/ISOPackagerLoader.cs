@@ -7,6 +7,18 @@ using System.Text.Json;
 namespace ISO8583Net.Packager
 {
     /// <summary>
+    /// Identifies a dialect that is embedded in the ISO8583Net assembly as a resource.
+    /// </summary>
+    public enum BuiltInDialect
+    {
+        /// <summary>VISA BASE I dialect (default).</summary>
+        Visa,
+
+        /// <summary>D8 G2B ISO 8583:1993 dialect.</summary>
+        D8
+    }
+
+    /// <summary>
     /// Loads ISO 8583 dialect definitions from JSON files or embedded resources.
     /// Uses System.Text.Json polymorphic deserialization for one-line loading.
     /// </summary>
@@ -45,18 +57,48 @@ namespace ISO8583Net.Packager
         /// <summary>Loads the default VISA dialect from the embedded JSON resource.</summary>
         public ISOPackagerLoader(ILogger logger,
             ref ISOMessageFieldsPackager msgFieldPackager)
+            : this(logger, BuiltInDialect.Visa, ref msgFieldPackager)
+        {
+        }
+
+        /// <summary>Loads a built-in dialect from the embedded JSON resource.</summary>
+        public ISOPackagerLoader(ILogger logger, BuiltInDialect dialect,
+            ref ISOMessageFieldsPackager msgFieldPackager)
         {
             _logger = logger;
 
+            string resourceName = GetResourceName(dialect);
+
             if (Logger.IsEnabled(LogLevel.Trace))
                 Logger.LogTrace(
-                    "Loading packager definition from built-in resource");
+                    "Loading packager definition from built-in resource [{ResourceName}]",
+                    resourceName);
 
             using Stream stream = typeof(ISOPackagerLoader).GetTypeInfo().Assembly
-                .GetManifestResourceStream("ISO8583Net.ISODialects.visa.json");
+                .GetManifestResourceStream(resourceName);
 
-            var dialect = JsonSerializer.Deserialize<DialectDefinition>(stream, JsonOptions);
-            msgFieldPackager = DialectBuilder.Build(Logger, dialect, out _);
+            if (stream is null)
+            {
+                Logger.LogError(
+                    "Embedded dialect resource [{ResourceName}] was not found", resourceName);
+                throw new InvalidOperationException(
+                    $"Embedded dialect resource [{resourceName}] was not found");
+            }
+
+            var dialectDefinition =
+                JsonSerializer.Deserialize<DialectDefinition>(stream, JsonOptions);
+            msgFieldPackager = DialectBuilder.Build(Logger, dialectDefinition, out _);
+        }
+
+        /// <summary>Resolves the manifest resource name for a built-in dialect.</summary>
+        public static string GetResourceName(BuiltInDialect dialect)
+        {
+            return dialect switch
+            {
+                BuiltInDialect.Visa => "ISO8583Net.ISODialects.visa.json",
+                BuiltInDialect.D8 => "ISO8583Net.ISODialects.d8-iso8583.json",
+                _ => throw new ArgumentOutOfRangeException(nameof(dialect), dialect, null)
+            };
         }
     }
 }

@@ -46,6 +46,17 @@ namespace ISO8583Net.Packager
             m_totalFields = m_msgFieldsPackager.GetTotalFields();
         }
         /// <summary>
+        /// Creates a packager for a built-in (embedded) dialect.
+        /// </summary>
+        /// <param name="logger"></param>
+        /// <param name="dialect">The built-in dialect to load.</param>
+        public ISOMessagePackager(ILogger logger, BuiltInDialect dialect) : base(logger)
+        {
+            ISOPackagerLoader isoPackagerLoader = new ISOPackagerLoader(Logger, dialect, ref m_msgFieldsPackager);
+
+            m_totalFields = m_msgFieldsPackager.GetTotalFields();
+        }
+        /// <summary>
         /// 
         /// </summary>
         /// <param name="isoMessage"></param>

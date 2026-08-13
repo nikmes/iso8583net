@@ -418,7 +418,7 @@ Default exposed ports after deploy:
 
 - `README.md` — high-level feature list and quick-start examples.
 - `docs/handler-development-guide.md` — complete handler developer guide.
-- `tools/ISO8583Service/arch-design.md` — SEDA pipeline architecture proposal.
-- `tools/ISO8583Service/impl-sprints.md` — implementation sprint log.
+- `docs/arch-design.md` — SEDA pipeline architecture proposal.
+- `docs/impl-sprints.md` — implementation sprint log.
 - `tools/ISO8583Service/README.md` — service-specific setup and REST API docs.
 - `ISO8583Simulator.md` / `ISO8583Simulator-Plan.md` — simulator design.

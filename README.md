@@ -181,14 +181,14 @@ iso8583net/
 │   │   ├── Handlers/            # Concrete D8 handlers
 │   │   ├── Tracing/             # FileMessageTracer and optional EF Core PostgreSQL tracer
 │   │   ├── HealthChecks/        # Pipeline health checks
-│   │   ├── Controllers/         # REST API controllers
-│   │   ├── arch-design.md       # SEDA architecture proposal
-│   │   └── impl-sprints.md      # Implementation sprint tracking
+│   │   └── Controllers/         # REST API controllers
 │   └── ISO8583Simulator/        # Standalone client simulator
 │       ├── Scenarios/           # Built-in test scenarios
 │       └── docker-compose.simulator.yml
 ├── docs/
 │   ├── handler-development-guide.md   # Complete handler developer guide
+│   ├── arch-design.md                 # SEDA architecture proposal
+│   ├── impl-sprints.md                # Implementation sprint tracking
 │   └── specs/                         # Dialect technical specifications
 └── deploy/                      # Linux deployment scripts & systemd unit
 ```
@@ -290,7 +290,7 @@ flowchart LR
 
 Each stage runs independently, enabling **message pipelining**: while one message is being parsed, the next is already being read from the socket. Bounded channels provide natural backpressure — when downstream is slow, upstream producers block.
 
-For a full walkthrough, see [arch-design.md](tools/ISO8583Service/arch-design.md).
+For a full walkthrough, see [arch-design.md](docs/arch-design.md).
 
 ---
 
@@ -455,8 +455,8 @@ Full reports and charts: [benchmarks/ISO8583Net.Benchmarks/BenchmarkDotNet.Artif
 ## Documentation
 
 - 📘 [Handler Development Guide](docs/handler-development-guide.md) — comprehensive guide with Mermaid diagrams
-- 🏗️ [Architecture Design](tools/ISO8583Service/arch-design.md) — SEDA pipeline proposal and rationale
-- 📋 [Implementation Sprints](tools/ISO8583Service/impl-sprints.md) — sprint-by-sprint build log
+- 🏗️ [Architecture Design](docs/arch-design.md) — SEDA pipeline proposal and rationale
+- 📋 [Implementation Sprints](docs/impl-sprints.md) — sprint-by-sprint build log
 - 🚀 [ISO8583Service README](tools/ISO8583Service/README.md) — service setup, REST API, and configuration
 - 🎮 [ISO8583Simulator README](tools/ISO8583Simulator/README.md) — simulator scenarios and usage
 

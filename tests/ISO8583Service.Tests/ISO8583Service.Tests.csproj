@@ -1,10 +1,13 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
-
     <IsPackable>false</IsPackable>
   </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.8.1" />
@@ -20,8 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\ISO8583Net\ISO8583Net.csproj" />
-    <ProjectReference Include="..\..\src\ISO8583Server\ISO8583Server.csproj" />
+    <ProjectReference Include="..\..\tools\ISO8583Service\ISO8583Service.csproj" />
   </ItemGroup>
 
 </Project>
