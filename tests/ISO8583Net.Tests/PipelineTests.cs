@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using ISO8583Net.Header;
 using ISO8583Net.Message;
 using ISO8583Net.Packager;
 using ISO8583Net.Server;
@@ -525,6 +526,36 @@ public sealed class PipelineTests
         Assert.NotNull(msg.GetFieldValue(48)); // TLV, verify present
         Assert.Equal("009", msg.GetFieldValue(49));
         Assert.Equal("809", msg.GetFieldValue(51));
+    }
+
+    [Fact]
+    public void Unpack_BitmapLess_HeaderError_DoesNotThrow()
+    {
+        string dialectPath = Path.GetFullPath(Path.Combine(
+            AppDomain.CurrentDomain.BaseDirectory,
+            "..", "..", "..", "..", "..",
+            "src", "ISO8583Net", "ISODialects", "d8-iso8583.json"));
+
+        var packager = new ISOMessagePackager(new NullTestLogger(), dialectPath);
+        var msg = new ISOMessage(new NullTestLogger(), packager);
+
+        // 23-byte payload: 21-byte D8 header (FieldInError = "999") + MTI "9800",
+        // with NO bitmap following the MTI.
+        byte[] payload = ISO8583Net.Utilities.ISOUtils.Hex2Bytes(
+            "4732422D49534F2D312E3030" + // "G2B-ISO-1.00"
+            "3030" +                       // Message Source "00"
+            "3130" +                       // Version Number "10"
+            "393939" +                     // Field in Error "999"
+            "3030" +                       // Reserved "00"
+            "9800");                       // MTI "9800" (BCD, 2 bytes)
+
+        msg.UnPack(payload); // must not throw
+
+        Assert.Equal("9800", msg.GetFieldValue(0));
+
+        var d8 = Assert.IsType<ISOHeaderD8>(msg.Header);
+        Assert.Equal("G2B-ISO-1.00", d8.ProtocolVersionIdentifier);
+        Assert.Equal("999", d8.FieldInError);
     }
 
     /// <summary>

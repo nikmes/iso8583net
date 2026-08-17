@@ -180,7 +180,7 @@ Backpressure is applied via `BoundedChannelFullMode.Wait`. A parser circuit brea
 
 - Framing: **2-byte big-endian length prefix**; length excludes the prefix itself. Max payload is effectively bounded by implementation.
 - A length prefix of `0x0000` is a keepalive heartbeat and is silently ignored.
-- D8 header: 21-byte ASCII (`G2B-ISO-1.00` + source + version + error field + reserved).
+- D8 header: 21-byte ASCII (`ISO8583-1993` + source + version + error field + reserved).
 
 ### Hosted Service (`tools/ISO8583Service/`)
 
@@ -191,9 +191,9 @@ REST endpoints (`/api/iso8583`):
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | `GET` | `/status` | Server status, connected clients, pipeline stats, current config |
-| `POST` | `/signon` | Send MTI 1800/F24=801 SignOn to all connected clients |
-| `POST` | `/signoff?disconnect=true` | Send MTI 1800/F24=803 SignOff; optional server stop |
-| `POST` | `/echo` | Send MTI 1800/F24=831 Echo to all connected clients |
+| `POST` | `/signon` | Send MTI 1804/F24=801 SignOn to all connected clients |
+| `POST` | `/signoff?disconnect=true` | Send MTI 1804/F24=803 SignOff; optional server stop |
+| `POST` | `/echo` | Send MTI 1804/F24=831 Echo to all connected clients |
 | `PUT` | `/config` | Update `SignOnIntervalSeconds` and `EnablePeriodicSignOn` at runtime |
 
 Additional endpoints:

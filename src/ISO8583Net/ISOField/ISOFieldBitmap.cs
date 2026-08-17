@@ -1,4 +1,4 @@
-﻿using ISO8583Net.Packager;
+using ISO8583Net.Packager;
 using ISO8583Net.Types;
 using ISO8583Net.Utilities;
 using Microsoft.Extensions.Logging;
@@ -14,6 +14,12 @@ namespace ISO8583Net.Field
     /// </summary>
     public class ISOFieldBitmap : ISOField
     {
+        /// <summary>
+        /// Minimum number of bytes required to read a primary ISO 8583 bitmap.
+        /// A message without at least this many bytes after the MTI has no bitmap.
+        /// </summary>
+        public const int MinimumLengthBytes = 8;
+
         private readonly ISOFieldPackager m_packager;
 
         private readonly byte[] m_bitmap;

@@ -862,7 +862,27 @@
       "lengthPadding": "LEFT",
       "contentFormat": "N",
       "contentCoding": "BCD",
-      "contentPadding": "LEFT"
+      "contentPadding": "LEFT",
+      "interpreter": {
+        "type": "ISOIndexedValueInterpreter",
+        "indexes": [
+          {
+            "index": 0,
+            "length": 3,
+            "description": "Function Code",
+            "values": [
+              { "value": "100", "description": "Original authorisation" },
+              { "value": "200", "description": "Original financial" },
+              { "value": "400", "description": "Full reversal" },
+              { "value": "401", "description": "Partial reversal" },
+              { "value": "801", "description": "Logon" },
+              { "value": "802", "description": "Logoff" },
+              { "value": "811", "description": "Key change" },
+              { "value": "831", "description": "Echo test" }
+            ]
+          }
+        ]
+      }
     },
     {
       "$type": "simple",

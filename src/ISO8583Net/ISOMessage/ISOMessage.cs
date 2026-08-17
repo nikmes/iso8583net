@@ -1,4 +1,4 @@
-﻿using ISO8583Net.Field;
+using ISO8583Net.Field;
 using ISO8583Net.Header;
 using ISO8583Net.Packager;
 using ISO8583Net.Types;
@@ -20,6 +20,8 @@ namespace ISO8583Net.Message
 
         /// <summary>Gets the message packager used to pack/unpack this message.</summary>
         public ISOMessagePackager Packager => m_isoMesssagePackager;
+        /// <summary>Gets the message header, or null if no header is configured.</summary>
+        public ISOHeader Header => m_isoHeader;
         /// <summary>The collection of ISO fields in this message.</summary>
         protected ISOMessageFields m_isoMessageFields;
         /// <summary>The header packager, or null if no header is configured.</summary>

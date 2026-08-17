@@ -1,4 +1,4 @@
-﻿using ISO8583Net.Field;
+using ISO8583Net.Field;
 using ISO8583Net.Types;
 using ISO8583Net.Utilities;
 using Microsoft.Extensions.Logging;
@@ -149,6 +149,19 @@ namespace ISO8583Net.Packager
             m_fieldPackagerList[0].UnPack(isoFields[0], packedBytes, ref index);
 
             string msgType = isoFields[0].value;
+
+            // Guard against bitmap-less / truncated inbound messages. A valid ISO 8583
+            // message always carries at least a primary bitmap (8 bytes) after the MTI.
+            // Error signals (e.g. a D8 header with FieldInError set and only an MTI) may
+            // carry no bitmap; attempting to read it would throw IndexOutOfRangeException.
+            int bytesAfterMti = packedBytes.Length - index;
+            if (bytesAfterMti < ISOFieldBitmap.MinimumLengthBytes)
+            {
+                if (Logger.IsEnabled(LogLevel.Warning))
+                    Logger.LogWarning("Inbound message has MTI [{MessageType}] but only {BytesAfterMti} byte(s) after the MTI — no bitmap present. Bitmap left empty.",
+                        msgType, bytesAfterMti);
+                return;
+            }
 
             // Unpack the Bitmap from the byteArray for transmission
 

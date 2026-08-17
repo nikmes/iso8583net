@@ -9,7 +9,7 @@ namespace ISO8583Net.Header
     /// D8 (ISO 8583:1993) ASCII text header — 21 bytes of printable ASCII.
     ///
     /// Byte layout:
-    ///   Pos   1-12   Protocol Version Identifier  ("ISO8583-1993")
+    ///   Pos   1-12   Protocol Version Identifier  ("G2B-ISO-1.00")
     ///   Pos  13-14   Message Source               (2 ASCII digits)
     ///   Pos  15-16   Version Number               (2 ASCII digits)
     ///   Pos  17-19   Field in Error               (3 ASCII digits, "000" = no error)
@@ -20,7 +20,7 @@ namespace ISO8583Net.Header
         /// <summary>Fixed header length in bytes.</summary>
         public const int HeaderLength = 21;
 
-        private const string ProtocolId = "ISO8583-1993";
+        private const string ProtocolId = "G2B-ISO-1.00";
 
         private byte[] _headerData = new byte[HeaderLength];
 

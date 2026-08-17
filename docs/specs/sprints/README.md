@@ -1,0 +1,31 @@
+# Dialect-Enforced Validation — Sprints
+
+Proposal and sprint plan for bounding developers/users to what is actually defined in the ISO 8583 dialect.
+
+## Read first
+
+- [proposal-dialect-validation.md](proposal-dialect-validation.md) — the mechanism design.
+
+## Sprints
+
+| Sprint | Goal | File | Status |
+|--------|------|------|--------|
+| D0 | Validator core (membership + participation API) | [sprint-d0-validator-core.md](sprint-d0-validator-core.md) | Not started |
+| D1 | Outbound enforcement + `1800`→`1804` fix | [sprint-d1-outbound-enforcement.md](sprint-d1-outbound-enforcement.md) | Not started |
+| D2 | Inbound enforcement + error responses | [sprint-d2-inbound-enforcement.md](sprint-d2-inbound-enforcement.md) | Not started |
+| D3 | Handler guard, config & docs | [sprint-d3-handler-guard-and-config.md](sprint-d3-handler-guard-and-config.md) | Not started |
+
+## Dependency order
+
+```mermaid
+graph TD
+    D0["Sprint D0<br/>Validator core"] --> D1["Sprint D1<br/>Outbound + 1800 fix"]
+    D0 --> D2["Sprint D2<br/>Inbound + errors"]
+    D1 --> D3["Sprint D3<br/>Guard, config, docs"]
+    D2 --> D3
+```
+
+## Tracking convention
+
+Each sprint file uses a task table with a `Status` column:
+`Not started` → `In progress` → `Done`. Mark a task `Done` only when its build/test gate passes.

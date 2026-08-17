@@ -26,23 +26,23 @@ public interface IIso8583Server
     Task StopAsync();
 
     /// <summary>
-    /// Manually send a SignOn request (MTI 1800, F24=801) to all connected clients.
+    /// Manually send a SignOn request (MTI 1804, F24=801) to all connected clients.
     /// </summary>
     Task SendSignOnAsync(CancellationToken ct = default);
 
     /// <summary>
-    /// Manually send an Echo message (MTI 1800, F24=831) to all connected clients.
+    /// Manually send an Echo message (MTI 1804, F24=831) to all connected clients.
     /// </summary>
     Task SendEchoAsync(CancellationToken ct = default);
 
     /// <summary>
-    /// Manually send a SignOff request (MTI 1800, F24=803) to all connected clients
+    /// Manually send a SignOff request (MTI 1804, F24=803) to all connected clients
     /// and optionally disconnect them afterwards.
     /// </summary>
     Task SendSignOffAsync(bool disconnectAfter = false, CancellationToken ct = default);
 
     /// <summary>
-    /// Interval in seconds for periodically sending a SignOn request (MTI 1800)
+    /// Interval in seconds for periodically sending a SignOn request (MTI 1804)
     /// to each connected client. Set to 0 to disable.
     /// </summary>
     int SignOnIntervalSeconds { get; set; }

@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
+using ISO8583Net.Header;
 using ISO8583Net.Message;
 using ISO8583Net.Packager;
 using ISO8583Net.Server.Pipeline.Messages;
@@ -84,6 +85,15 @@ internal static class ParserStage
                     {
                         logger.LogInformation("[#{ConnNum}] ── Parsed Message ──\n{Message}",
                             raw.ConnectionNumber, parsed.Message.ToString());
+                    }
+
+                    // Surface inbound D8 header errors (e.g. a bitmap-less format-error
+                    // response) with a detailed header breakdown at Warning level.
+                    if (parsed.Message.Header is ISOHeaderD8 { FieldInError: var fieldInError } d8
+                        && fieldInError != "000")
+                    {
+                        logger.LogWarning("[#{ConnNum}] Inbound D8 header error (FieldInError={FieldInError}):\n{Header}",
+                            raw.ConnectionNumber, fieldInError, d8.ToString());
                     }
 
                     // Trace successful parse

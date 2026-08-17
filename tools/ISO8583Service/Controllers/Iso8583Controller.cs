@@ -75,7 +75,7 @@ public class Iso8583Controller : ControllerBase
     }
 
     /// <summary>
-    /// POST /api/iso8583/signon — Manually send a SignOn request (MTI 1800, F24=801)
+    /// POST /api/iso8583/signon — Manually send a SignOn request (MTI 1804, F24=801)
     /// to all connected clients.
     /// </summary>
     [HttpPost("signon")]
@@ -99,7 +99,7 @@ public class Iso8583Controller : ControllerBase
     }
 
     /// <summary>
-    /// POST /api/iso8583/signoff — Manually send a SignOff request (MTI 1800, F24=803)
+    /// POST /api/iso8583/signoff — Manually send a SignOff request (MTI 1804, F24=803)
     /// to all connected clients. Optionally pass ?disconnect=true to stop the server.
     /// </summary>
     [HttpPost("signoff")]
@@ -126,7 +126,7 @@ public class Iso8583Controller : ControllerBase
     }
 
     /// <summary>
-    /// POST /api/iso8583/echo — Manually send an Echo message (MTI 1800, F24=831)
+    /// POST /api/iso8583/echo — Manually send an Echo message (MTI 1804, F24=831)
     /// to all connected clients.
     /// </summary>
     [HttpPost("echo")]

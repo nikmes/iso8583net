@@ -131,7 +131,7 @@ The default is `NoopMessageTracer` which JIT-eliminates to zero overhead.
 
 - Messages are framed with a **2-byte big-endian length prefix** (max payload: 4096 bytes). The length excludes the prefix itself.
 - A length prefix of `0x0000` is a keepalive heartbeat — reader silently discards it.
-- The D8 header is a 21-byte ASCII string: `G2B-ISO-1.00` (12) + source (2) + version (2) + error field (3) + reserved (2).
+- The D8 header is a 21-byte ASCII string: `ISO8583-1993` (12) + source (2) + version (2) + error field (3) + reserved (2).
 - TLS/mTLS is configured via `Iso8583Server:TlsEnabled`, `TlsCertPath`, `TlsKeyPath`, and `TlsCaCertPath`.
 
 ### Test Conventions

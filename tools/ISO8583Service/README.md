@@ -122,9 +122,9 @@ Base URL: `http://localhost:5000/api/iso8583`
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | `GET` | `/status` | Server status, connected clients, current config |
-| `POST` | `/signon` | Send SignOn (MTI 1800, F24=801) to all clients |
-| `POST` | `/signoff?disconnect=true` | Send SignOff (MTI 1800, F24=803). `disconnect=true` stops the server |
-| `POST` | `/echo` | Send Echo (MTI 1800, F24=831) to all clients |
+| `POST` | `/signon` | Send SignOn (MTI 1804, F24=801) to all clients |
+| `POST` | `/signoff?disconnect=true` | Send SignOff (MTI 1804, F24=803). `disconnect=true` stops the server |
+| `POST` | `/echo` | Send Echo (MTI 1804, F24=831) to all clients |
 | `PUT` | `/config` | Update `SignOnIntervalSeconds` and `EnablePeriodicSignOn` at runtime |
 
 ### Example Responses

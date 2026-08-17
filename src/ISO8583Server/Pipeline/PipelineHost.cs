@@ -125,7 +125,7 @@ public sealed class PipelineHost
     }
 
     /// <summary>
-    /// Build a standard SignOn/Echo/SignOff ISO 8583 message (MTI 1800).
+    /// Build a standard SignOn/Echo/SignOff ISO 8583 message (MTI 1804).
     /// Public for SendSignOnOnConnect usage.
     /// </summary>
     public ISOMessage BuildSignOnMessage(int connNum, string f24Value)
@@ -134,13 +134,13 @@ public sealed class PipelineHost
     }
 
     /// <summary>
-    /// Build a standard SignOn/Echo/SignOff ISO 8583 message (MTI 1800).
+    /// Build a standard SignOn/Echo/SignOff ISO 8583 message (MTI 1804).
     /// </summary>
     private ISOMessage BuildRequest(int connNum, string f24Value)
     {
         var seq = Interlocked.Increment(ref _sequenceCounter);
         var msg = new ISOMessage(_logger, _packager!);
-        msg.Set(0, "1800");
+        msg.Set(0, "1804");
         msg.Set(7, DateTime.UtcNow.ToString("MMddHHmmss"));
         msg.Set(11, $"{seq:D6}");
         msg.Set(24, f24Value);
