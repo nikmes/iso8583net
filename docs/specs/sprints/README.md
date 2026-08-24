@@ -5,6 +5,8 @@ Proposal and sprint plan for bounding developers/users to what is actually defin
 ## Read first
 
 - [proposal-dialect-validation.md](proposal-dialect-validation.md) — the mechanism design.
+- [design-note-d8-9xxx-generalization.md](design-note-d8-9xxx-generalization.md) — why the
+  `9xxx` logic is D8-specific today and how it could be generalized.
 
 ## Sprints
 
