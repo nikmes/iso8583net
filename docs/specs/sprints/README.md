@@ -14,7 +14,8 @@ Proposal and sprint plan for bounding developers/users to what is actually defin
 | D1 | Outbound enforcement + `1800`→`1804` fix | [sprint-d1-outbound-enforcement.md](sprint-d1-outbound-enforcement.md) | Done |
 | D2 | Inbound enforcement + error responses | [sprint-d2-inbound-enforcement.md](sprint-d2-inbound-enforcement.md) | Done |
 | D2R | Spec-complete `9xxx` format-error responses | [sprint-d2r-format-error-9xxx.md](sprint-d2r-format-error-9xxx.md) | Done |
-| D3 | Handler guard, config & docs | [sprint-d3-handler-guard-and-config.md](sprint-d3-handler-guard-and-config.md) | Not started |
+| D3 | `9xxx` format-error responses: receive side | [sprint-d3-9xxx-receive-side.md](sprint-d3-9xxx-receive-side.md) | Not started |
+| D4 | Handler guard, config & docs | [sprint-d4-handler-guard-and-config.md](sprint-d4-handler-guard-and-config.md) | Not started |
 
 ## Already shipped (overlaps with these sprints)
 
@@ -24,7 +25,7 @@ Committed in `a4ee19c`; not sprint tasks themselves, but they overlap with D1/D2
 - **D8 header** — `ProtocolId` corrected to `G2B-ISO-1.00`.
 - **Field 24 interpreter** — `ISOIndexedValueInterpreter` for function codes (`801` Logon, `802` Logoff, `811` Key change, `831` Echo test, plus `100/200/400/401`).
 - **Bitmap-less / header-error inbound guard** — no-throw parse, D8 header warning, and regression test (see D2).
-- **Tri-state outbound validation mode** — `DialectValidationMode` (`Off`/`Warn`/`On`) on the shared packager, seeded via `ServerOptions.DialectValidationMode` and toggleable at runtime through `PUT /api/iso8583/config` (D3-3 config slice).
+- **Tri-state outbound validation mode** — `DialectValidationMode` (`Off`/`Warn`/`On`) on the shared packager, seeded via `ServerOptions.DialectValidationMode` and toggleable at runtime through `PUT /api/iso8583/config` (D4-3 config slice).
 
 ## Dependency order
 
@@ -33,8 +34,9 @@ graph TD
     D0["Sprint D0<br/>Validator core"] --> D1["Sprint D1<br/>Outbound + 1800 fix"]
     D0 --> D2["Sprint D2<br/>Inbound + errors"]
     D2 --> D2R["Sprint D2R<br/>9xxx format errors"]
-    D1 --> D3["Sprint D3<br/>Guard, config, docs"]
-    D2R --> D3
+    D2R --> D3["Sprint D3<br/>9xxx receive side"]
+    D1 --> D4["Sprint D4<br/>Guard, config, docs"]
+    D3 --> D4
 ```
 
 ## Tracking convention

@@ -1,7 +1,7 @@
 # Sprint D1 — Outbound Enforcement + 1800 Fix
 
 > Part of [Dialect-Enforced Validation](proposal-dialect-validation.md).
-> Depends on: D0. Unblocks: D3.
+> Depends on: D0. Unblocks: D4.
 
 **Goal:** No outbound message may carry an MTI or field not defined for that MTI in the dialect.
 Also fix the root cause: server-initiated SignOn/Echo/SignOff must use the dialect's
@@ -32,14 +32,14 @@ network-management MTI `1804`, not the undefined `1800`.
   `EnableFieldParticipationValidations(bool)` maps to `On`/`Off` and is kept for backward
   compatibility; the richer `SetFieldParticipationValidationMode(...)` is the new API.
   `Pack` and `ISOMessage.Set(0, …)` both honor the mode. The mode is runtime-toggleable
-  (see D3-3): `ServerOptions.DialectValidationMode` seeds it at startup and
+  (see D4-3): `ServerOptions.DialectValidationMode` seeds it at startup and
   `PUT /api/iso8583/config` toggles it live.
-- **D1-2 revised — default ON deferred to D3.** Enabling validation unconditionally (default ON,
+- **D1-2 revised — default ON deferred to D4.** Enabling validation unconditionally (default ON,
   or at the server entry point) breaks the financial/advice handler responses: `BaseRequestHandler`
   responses are missing mandatory F28 (and F19/F30/F56 for `1210`/`1410`), and `BaseAdviceHandler`
   acknowledgements are missing mandatory F38. Fixing those is a per-MTI field-copy refactor that
-  belongs to D3 semantics, so this sprint ships the *gated* machinery and leaves the flag off in the
-  running service. See the D3 file for the follow-up.
+  belongs to D4 semantics, so this sprint ships the *gated* machinery and leaves the flag off in the
+  running service. See the D4 file for the follow-up.
 - **D1-5 "validate before enqueueing"** is satisfied by the gated `Pack`-time validation; the send
   helpers themselves now build correct `1804` messages (via `BuildRequest`, which sets F0/F7/F11/F24/F28).
 - **D1-7 is a no-op for input validation.** The `/signon`, `/echo`, `/signoff` endpoints take no

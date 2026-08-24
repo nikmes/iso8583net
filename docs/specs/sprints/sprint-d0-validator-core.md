@@ -1,7 +1,7 @@
 # Sprint D0 — Dialect Validator Core
 
 > Part of [Dialect-Enforced Validation](proposal-dialect-validation.md).
-> Depends on: none. Unblocks: D1, D2, D3.
+> Depends on: none. Unblocks: D1, D2, D4.
 
 **Goal:** Expose MTI membership and per-MTI field participation as a first-class, non-throwing
 API on the packager, and implement a shared validator used by both `Pack` and `UnPack`. No

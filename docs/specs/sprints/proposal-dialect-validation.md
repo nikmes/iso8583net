@@ -2,13 +2,14 @@
 
 > Status: **Partially implemented** — D0 (validator core), D1 (outbound + `1804` fix + tri-state
 > `DialectValidationMode`), D2 (inbound enforcement), and D2R (spec-complete `9xxx` format-error
-> responses) are shipped; the remainder of D3 remains open.
+> responses) are shipped; D3 (`9xxx` receive side) and D4 (handler guard, config & docs) remain open.
 > Companion sprint files:
 > [`sprint-d0-validator-core.md`](sprint-d0-validator-core.md) ·
 > [`sprint-d1-outbound-enforcement.md`](sprint-d1-outbound-enforcement.md) ·
 > [`sprint-d2-inbound-enforcement.md`](sprint-d2-inbound-enforcement.md) ·
 > [`sprint-d2r-format-error-9xxx.md`](sprint-d2r-format-error-9xxx.md) ·
-> [`sprint-d3-handler-guard-and-config.md`](sprint-d3-handler-guard-and-config.md)
+> [`sprint-d3-9xxx-receive-side.md`](sprint-d3-9xxx-receive-side.md) ·
+> [`sprint-d4-handler-guard-and-config.md`](sprint-d4-handler-guard-and-config.md)
 
 ## 1. Problem
 
@@ -156,7 +157,7 @@ Validation is a tri-state `DialectValidationMode` held on the shared packager an
 | `On` | no | Throw `DialectValidationException` before invalid bytes are produced. |
 
 The mode is seeded at startup and is **runtime-toggleable** through `PUT /api/iso8583/config`
-(see D3-3). `ISOMessageFieldsPackager.EnableFieldParticipationValidations(bool)` is retained for
+(see D4-3). `ISOMessageFieldsPackager.EnableFieldParticipationValidations(bool)` is retained for
 backward compatibility and maps to `On`/`Off`; the richer
 `SetFieldParticipationValidationMode(...)` is the new API.
 

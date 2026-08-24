@@ -1,7 +1,7 @@
 # Sprint D2 — Inbound Enforcement + Error Responses
 
 > Part of [Dialect-Enforced Validation](proposal-dialect-validation.md).
-> Depends on: D0. Unblocks: D3.
+> Depends on: D0. Unblocks: D2R, D4.
 
 **Goal:** An inbound message whose MTI is not defined in the dialect (or whose mandatory fields
 are missing) is never silently dropped or absorbed by the catch-all. It produces a structured

@@ -1,7 +1,7 @@
 # Sprint D2R — Spec-complete `9xxx` Format-error Responses
 
 > Part of [Dialect-Enforced Validation](proposal-dialect-validation.md).
-> Depends on: D2. Unblocks: D3.
+> Depends on: D2. Unblocks: D3, D4.
 >
 > **Revision of D2.** D2 shipped the `9800`/`999` bitmap-less response for the unknown-MTI /
 > invalid-header case, but implemented the known-MTI field-level error case incorrectly
