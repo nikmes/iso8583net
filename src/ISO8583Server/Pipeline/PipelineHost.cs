@@ -53,9 +53,34 @@ public sealed class PipelineHost
     }
 
     /// <summary>
+    /// Validates all registered handler MTIs against the currently loaded dialect. Fails fast
+    /// (throws <see cref="InvalidOperationException"/>) if any handler declares an MTI the
+    /// dialect does not define. Must be called after <see cref="SetPackager"/> and before any
+    /// connections are accepted.
+    /// </summary>
+    public void ValidateHandlers()
+    {
+        if (_packager == null)
+            throw new InvalidOperationException(
+                "Cannot validate handlers: the dialect/packager has not been set. Call SetPackager first.");
+
+        _handlerRegistry.ValidateAgainstDialect(_packager.GetISOMessageFieldsPackager());
+    }
+
+    /// <summary>
     /// Registered handler count (for diagnostics).
     /// </summary>
     public int HandlerCount => _handlerRegistry.HandlerCount;
+
+    /// <summary>
+    /// The distinct MTIs (excluding "*") for which at least one handler is registered, sorted.
+    /// </summary>
+    public IReadOnlyList<string> RegisteredHandlerMTIs => _handlerRegistry.RegisteredMTIs;
+
+    /// <summary>
+    /// Whether at least one catch-all ("*") handler is registered.
+    /// </summary>
+    public bool HasCatchAllHandler => _handlerRegistry.HasCatchAll;
 
     /// <summary>
     /// Outbound dialect validation mode (Off/Warn/On). Off disables validation, Warn logs a

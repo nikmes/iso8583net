@@ -212,7 +212,7 @@ All business logic lives in handlers implementing `IMessageHandler`. Register th
 builder.Services.AddSingleton<IMessageHandler, MyHandler>();
 ```
 
-The `HandlerRegistry` discovers every `IMessageHandler` from DI and routes messages by MTI. Catch-all handlers (`SupportedMTIs` contains `"*"`) receive every message.
+The `HandlerRegistry` discovers every `IMessageHandler` from DI and routes messages by MTI. Catch-all handlers (`SupportedMTIs` contains `"*"`) receive every dialect-defined message. **Only MTIs defined in the dialect may be registered**: at startup, `Iso8583TcpServer` calls `PipelineHost.ValidateHandlers()`, which fails fast (throws) if any handler declares an MTI the dialect does not define — including any terminal `9xxx` format-error MTI or a wildcard other than exactly `"*"`.
 
 Base classes (`namespace ISO8583Net.Server.Pipeline.Handlers`):
 
@@ -221,7 +221,7 @@ Base classes (`namespace ISO8583Net.Server.Pipeline.Handlers`):
 | `BaseRequestHandler` | Request/response pairs | `RequestMTI`, `ResponseMTI`, `ProcessAsync()` returning `ProcessResult` |
 | `BaseAdviceHandler` | Fire-and-forget advice acknowledgements | `AdviceMTI`, `ResponseMTI`, `OnAcknowledgedAsync()` |
 | `NetworkManagementHandler` | Network management (MTI 1804) | `HandleLogonAsync`, `HandleLogoffAsync`, `HandleKeyChangeAsync`, `HandleEchoAsync` |
-| `DefaultHandler` | Catch-all (already registered) | Handles `1800` echo to `1814` and `1810` passthrough |
+| `DefaultHandler` | Catch-all (already registered) | No-op passthrough (returns `null`); after validation it sees only dialect-defined MTIs |
 
 Built-in service handlers (`tools/ISO8583Service/Handlers/`) and their MTIs:
 

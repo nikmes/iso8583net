@@ -309,7 +309,7 @@ builder.Services.AddSingleton<IMessageHandler, FinancialHandler>();
 builder.Services.AddSingleton<IMessageHandler, DefaultHandler>(); // catch-all
 ```
 
-Handlers are dispatched in parallel for the same MTI. Catch-all handlers (MTI `"*"`) receive every message.
+Handlers are dispatched in parallel for the same MTI. Catch-all handlers (MTI `"*"`) receive every dialect-defined message. **Every MTI a handler declares must be defined in the loaded dialect** — at startup the server validates handler MTIs against the dialect and fails fast if any is undefined (including `9xxx` format-error MTIs or a wildcard other than `"*"`).
 
 ## Pipeline Tuning
 

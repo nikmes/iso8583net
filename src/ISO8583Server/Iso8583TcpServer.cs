@@ -79,6 +79,22 @@ public sealed class Iso8583TcpServer : IIso8583Server
         // ── Initialize pipeline host with packager ─────────────────────
         _pipelineHost.SetPackager(_packager!);
 
+        // ── Validate registered handlers against the dialect ───────────
+        // Fails fast if any handler declares an MTI the dialect does not define
+        // (or a terminal "9xxx" MTI, or a wildcard other than "*").
+        try
+        {
+            _pipelineHost.ValidateHandlers();
+            LogHandlerSummary();
+        }
+        catch (Exception ex)
+        {
+            Log($"ERROR: Handler registration failed validation against the dialect: {ex.Message}");
+            _packager = null;
+            OnStatusChanged?.Invoke("Idle");
+            return;
+        }
+
         // ── Start listener ──────────────────────────────────────────────
         _cts = CancellationTokenSource.CreateLinkedTokenSource(ct);
         _listener = new TcpListener(IPAddress.Any, port);
@@ -356,6 +372,26 @@ public sealed class Iso8583TcpServer : IIso8583Server
             }
         }
 
+        Log("");
+    }
+
+    /// <summary>
+    /// Logs a summary of the registered handler MTIs and whether a catch-all is present.
+    /// </summary>
+    private void LogHandlerSummary()
+    {
+        var mtis = _pipelineHost.RegisteredHandlerMTIs;
+        Log("─── Registered Handlers ───");
+        Log($"  Catch-all (\"*\"): {(_pipelineHost.HasCatchAllHandler ? "yes" : "no")}");
+        if (mtis.Count == 0)
+        {
+            Log("  No MTI-specific handlers registered.");
+        }
+        else
+        {
+            foreach (var mti in mtis)
+                Log($"  {mti}");
+        }
         Log("");
     }
 
