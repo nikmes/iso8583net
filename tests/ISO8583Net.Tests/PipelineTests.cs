@@ -713,9 +713,10 @@ public sealed class PipelineTests
         using var clientStream = new MemoryStream();
         using var serverStream = new PassthroughStream(clientStream);
 
-        // Build an MTI "9999" frame (unknown to the D8 dialect) with a D8 header.
+        // Build an MTI "1800" frame (unknown to the D8 dialect, and not a 9xxx
+        // format-error response) with a D8 header.
         var msg = new ISOMessage(new NullTestLogger(), packager);
-        msg.Set(0, "9999");
+        msg.Set(0, "1800");
         msg.Set(7, DateTime.UtcNow.ToString("MMddHHmmss"));
         msg.Set(11, "000001");
         byte[] packed = msg.Pack();

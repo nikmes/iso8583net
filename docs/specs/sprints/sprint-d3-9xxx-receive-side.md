@@ -44,11 +44,11 @@ without emitting any response.
 
 | ID | Task | File(s) | Status |
 |----|------|---------|--------|
-| D3-1 | Recognize the inbound `9xxx` family. Add a dedicated inbound path (a `9xxx` `IMessageHandler` registered with `SupportedMTIs = ["9*"]`, or an explicit `9xxx` guard in `DispatcherStage` **before** the unknown-MTI branch) that consumes the message as a terminal format-error notification. | `src/ISO8583Server/Pipeline/DispatcherStage.cs`, `tools/ISO8583Service/Handlers/` | Not started |
-| D3-2 | Loop guard: never emit a `9xxx`/`9800` in response to a received `9xxx`. Ensure the receive-side path sends **no** outbound frame (or, if a dispatch abstraction requires a return value, returns a null/no-op that the writer skips). | `src/ISO8583Server/Pipeline/DispatcherStage.cs` | Not started |
-| D3-3 | Consume and log the received `Field in Error` at Warning without re-emitting. Parse `Field in Error` (3 ASCII digits) and the transformed original MTI (reconstruct `mti[0]` by mapping `9`→the class digit implied by `mti[1]`), and log both alongside the existing header breakdown. Do **not** echo a reply. | `src/ISO8583Server/Pipeline/`, `tools/ISO8583Service/` | Not started |
-| D3-4 | Tests: (a) receive `9200` + `Field in Error=004` → parse succeeds, warning logged, `MessagesSent == 0`; (b) receive `9800` + `999` → no bounce frame emitted; (c) two-peer integration — peer A sends `1200` missing `004` to peer B, B emits `9200/004`, A receives `9200` and sends nothing back, loop terminates (assert `MessagesSent` stays at the pre-`9200` count). | `tests/ISO8583Net.Tests/` | Not started |
-| D3-5 | Docs: add this sprint to `docs/specs/sprints/README.md` (sprint table + dependency graph) and record the receive-side `9xxx` semantics in `proposal-dialect-validation.md`. | `docs/specs/sprints/README.md`, `docs/specs/sprints/proposal-dialect-validation.md` | Not started |
+| D3-1 | Recognize the inbound `9xxx` family. Add a dedicated inbound path (a `9xxx` `IMessageHandler` registered with `SupportedMTIs = ["9*"]`, or an explicit `9xxx` guard in `DispatcherStage` **before** the unknown-MTI branch) that consumes the message as a terminal format-error notification. | `src/ISO8583Server/Pipeline/DispatcherStage.cs`, `tools/ISO8583Service/Handlers/` | Done |
+| D3-2 | Loop guard: never emit a `9xxx`/`9800` in response to a received `9xxx`. Ensure the receive-side path sends **no** outbound frame (or, if a dispatch abstraction requires a return value, returns a null/no-op that the writer skips). | `src/ISO8583Server/Pipeline/DispatcherStage.cs` | Done |
+| D3-3 | Consume and log the received `Field in Error` at Warning without re-emitting. Parse `Field in Error` (3 ASCII digits) and the transformed original MTI (reconstruct it as `"1" + mti[1..3]` — the version digit is always `'1'` for G2B-ISO-1.00 — with `9800` special-cased as the header/unknown-MTI fallback), and log both alongside the existing header breakdown. Do **not** echo a reply. | `src/ISO8583Server/Pipeline/`, `tools/ISO8583Service/` | Done |
+| D3-4 | Tests: (a) receive `9200` + `Field in Error=004` → parse succeeds, warning logged, `MessagesSent == 0`; (b) receive `9800` + `999` → no bounce frame emitted; (c) two-peer integration — peer A sends `1200` missing `004` to peer B, B emits `9200/004`, A receives `9200` and sends nothing back, loop terminates (assert `MessagesSent` stays at the pre-`9200` count). | `tests/ISO8583Net.Tests/` | Done |
+| D3-5 | Docs: add this sprint to `docs/specs/sprints/README.md` (sprint table + dependency graph) and record the receive-side `9xxx` semantics in `proposal-dialect-validation.md`. | `docs/specs/sprints/README.md`, `docs/specs/sprints/proposal-dialect-validation.md` | Done |
 
 ## Design notes
 
@@ -59,10 +59,11 @@ without emitting any response.
 - **`9xxx` is a notification, not a request.** Unlike a normal request/response MTI, a `9xxx` is
   the peer's answer to *our* earlier mistake. We must not answer an answer — that is what creates
   the loop. The correct response is silence plus a warning log.
-- **Reconstructing the original MTI** is optional and best-effort: `9` in position 1 does not carry
-  the original class digit, but `mti[1]` (message class) survives the transformation, so
-  `9200` → class `2` (Financial), `9400` → class `4` (Reversal), `9804` → class `8` (Network
-  Management). For logging it is sufficient to record the received `9xxx` and the `Field in Error`.
+- **Reconstructing the original MTI** is best-effort but exact for the D8 dialect: the `9xxx`
+  transformation only replaces `mti[0]` (the version digit), which is always `'1'` for
+  G2B-ISO-1.00, and preserves `mti[1..3]` (class, function, originator). So `9200` → `1200`,
+  `9400` → `1400`, `9804` → `1804`. The one exception is `9800`, the header/unknown-MTI fallback,
+  which has no original MTI and is logged as such (not reconstructed to a misleading `1800`).
 - **No dialect change required.** `9xxx` is a response transformation with no field-participation
   table, exactly as D2R concluded for the outbound side. Do not enumerate `9xxx` in
   `d8-iso8583.json`; instead special-case it in the dispatcher (mirroring the outbound builder's

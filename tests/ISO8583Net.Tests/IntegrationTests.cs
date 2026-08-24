@@ -175,7 +175,127 @@ public sealed class IntegrationTests
         Assert.Equal(0, host.ConnectionCount);
     }
 
+    /// <summary>
+    /// D3-4a: a received D8 "9200" format-error response (field-level error, Field in Error=004)
+    /// must be recognized as a terminal notification and produce no outbound frame.
+    /// </summary>
+    [Fact]
+    public async Task Receive9200_NoResponseSent()
+    {
+        var options = new PipelineOptions
+        {
+            RawMessageCapacity = 8,
+            ParsedMessageCapacity = 16,
+            OutboundMessageCapacity = 8,
+            ParserConcurrency = 1,
+            DrainTimeoutSeconds = 5
+        };
+
+        var packager = CreateD8Packager();
+        var registry = CreateRegistry();
+        var host = new PipelineHost(options, registry, NullLoggerFactory.Instance);
+        host.SetPackager(packager);
+
+        byte[] framed = BuildFramedFormatError("9200", "004");
+
+        using var clientStream = new MemoryStream();
+        clientStream.Write(framed, 0, framed.Length);
+        clientStream.Position = 0;
+
+        using var serverToClient = new MemoryStream();
+        using var serverStream = new SplitStream(clientStream, serverToClient);
+        using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+
+        var pipeline = host.Accept(serverStream, 1, "test:1", cts.Token);
+
+        // Give the pipeline time to parse + dispatch; nothing should be written back.
+        await Task.Delay(500);
+
+        cts.Cancel();
+        await pipeline.StopAsync(TimeSpan.FromSeconds(3));
+        await pipeline.DisposeAsync();
+        host.Remove(1);
+
+        Assert.Equal(0L, serverToClient.Length);
+        Assert.Equal(0L, pipeline.Stats.MessagesSent);
+    }
+
+    /// <summary>
+    /// D3-4b: a received D8 "9800" format-error response (unknown-MTI / invalid-header,
+    /// Field in Error=999) must likewise be treated as terminal — no bounce frame emitted.
+    /// </summary>
+    [Fact]
+    public async Task Receive9800_NoResponseSent()
+    {
+        var options = new PipelineOptions
+        {
+            RawMessageCapacity = 8,
+            ParsedMessageCapacity = 16,
+            OutboundMessageCapacity = 8,
+            ParserConcurrency = 1,
+            DrainTimeoutSeconds = 5
+        };
+
+        var packager = CreateD8Packager();
+        var registry = CreateRegistry();
+        var host = new PipelineHost(options, registry, NullLoggerFactory.Instance);
+        host.SetPackager(packager);
+
+        byte[] framed = BuildFramedFormatError("9800", "999");
+
+        using var clientStream = new MemoryStream();
+        clientStream.Write(framed, 0, framed.Length);
+        clientStream.Position = 0;
+
+        using var serverToClient = new MemoryStream();
+        using var serverStream = new SplitStream(clientStream, serverToClient);
+        using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+
+        var pipeline = host.Accept(serverStream, 1, "test:1", cts.Token);
+
+        await Task.Delay(500);
+
+        cts.Cancel();
+        await pipeline.StopAsync(TimeSpan.FromSeconds(3));
+        await pipeline.DisposeAsync();
+        host.Remove(1);
+
+        Assert.Equal(0L, serverToClient.Length);
+        Assert.Equal(0L, pipeline.Stats.MessagesSent);
+    }
+
     // ── Helpers ──────────────────────────────────────────────────────
+
+    private static ISOMessagePackager CreateD8Packager()
+    {
+        return new ISOMessagePackager(new NullTestLogger(), BuiltInDialect.D8);
+    }
+
+    /// <summary>
+    /// Builds a length-prefixed D8 format-error frame: 21-byte ASCII header
+    /// ("G2B-ISO-1.00" + source "00" + version "10" + fieldInError + reserved "00")
+    /// followed by the 2-byte BCD MTI. The body carries no bitmap.
+    /// </summary>
+    private static byte[] BuildFramedFormatError(string mti, string fieldInError)
+    {
+        string headerText = "G2B-ISO-1.00" + "00" + "10" + fieldInError + "00"; // 21 bytes
+        byte[] header = System.Text.Encoding.ASCII.GetBytes(headerText);
+
+        byte[] mtiBcd = new byte[2];
+        mtiBcd[0] = (byte)(((mti[0] - '0') << 4) | (mti[1] - '0'));
+        mtiBcd[1] = (byte)(((mti[2] - '0') << 4) | (mti[3] - '0'));
+
+        byte[] body = new byte[header.Length + 2];
+        Array.Copy(header, 0, body, 0, header.Length);
+        Array.Copy(mtiBcd, 0, body, header.Length, 2);
+
+        byte[] framed = new byte[2 + body.Length];
+        framed[0] = (byte)(body.Length >> 8);
+        framed[1] = (byte)(body.Length & 0xFF);
+        Array.Copy(body, 0, framed, 2, body.Length);
+        return framed;
+    }
+
 
     private sealed class NullTestLogger : Microsoft.Extensions.Logging.ILogger
     {

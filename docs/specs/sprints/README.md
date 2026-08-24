@@ -14,7 +14,7 @@ Proposal and sprint plan for bounding developers/users to what is actually defin
 | D1 | Outbound enforcement + `1800`→`1804` fix | [sprint-d1-outbound-enforcement.md](sprint-d1-outbound-enforcement.md) | Done |
 | D2 | Inbound enforcement + error responses | [sprint-d2-inbound-enforcement.md](sprint-d2-inbound-enforcement.md) | Done |
 | D2R | Spec-complete `9xxx` format-error responses | [sprint-d2r-format-error-9xxx.md](sprint-d2r-format-error-9xxx.md) | Done |
-| D3 | `9xxx` format-error responses: receive side | [sprint-d3-9xxx-receive-side.md](sprint-d3-9xxx-receive-side.md) | Not started |
+| D3 | `9xxx` format-error responses: receive side | [sprint-d3-9xxx-receive-side.md](sprint-d3-9xxx-receive-side.md) | Done |
 | D4 | Handler guard, config & docs | [sprint-d4-handler-guard-and-config.md](sprint-d4-handler-guard-and-config.md) | Not started |
 
 ## Already shipped (overlaps with these sprints)

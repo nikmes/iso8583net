@@ -1,8 +1,8 @@
 # Dialect-Enforced Validation — Proposal
 
 > Status: **Partially implemented** — D0 (validator core), D1 (outbound + `1804` fix + tri-state
-> `DialectValidationMode`), D2 (inbound enforcement), and D2R (spec-complete `9xxx` format-error
-> responses) are shipped; D3 (`9xxx` receive side) and D4 (handler guard, config & docs) remain open.
+> `DialectValidationMode`), D2 (inbound enforcement), D2R (spec-complete `9xxx` format-error
+> responses), and D3 (`9xxx` receive side) are shipped; D4 (handler guard, config & docs) remains open.
 > Companion sprint files:
 > [`sprint-d0-validator-core.md`](sprint-d0-validator-core.md) ·
 > [`sprint-d1-outbound-enforcement.md`](sprint-d1-outbound-enforcement.md) ·
@@ -144,6 +144,14 @@ Two consequences for this work:
 never enumerated in the dialect `messages` table. `ErrorResponseBuilder` derives the response MTI
 by transformation and sets the D8 header `Field in Error` accordingly; the unknown-MTI /
 invalid-header case falls back to `9800` + `999`.
+
+**Receive side (implemented in Sprint D3):** when *this* service receives a `9xxx` MTI, it is
+recognized as a peer's format-error notification and is **terminal** — `DispatcherStage` logs it
+at Warning (with the `Field in Error` value and, for non-`9800` MTIs, the reconstructed original
+MTI `"1" + mti[1..3]`) and emits **no** outbound frame. This closes the `9800`↔`9800` ping-pong
+loop that previously occurred because a received `9xxx` was treated as an unknown MTI and bounced
+back with another `9800`. `9800` is special-cased: it has no original MTI, so it is logged as the
+header/unknown-MTI fallback rather than reconstructed to a misleading `1800`.
 
 ## 7. Config
 
