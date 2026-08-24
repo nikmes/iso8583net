@@ -25,14 +25,14 @@ diagnostic and, where possible, a dialect-defined error response instead of a ba
 
 | ID | Task | File(s) | Status |
 |----|------|---------|--------|
-| D2-1 | `ISOMessageFieldsPackager.UnPack` populates a `DialectValidationResult` for the unpacked MTI (unknown MTI, missing mandatory) without throwing | `src/ISO8583Net/ISOPackager/ISOMessageFieldsPackager.cs` | Not started |
-| D2-2 | `ParserStage` reads the validation result: unknown MTI → log header + MTI breakdown (reuse the D8 header-error breakdown already added) and route to an error response path; no `PARSE_ERR`-only drop | `src/ISO8583Server/Pipeline/ParserStage.cs` | Not started |
-| D2-3 | `DispatcherStage` rejects an undefined MTI before handler lookup (do not `continue`-drop); it only dispatches dialect-defined MTIs | `src/ISO8583Server/Pipeline/DispatcherStage.cs` | Not started |
-| D2-4 | Add `9xxx` error message types (at minimum `9800`) to the D8 dialect `messages` table so an error response is itself dialect-valid; document the mapping of error class → MTI/F39 | `src/ISO8583Net/ISODialects/d8-iso8583.json` (+ service copy `tools/ISO8583Service/Dialects/d8-iso8583.json`) | Not started |
-| D2-5 | Add a raw error-frame builder for the header-error case (header `Error=999` + MTI `9800`, no bitmap) as a fallback when the error MTI is not in the dialect | `src/ISO8583Net/ISOPackager/` or `src/ISO8583Server/Pipeline/` | Not started |
-| D2-6 | Missing-mandatory-field inbound → respond with a dialect-defined response MTI + `F39` `9xxx` code (e.g. `902` format error); log the missing field list | `src/ISO8583Server/Pipeline/ParserStage.cs`, handlers | Not started |
-| D2-7 | Tests: unknown MTI inbound → no silent drop, error response emitted (or raw error frame); missing mandatory field → `F39=902`; bitmap-less header-error inbound still handled (regression) | `tests/ISO8583Net.Tests/`, `tests/ISO8583Service.Tests/` | Not started |
-| D2-8 | Build + verify: all tests pass; replay of the original `1800` incident now yields a structured error instead of a dropped message | — | Not started |
+| D2-1 | `ISOMessage.UnPack` populates a `DialectValidationResult` for the unpacked MTI (unknown MTI, missing mandatory) without throwing | `src/ISO8583Net/ISOMessage/ISOMessage.cs` | Done |
+| D2-2 | `ParserStage` reads the validation result: unknown MTI → log header + MTI breakdown (reuse the D8 header-error breakdown already added) and route to an error response path; no `PARSE_ERR`-only drop | `src/ISO8583Server/Pipeline/ParserStage.cs`, `src/ISO8583Server/Pipeline/Messages/ParsedMessage.cs` | Done |
+| D2-3 | `DispatcherStage` rejects an undefined MTI before handler lookup (do not `continue`-drop); it only dispatches dialect-defined MTIs — gated to D8 headers | `src/ISO8583Server/Pipeline/DispatcherStage.cs` | Done |
+| D2-4 | Add `9xxx` error message types (at minimum `9800`) to the D8 dialect `messages` table so an error response is itself dialect-valid; document the mapping of error class → MTI/F39 | `src/ISO8583Net/ISODialects/d8-iso8583.json` (+ service copy `tools/ISO8583Service/Dialects/d8-iso8583.json`) | Done |
+| D2-5 | Add a raw error-frame builder for the header-error case (header `Error=999` + MTI `9800`, no bitmap) as a fallback when the error MTI is not in the dialect | `src/ISO8583Server/Pipeline/ErrorResponseBuilder.cs` | Done |
+| D2-6 | Missing-mandatory-field inbound → respond with a dialect-defined response MTI + `F39` `9xxx` code (e.g. `902` format error); log the missing field list | `src/ISO8583Server/Pipeline/DispatcherStage.cs` | Done |
+| D2-7 | Tests: unknown MTI inbound → no silent drop, error response emitted (or raw error frame); missing mandatory field → `F39=902`; bitmap-less header-error inbound still handled (regression) | `tests/ISO8583Net.Tests/`, `tests/ISO8583Service.Tests/` | Done |
+| D2-8 | Build + verify: all tests pass; replay of the original `1800` incident now yields a structured error instead of a dropped message | — | Done |
 
 ## Acceptance criteria
 

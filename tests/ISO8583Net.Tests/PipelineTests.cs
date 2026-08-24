@@ -556,6 +556,11 @@ public sealed class PipelineTests
         var d8 = Assert.IsType<ISOHeaderD8>(msg.Header);
         Assert.Equal("G2B-ISO-1.00", d8.ProtocolVersionIdentifier);
         Assert.Equal("999", d8.FieldInError);
+
+        // MTI "9800" is now defined in the dialect, so the bitmap-less message
+        // validates as a known MTI (empty bitmap → no missing mandatory fields).
+        Assert.NotNull(msg.ValidationResult);
+        Assert.True(msg.ValidationResult!.IsMtiKnown);
     }
 
     /// <summary>
@@ -625,6 +630,120 @@ public sealed class PipelineTests
         Assert.Contains("Cardholder Verification Method (CVM) Results", f55Output);
         Assert.Contains("[Tag 9F37]", f55Output);
         Assert.Contains("Unpredictable Number", f55Output);
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    //  D2: Inbound dialect enforcement
+    // ═══════════════════════════════════════════════════════════════
+
+    [Fact]
+    public void Unpack_UnknownMti_SetsValidationResultMtiUnknown()
+    {
+        string dialectPath = Path.GetFullPath(Path.Combine(
+            AppDomain.CurrentDomain.BaseDirectory,
+            "..", "..", "..", "..", "..",
+            "src", "ISO8583Net", "ISODialects", "d8-iso8583.json"));
+
+        var packager = new ISOMessagePackager(new NullTestLogger(), dialectPath);
+
+        var msg = new ISOMessage(new NullTestLogger(), packager);
+        msg.Set(0, "9999");
+        msg.Set(7, "0723144609");
+        msg.Set(11, "000001");
+        byte[] packed = msg.Pack();
+
+        var parsed = new ISOMessage(new NullTestLogger(), packager);
+        parsed.UnPack(packed);
+
+        Assert.NotNull(parsed.ValidationResult);
+        Assert.False(parsed.ValidationResult!.IsMtiKnown);
+        Assert.False(parsed.ValidationResult!.IsValid);
+    }
+
+    [Fact]
+    public void Unpack_KnownMti_MissingMandatory_ReportsMissingFields()
+    {
+        string dialectPath = Path.GetFullPath(Path.Combine(
+            AppDomain.CurrentDomain.BaseDirectory,
+            "..", "..", "..", "..", "..",
+            "src", "ISO8583Net", "ISODialects", "d8-iso8583.json"));
+
+        var packager = new ISOMessagePackager(new NullTestLogger(), dialectPath);
+
+        // 1804 requires F7, F11, F24, F28 — set only F7 so F11/F24/F28 are missing.
+        var msg = new ISOMessage(new NullTestLogger(), packager);
+        msg.Set(0, "1804");
+        msg.Set(7, "0723144609");
+        byte[] packed = msg.Pack();
+
+        var parsed = new ISOMessage(new NullTestLogger(), packager);
+        parsed.UnPack(packed);
+
+        Assert.NotNull(parsed.ValidationResult);
+        Assert.True(parsed.ValidationResult!.IsMtiKnown);
+        Assert.False(parsed.ValidationResult!.IsValid);
+        Assert.Contains(11, parsed.ValidationResult!.MissingMandatoryFields);
+        Assert.Contains(24, parsed.ValidationResult!.MissingMandatoryFields);
+        Assert.Contains(28, parsed.ValidationResult!.MissingMandatoryFields);
+    }
+
+    [Fact]
+    public async Task Dispatcher_UnknownMti_EmitsFormatErrorResponse()
+    {
+        var options = new PipelineOptions
+        {
+            RawMessageCapacity = 8,
+            ParsedMessageCapacity = 8,
+            OutboundMessageCapacity = 8,
+            DrainTimeoutSeconds = 5
+        };
+
+        string dialectPath = Path.GetFullPath(Path.Combine(
+            AppDomain.CurrentDomain.BaseDirectory,
+            "..", "..", "..", "..", "..",
+            "src", "ISO8583Net", "ISODialects", "d8-iso8583.json"));
+
+        var packager = new ISOMessagePackager(new NullTestLogger(), dialectPath);
+        var mti1100Handler = new CountingHandler("1100");
+        var registry = new HandlerRegistry(new IMessageHandler[] { mti1100Handler });
+
+        var host = new PipelineHost(options, registry, NullLoggerFactory.Instance);
+        host.SetPackager(packager);
+        using var clientStream = new MemoryStream();
+        using var serverStream = new PassthroughStream(clientStream);
+
+        // Build an MTI "9999" frame (unknown to the D8 dialect) with a D8 header.
+        var msg = new ISOMessage(new NullTestLogger(), packager);
+        msg.Set(0, "9999");
+        msg.Set(7, DateTime.UtcNow.ToString("MMddHHmmss"));
+        msg.Set(11, "000001");
+        byte[] packed = msg.Pack();
+
+        byte[] frame = new byte[2 + packed.Length];
+        frame[0] = (byte)(packed.Length >> 8);
+        frame[1] = (byte)(packed.Length & 0xFF);
+        Array.Copy(packed, 0, frame, 2, packed.Length);
+
+        clientStream.Write(frame, 0, frame.Length);
+        clientStream.Position = 0;
+
+        using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+        var pipeline = host.Accept(serverStream, 1, "127.0.0.1:0", cts.Token);
+
+        await Task.Delay(800);
+        await pipeline.StopAsync(TimeSpan.FromSeconds(2));
+
+        // The unknown-MTI message must NOT reach any business handler.
+        Assert.Equal(0, mti1100Handler.CallCount);
+        Assert.True(pipeline.Stats.MessagesSent >= 1);
+        Assert.True(pipeline.Stats.MessagesReceived >= 1);
+        Assert.Equal(0, pipeline.Stats.ParseErrors);
+
+        // The outbound response must end with a bitmap-less D8 "9800" frame (0x98 0x00).
+        byte[] output = clientStream.ToArray();
+        Assert.True(output.Length >= 2);
+        Assert.Equal(0x98, output[output.Length - 2]);
+        Assert.Equal(0x00, output[output.Length - 1]);
     }
 
     // ── Helpers ──────────────────────────────────────────────────────

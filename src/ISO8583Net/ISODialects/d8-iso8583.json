@@ -513,6 +513,13 @@
       "f028": "M",
       "f039": "M",
       "f041": "C"
+    },
+    {
+      "type": "9800",
+      "name": "Format Error Response",
+      "description": "Indicates a message format error was detected. Sent without a bitmap.",
+      "f000": "M",
+      "f001": "M"
     }
   ],
   "fields": [

@@ -22,6 +22,12 @@ namespace ISO8583Net.Message
         public ISOMessagePackager Packager => m_isoMesssagePackager;
         /// <summary>Gets the message header, or null if no header is configured.</summary>
         public ISOHeader Header => m_isoHeader;
+        /// <summary>
+        /// The result of validating this inbound message against the dialect, computed during
+        /// <see cref="UnPack(byte[])"/>. Null for outbound messages or before the message has
+        /// been unpacked.
+        /// </summary>
+        public DialectValidationResult ValidationResult { get; private set; }
         /// <summary>The collection of ISO fields in this message.</summary>
         protected ISOMessageFields m_isoMessageFields;
         /// <summary>The header packager, or null if no header is configured.</summary>
@@ -254,6 +260,7 @@ namespace ISO8583Net.Message
         public void UnPack(byte[] packedBytes)
         {
             int index = 0;
+            ValidationResult = null;
 
             // if there is ISOMessage Header then try unpack it
             if (m_isoHeaderPackager != null && m_isoHeader != null)
@@ -269,6 +276,13 @@ namespace ISO8583Net.Message
 
             // unpack the isoMessage
             m_isoMesssagePackager.UnPack(m_isoMessageFields, packedBytes, ref index);
+
+            // Validate the inbound message against the dialect so downstream stages can
+            // decide how to respond (unknown MTI, missing mandatory fields, etc.).
+            string mti = m_isoMessageFields.GetFieldValue(0);
+            var bitmap = m_isoMessageFields.GetField(1) as ISOFieldBitmap;
+            ValidationResult = DialectValidator.Validate(
+                m_isoMesssagePackager.GetISOMessageFieldsPackager(), mti, bitmap);
         }
         /// <summary>
         /// 

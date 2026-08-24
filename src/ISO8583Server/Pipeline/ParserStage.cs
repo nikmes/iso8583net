@@ -96,6 +96,21 @@ internal static class ParserStage
                             raw.ConnectionNumber, fieldInError, d8.ToString());
                     }
 
+                    // Surface dialect-validation failures (unknown MTI, missing mandatory
+                    // fields, disallowed fields) with a detailed breakdown at Warning level.
+                    if (parsed.ValidationResult is { IsValid: false } invalid)
+                    {
+                        logger.LogWarning(
+                            "[#{ConnNum}] Inbound message failed dialect validation: MTI={MTI} IsMtiKnown={IsMtiKnown} " +
+                            "MissingMandatory=[{Missing}] Disallowed=[{Disallowed}] ({Reason})",
+                            raw.ConnectionNumber,
+                            mti,
+                            invalid.IsMtiKnown,
+                            string.Join(",", invalid.MissingMandatoryFields),
+                            string.Join(",", invalid.DisallowedFields),
+                            invalid.Message);
+                    }
+
                     // Trace successful parse
                     if (tracer != null)
                     {
@@ -150,7 +165,8 @@ internal static class ParserStage
             connectionNumber: raw.ConnectionNumber,
             hexDump: hexDump,
             remoteEndpoint: stats.RemoteEndpoint,
-            parsedAt: DateTime.UtcNow);
+            parsedAt: DateTime.UtcNow,
+            validationResult: msg.ValidationResult);
     }
 
     /// <summary>Extract MTI from a parsed message (safe — returns "???" on failure).</summary>
