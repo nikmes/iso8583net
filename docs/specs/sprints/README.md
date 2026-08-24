@@ -10,7 +10,7 @@ Proposal and sprint plan for bounding developers/users to what is actually defin
 
 | Sprint | Goal | File | Status |
 |--------|------|------|--------|
-| D0 | Validator core (membership + participation API) | [sprint-d0-validator-core.md](sprint-d0-validator-core.md) | Not started |
+| D0 | Validator core (membership + participation API) | [sprint-d0-validator-core.md](sprint-d0-validator-core.md) | Done |
 | D1 | Outbound enforcement + `1800`→`1804` fix | [sprint-d1-outbound-enforcement.md](sprint-d1-outbound-enforcement.md) | In progress (D1-4 done) |
 | D2 | Inbound enforcement + error responses | [sprint-d2-inbound-enforcement.md](sprint-d2-inbound-enforcement.md) | Not started |
 | D3 | Handler guard, config & docs | [sprint-d3-handler-guard-and-config.md](sprint-d3-handler-guard-and-config.md) | Not started |

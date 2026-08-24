@@ -1,4 +1,4 @@
-﻿using ISO8583Net.Field;
+using ISO8583Net.Field;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -84,21 +84,39 @@ namespace ISO8583Net.Packager
             m_msgTypes.Add(msgType, msgTypePackager);
         }
         /// <summary>
+        /// Returns true when the given message type identifier is defined in the dialect.
+        /// </summary>
+        /// <param name="msgType">The message type identifier (e.g. "1804").</param>
+        public bool Contains(string msgType)
+        {
+            return m_msgTypes.ContainsKey(msgType);
+        }
+        /// <summary>
+        /// Attempts to retrieve the message type packager for the given message type identifier.
+        /// </summary>
+        /// <param name="msgType">The message type identifier (e.g. "1804").</param>
+        /// <param name="msgTypePackager">The retrieved packager, or null when the MTI is unknown.</param>
+        /// <returns>True when the MTI is defined in the dialect.</returns>
+        public bool TryGet(string msgType, out ISOMsgTypePackager msgTypePackager)
+        {
+            return m_msgTypes.TryGetValue(msgType, out msgTypePackager);
+        }
+        /// <summary>
         /// 
         /// </summary>
         /// <param name="bitMapField"></param>
         /// <param name="msgType"></param>
         /// <returns></returns>
-        public bool ValidateBitmap(ISOFieldBitmap bitMapField, string msgType)
+        public DialectValidationResult ValidateBitmap(ISOFieldBitmap bitMapField, string msgType)
         {
-            if (m_msgTypes.ContainsKey(msgType))
+            if (m_msgTypes.TryGetValue(msgType, out var msgTypePackager))
             {
-                return m_msgTypes[msgType].ValidateBitmap(bitMapField);
+                return msgTypePackager.ValidateBitmap(bitMapField);
             }
             else
             {
                 if (Logger.IsEnabled(LogLevel.Critical)) Logger.LogCritical("Message Type [" + msgType + "] not supported by packager!");
-                return false;
+                return DialectValidationResult.MtiUnknown(msgType);
             }
         }
         /// <summary>

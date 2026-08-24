@@ -11,14 +11,14 @@ behavioral enforcement yet — this sprint only builds and tests the primitives.
 
 | ID | Task | File(s) | Status |
 |----|------|---------|--------|
-| D0-1 | Add `ISOMessageTypesPackager.Contains(string mti)` and `TryGet(string mti, out ISOMsgTypePackager)` non-throwing accessors over `m_msgTypes` | `src/ISO8583Net/ISOPackager/ISOMessageTypesPackager.cs` | Not started |
-| D0-2 | Replace the stub `ISOMsgTypePackager.ValidateBitmap(ISOFieldBitmap)` with a real implementation that returns `{ IsValid, MissingMandatory, Disallowed }` against `m_manBitmap` / `m_optBitmap` / `m_conBitmap` | `src/ISO8583Net/ISOPackager/ISOMsgTypePackager.cs` | Not started |
-| D0-3 | Add `DialectValidationResult` record (`IsValid`, `IsMtiKnown`, `MissingMandatoryFields`, `DisallowedFields`, `Message`) | `src/ISO8583Net/ISOPackager/DialectValidationResult.cs` (new) | Not started |
-| D0-4 | Add `DialectValidationException` for the outbound fail-fast path | `src/ISO8583Net/ISOPackager/DialectValidationException.cs` (new) | Not started |
-| D0-5 | Add `DialectValidator` static helper: `Validate(ISOMessageFieldsPackager, string mti, ISOFieldBitmap)` and `Validate(ISOMessageFieldsPackager, ISOMessage)` — shared by pack/unpack | `src/ISO8583Net/ISOPackager/DialectValidator.cs` (new) | Not started |
-| D0-6 | Expose `GetMessageTypesPackager()` already present on `ISOMessageFieldsPackager`; document it as the public entry point used by the validator | `src/ISO8583Net/ISOPackager/ISOMessageFieldsPackager.cs` | Not started |
-| D0-7 | Unit tests: known MTI → valid; unknown MTI → `IsMtiKnown=false`; missing mandatory bit → listed; disallowed bit → listed; empty bitmap against 1804 (mandatory F7/F11/F24) → missing list populated | `tests/ISO8583Net.Tests/DialectValidatorTests.cs` (new) | Not started |
-| D0-8 | Build + verify: solution compiles, all existing + new tests pass | — | Not started |
+| D0-1 | Add `ISOMessageTypesPackager.Contains(string mti)` and `TryGet(string mti, out ISOMsgTypePackager)` non-throwing accessors over `m_msgTypes` | `src/ISO8583Net/ISOPackager/ISOMessageTypesPackager.cs` | Done |
+| D0-2 | Replace the stub `ISOMsgTypePackager.ValidateBitmap(ISOFieldBitmap)` with a real implementation that returns `{ IsValid, MissingMandatory, Disallowed }` against `m_manBitmap` / `m_optBitmap` / `m_conBitmap` | `src/ISO8583Net/ISOPackager/ISOMsgTypePackager.cs` | Done |
+| D0-3 | Add `DialectValidationResult` record (`IsValid`, `IsMtiKnown`, `MissingMandatoryFields`, `DisallowedFields`, `Message`) | `src/ISO8583Net/ISOPackager/DialectValidationResult.cs` (new) | Done |
+| D0-4 | Add `DialectValidationException` for the outbound fail-fast path | `src/ISO8583Net/ISOPackager/DialectValidationException.cs` (new) | Done |
+| D0-5 | Add `DialectValidator` static helper: `Validate(ISOMessageFieldsPackager, string mti, ISOFieldBitmap)` and `Validate(ISOMessageFieldsPackager, ISOMessage)` — shared by pack/unpack | `src/ISO8583Net/ISOPackager/DialectValidator.cs` (new) | Done |
+| D0-6 | Expose `GetMessageTypesPackager()` already present on `ISOMessageFieldsPackager`; document it as the public entry point used by the validator | `src/ISO8583Net/ISOPackager/ISOMessageFieldsPackager.cs` | Done |
+| D0-7 | Unit tests: known MTI → valid; unknown MTI → `IsMtiKnown=false`; missing mandatory bit → listed; disallowed bit → listed; empty bitmap against 1804 (mandatory F7/F11/F24) → missing list populated | `tests/ISO8583Net.Tests/DialectValidatorTests.cs` (new) | Done |
+| D0-8 | Build + verify: solution compiles, all existing + new tests pass | — | Done |
 
 ## Acceptance criteria
 

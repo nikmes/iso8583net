@@ -263,7 +263,9 @@ namespace ISO8583Net.Packager
             return m_fieldPackagerList[fieldNumber];
         }
         /// <summary>
-        /// Returns the message types packager for enumerating supported message types.
+        /// Returns the message types packager — the entry point for enumerating the supported
+        /// message types and for validating an MTI/bitmap against the dialect (via
+        /// <see cref="DialectValidator"/>).
         /// </summary>
         public ISOMessageTypesPackager GetMessageTypesPackager()
         {
