@@ -21,6 +21,12 @@ diagnostic and, where possible, a dialect-defined error response instead of a ba
 > detection, an error-response path (rather than the current log-and-continue), and a
 > dialect-defined `9800` error MTI.
 
+> **Revised by [Sprint D2R](sprint-d2r-format-error-9xxx.md).** D2-6 / D2-7 originally emitted
+> the normal response MTI + `F39=902` for known-MTI field-level errors. D2R corrects this to the
+> spec-defined `9xxx` transformation (first digit → `9`, keep class/function/origin) with the D8
+> header `Field in Error` carrying the first offending field number. The `9800`/`999` bitmap-less
+> response for unknown-MTI / invalid-header remains unchanged.
+
 **Status legend:** `Not started` · `In progress` · `Done`
 
 | ID | Task | File(s) | Status |

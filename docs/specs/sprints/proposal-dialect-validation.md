@@ -1,11 +1,13 @@
 # Dialect-Enforced Validation — Proposal
 
-> Status: **Partially implemented** — D0 (validator core) and D1 (outbound + `1804` fix + tri-state
-> `DialectValidationMode`) are shipped; D2 (inbound) and the remainder of D3 remain open.
+> Status: **Partially implemented** — D0 (validator core), D1 (outbound + `1804` fix + tri-state
+> `DialectValidationMode`), D2 (inbound enforcement), and D2R (spec-complete `9xxx` format-error
+> responses) are shipped; the remainder of D3 remains open.
 > Companion sprint files:
 > [`sprint-d0-validator-core.md`](sprint-d0-validator-core.md) ·
 > [`sprint-d1-outbound-enforcement.md`](sprint-d1-outbound-enforcement.md) ·
 > [`sprint-d2-inbound-enforcement.md`](sprint-d2-inbound-enforcement.md) ·
+> [`sprint-d2r-format-error-9xxx.md`](sprint-d2r-format-error-9xxx.md) ·
 > [`sprint-d3-handler-guard-and-config.md`](sprint-d3-handler-guard-and-config.md)
 
 ## 1. Problem
@@ -128,16 +130,19 @@ D8 peers reject an undefined MTI with a network-management format error: **MTI `
 header `Error` field set to **`999`** (this is exactly what was observed in the incident log).
 Two consequences for this work:
 
-1. To *send* such an error response, `9800` must either be added to the D8 dialect's `messages`
-   table, or the service needs a **raw error-frame builder** that emits `header + MTI 9800` with
-   no bitmap (the bitmap-less inbound path already tolerates this shape).
-2. For field-level inbound errors (missing mandatory field), the response is a normal
-   dialect-defined response MTI with `F39` set to a `9xxx` code (e.g. `902` format error);
-   this does not require new MTIs.
+1. To *send* such an error response, the service uses a **raw error-frame builder**
+   (`ErrorResponseBuilder`) that emits `header + MTI` with no bitmap (the bitmap-less inbound
+   path already tolerates this shape).
+2. For field-level inbound errors (missing mandatory or disallowed field), the response is a
+   spec-defined `9xxx` transformation: the first digit of the inbound MTI is replaced by `9`
+   (e.g. `1200` → `9200`, `1804` → `9804`), and the header `Field in Error` carries the first
+   offending field number (`000`–`128`). This is **not** `F39=902` and does not require new MTIs.
 
-**Decision (recommended):** add the `9xxx` error message types to the D8 dialect for full
-symmetry, and keep the raw error-frame builder as a fallback for the header-error case. This is
-tracked as an explicit task in Sprint D2.
+**Decision (final, implemented in Sprint D2R):** `9xxx` format-error responses are composed as
+**raw bitmap-less frames** by `ErrorResponseBuilder`, never packed through the field packager and
+never enumerated in the dialect `messages` table. `ErrorResponseBuilder` derives the response MTI
+by transformation and sets the D8 header `Field in Error` accordingly; the unknown-MTI /
+invalid-header case falls back to `9800` + `999`.
 
 ## 7. Config
 
@@ -172,7 +177,7 @@ backward compatibility and maps to `On`/`Off`; the richer
 | `src/ISO8583Server/Iso8583TcpServer.cs` | validate server-initiated sends |
 | `tools/ISO8583Service/PeriodicSignOnService.cs` | validate periodic echo |
 | `tools/ISO8583Service/appsettings.json` | `DialectValidationMode` (`Off`/`Warn`/`On`) |
-| `src/ISO8583Net/ISODialects/d8-iso8583.json` | add `9xxx` error MTIs (Sprint D2) |
+| `src/ISO8583Net/ISODialects/d8-iso8583.json` | remove the contradictory `9800` entry; `9xxx` responses are raw frames (Sprint D2R) |
 | `tests/ISO8583Net.Tests/` | new validation tests + regression tests |
 
 ## 9. Out of scope (explicit non-goals)

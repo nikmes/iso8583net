@@ -12,7 +12,8 @@ Proposal and sprint plan for bounding developers/users to what is actually defin
 |--------|------|------|--------|
 | D0 | Validator core (membership + participation API) | [sprint-d0-validator-core.md](sprint-d0-validator-core.md) | Done |
 | D1 | Outbound enforcement + `1800`→`1804` fix | [sprint-d1-outbound-enforcement.md](sprint-d1-outbound-enforcement.md) | Done |
-| D2 | Inbound enforcement + error responses | [sprint-d2-inbound-enforcement.md](sprint-d2-inbound-enforcement.md) | Not started |
+| D2 | Inbound enforcement + error responses | [sprint-d2-inbound-enforcement.md](sprint-d2-inbound-enforcement.md) | Done |
+| D2R | Spec-complete `9xxx` format-error responses | [sprint-d2r-format-error-9xxx.md](sprint-d2r-format-error-9xxx.md) | Done |
 | D3 | Handler guard, config & docs | [sprint-d3-handler-guard-and-config.md](sprint-d3-handler-guard-and-config.md) | Not started |
 
 ## Already shipped (overlaps with these sprints)
@@ -31,8 +32,9 @@ Committed in `a4ee19c`; not sprint tasks themselves, but they overlap with D1/D2
 graph TD
     D0["Sprint D0<br/>Validator core"] --> D1["Sprint D1<br/>Outbound + 1800 fix"]
     D0 --> D2["Sprint D2<br/>Inbound + errors"]
+    D2 --> D2R["Sprint D2R<br/>9xxx format errors"]
     D1 --> D3["Sprint D3<br/>Guard, config, docs"]
-    D2 --> D3
+    D2R --> D3
 ```
 
 ## Tracking convention

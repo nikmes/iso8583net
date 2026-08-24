@@ -33,7 +33,7 @@ namespace ISO8583Tests
             Assert.True(msgTypes.Contains("1804"));
             Assert.True(msgTypes.Contains("1100"));
             Assert.False(msgTypes.Contains("1800"));
-            Assert.True(msgTypes.Contains("9800"));
+            Assert.False(msgTypes.Contains("9800"));
         }
 
         [Fact]

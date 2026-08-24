@@ -557,10 +557,11 @@ public sealed class PipelineTests
         Assert.Equal("G2B-ISO-1.00", d8.ProtocolVersionIdentifier);
         Assert.Equal("999", d8.FieldInError);
 
-        // MTI "9800" is now defined in the dialect, so the bitmap-less message
-        // validates as a known MTI (empty bitmap → no missing mandatory fields).
+        // "9800" is a format-error transformation emitted as a raw bitmap-less frame, not
+        // a dialect message type, so the bitmap-less message validates as an unknown MTI
+        // (still unpackable without throwing).
         Assert.NotNull(msg.ValidationResult);
-        Assert.True(msg.ValidationResult!.IsMtiKnown);
+        Assert.False(msg.ValidationResult!.IsMtiKnown);
     }
 
     /// <summary>
@@ -744,6 +745,138 @@ public sealed class PipelineTests
         Assert.True(output.Length >= 2);
         Assert.Equal(0x98, output[output.Length - 2]);
         Assert.Equal(0x00, output[output.Length - 1]);
+    }
+
+    [Fact]
+    public async Task Dispatcher_KnownMti_MissingMandatory_Emits9xxxFieldError()
+    {
+        var options = new PipelineOptions
+        {
+            RawMessageCapacity = 8,
+            ParsedMessageCapacity = 8,
+            OutboundMessageCapacity = 8,
+            DrainTimeoutSeconds = 5
+        };
+
+        string dialectPath = Path.GetFullPath(Path.Combine(
+            AppDomain.CurrentDomain.BaseDirectory,
+            "..", "..", "..", "..", "..",
+            "src", "ISO8583Net", "ISODialects", "d8-iso8583.json"));
+
+        var packager = new ISOMessagePackager(new NullTestLogger(), dialectPath);
+        var mti1804Handler = new CountingHandler("1804");
+        var registry = new HandlerRegistry(new IMessageHandler[] { mti1804Handler });
+
+        var host = new PipelineHost(options, registry, NullLoggerFactory.Instance);
+        host.SetPackager(packager);
+        using var clientStream = new MemoryStream();
+        using var serverStream = new PassthroughStream(clientStream);
+
+        // 1804 requires F7, F11, F24, F28. Set F7/F11/F24 but leave F28 unset so F28 is
+        // the first missing mandatory field (first offending field = 28).
+        var msg = new ISOMessage(new NullTestLogger(), packager);
+        msg.Set(0, "1804");
+        msg.Set(7, "0723144609");
+        msg.Set(11, "000001");
+        msg.Set(24, "801");
+        byte[] packed = msg.Pack();
+
+        byte[] frame = new byte[2 + packed.Length];
+        frame[0] = (byte)(packed.Length >> 8);
+        frame[1] = (byte)(packed.Length & 0xFF);
+        Array.Copy(packed, 0, frame, 2, packed.Length);
+
+        clientStream.Write(frame, 0, frame.Length);
+        clientStream.Position = 0;
+
+        using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+        var pipeline = host.Accept(serverStream, 1, "127.0.0.1:0", cts.Token);
+
+        await Task.Delay(800);
+        await pipeline.StopAsync(TimeSpan.FromSeconds(2));
+
+        // The field-error message must NOT reach the business handler.
+        Assert.Equal(0, mti1804Handler.CallCount);
+        Assert.True(pipeline.Stats.MessagesSent >= 1);
+        Assert.True(pipeline.Stats.MessagesReceived >= 1);
+        Assert.Equal(0, pipeline.Stats.ParseErrors);
+
+        // The response must end with a bitmap-less BCD "9804" frame (0x98 0x04) and its
+        // D8 header "Field in Error" (frame offsets 18-20) must be "028".
+        byte[] output = clientStream.ToArray();
+        Assert.True(output.Length >= 25);
+        Assert.Equal(0x98, output[output.Length - 2]);
+        Assert.Equal(0x04, output[output.Length - 1]);
+        Assert.Equal((byte)'0', output[output.Length - 7]);
+        Assert.Equal((byte)'2', output[output.Length - 6]);
+        Assert.Equal((byte)'8', output[output.Length - 5]);
+    }
+
+    [Fact]
+    public async Task Dispatcher_KnownMti_DisallowedField_Emits9xxxFieldError()
+    {
+        var options = new PipelineOptions
+        {
+            RawMessageCapacity = 8,
+            ParsedMessageCapacity = 8,
+            OutboundMessageCapacity = 8,
+            DrainTimeoutSeconds = 5
+        };
+
+        string dialectPath = Path.GetFullPath(Path.Combine(
+            AppDomain.CurrentDomain.BaseDirectory,
+            "..", "..", "..", "..", "..",
+            "src", "ISO8583Net", "ISODialects", "d8-iso8583.json"));
+
+        var packager = new ISOMessagePackager(new NullTestLogger(), dialectPath);
+        var mti1804Handler = new CountingHandler("1804");
+        var registry = new HandlerRegistry(new IMessageHandler[] { mti1804Handler });
+
+        var host = new PipelineHost(options, registry, NullLoggerFactory.Instance);
+        host.SetPackager(packager);
+        using var clientStream = new MemoryStream();
+        using var serverStream = new PassthroughStream(clientStream);
+
+        // F3 (Processing Code) does not participate in 1804, so including it is a
+        // disallowed field and is the first offending field (= 3).
+        var msg = new ISOMessage(new NullTestLogger(), packager);
+        msg.Set(0, "1804");
+        msg.Set(3, "000000");
+        msg.Set(7, "0723144609");
+        msg.Set(11, "000001");
+        msg.Set(24, "801");
+        msg.Set(28, "240101");
+        byte[] packed = msg.Pack();
+
+        byte[] frame = new byte[2 + packed.Length];
+        frame[0] = (byte)(packed.Length >> 8);
+        frame[1] = (byte)(packed.Length & 0xFF);
+        Array.Copy(packed, 0, frame, 2, packed.Length);
+
+        clientStream.Write(frame, 0, frame.Length);
+        clientStream.Position = 0;
+
+        using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+        var pipeline = host.Accept(serverStream, 1, "127.0.0.1:0", cts.Token);
+
+        await Task.Delay(800);
+        await pipeline.StopAsync(TimeSpan.FromSeconds(2));
+
+        // The field-error message must NOT reach the business handler.
+        Assert.Equal(0, mti1804Handler.CallCount);
+        Assert.True(pipeline.Stats.MessagesSent >= 1);
+        Assert.True(pipeline.Stats.MessagesReceived >= 1);
+        Assert.Equal(0, pipeline.Stats.ParseErrors);
+
+        // The response must end with a bitmap-less BCD "9804" frame (0x98 0x04) and its
+        // D8 header "Field in Error" (frame offsets 18-20) must be "003".
+        byte[] output = clientStream.ToArray();
+        Assert.True(output.Length >= 25);
+        Assert.Equal(0x98, output[output.Length - 2]);
+        Assert.Equal(0x04, output[output.Length - 1]);
+        Assert.Equal((byte)'0', output[output.Length - 7]);
+        Assert.Equal((byte)'0', output[output.Length - 6]);
+        Assert.Equal((byte)'3', output[output.Length - 5]);
     }
 
     // ── Helpers ──────────────────────────────────────────────────────
