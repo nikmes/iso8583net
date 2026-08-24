@@ -58,6 +58,17 @@ public sealed class PipelineHost
     public int HandlerCount => _handlerRegistry.HandlerCount;
 
     /// <summary>
+    /// Outbound dialect validation mode (Off/Warn/On). Off disables validation, Warn logs a
+    /// warning on violation without breaking the flow, On throws before invalid bytes are sent.
+    /// Reads/writes the shared packager, so it can be toggled at runtime (e.g. via the REST API).
+    /// </summary>
+    public DialectValidationMode DialectValidationMode
+    {
+        get => _packager?.GetISOMessageFieldsPackager().FieldParticipationValidationMode ?? DialectValidationMode.Off;
+        set => _packager?.GetISOMessageFieldsPackager().SetFieldParticipationValidationMode(value);
+    }
+
+    /// <summary>
     /// Create and start a new pipeline for an accepted connection.
     /// </summary>
     /// <param name="stream">TLS-wrapped (or raw) network stream.</param>
@@ -144,6 +155,7 @@ public sealed class PipelineHost
         msg.Set(7, DateTime.UtcNow.ToString("MMddHHmmss"));
         msg.Set(11, $"{seq:D6}");
         msg.Set(24, f24Value);
+        msg.Set(28, DateTime.UtcNow.ToString("yyMMdd"));
         return msg;
     }
 

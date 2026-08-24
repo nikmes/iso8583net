@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using ISO8583Net.Server;
+using ISO8583Net.Packager;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -33,6 +34,7 @@ public sealed class Iso8583HostedService : IHostedService
         _server.SignOnIntervalSeconds = _options.SignOnIntervalSeconds;
         _server.SendSignOnOnConnect = _options.SendSignOnOnConnect;
         _server.EnablePeriodicSignOn = _options.EnablePeriodicSignOn;
+        _server.DialectValidationMode = DialectValidationModeParser.Parse(_options.DialectValidationMode);
 
         if (_options.TlsEnabled)
         {
@@ -87,6 +89,12 @@ public sealed class ServerOptions
     public int SignOnIntervalSeconds { get; set; }
     public bool SendSignOnOnConnect { get; set; }
     public bool EnablePeriodicSignOn { get; set; }
+
+    /// <summary>
+    /// Outbound dialect validation mode ("Off", "Warn", or "On"). Defaults to Off.
+    /// Warn logs a warning on violation without breaking the flow; On throws.
+    /// </summary>
+    public string? DialectValidationMode { get; set; }
 
     // TLS settings
     public bool TlsEnabled { get; set; }

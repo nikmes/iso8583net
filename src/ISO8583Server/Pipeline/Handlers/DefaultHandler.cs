@@ -13,7 +13,7 @@ namespace ISO8583Net.Server.Pipeline.Handlers;
 /// Default catch-all handler registered with MTI "*".
 ///
 /// Handles:
-///   - 1800 (SignOn) → 1814 with F39="000" (legacy echo behavior)
+///   - Null/absent MTI (header-only or corrupt message) → no response
 ///   - Everything else → no response (passthrough)
 ///
 /// Specific handlers registered for MTIs (1100, 1200, 1400, etc.) take
@@ -39,28 +39,6 @@ public sealed class DefaultHandler : IMessageHandler
         {
             _logger.LogWarning("DefaultHandler: Skipping header-only / corrupt message (no MTI), conn={ConnNum}",
                 context.ConnectionNumber);
-            return Task.FromResult<ISOMessage?>(null);
-        }
-
-        if (mti == "1800")
-        {
-            // Echo with MTI 1814 + F39="000"
-            context.Request.Set(0, "1814");
-            context.Request.Set(39, "000");
-
-            _logger.LogDebug("DefaultHandler: 1800→1814 echo, conn={ConnNum}",
-                context.ConnectionNumber);
-
-            return Task.FromResult<ISOMessage?>(context.Request);
-        }
-
-        // D8 responds with 1810 to server-initiated SignOn (1800)
-        if (mti == "1810")
-        {
-            string? f39 = context.Request.GetFieldValue(39);
-            _logger.LogInformation("DefaultHandler: D8 SignOn response (MTI=1810, F39={F39}), conn={ConnNum}",
-                f39 ?? "?", context.ConnectionNumber);
-            // No further response — 1810 is the response to our 1800
             return Task.FromResult<ISOMessage?>(null);
         }
 

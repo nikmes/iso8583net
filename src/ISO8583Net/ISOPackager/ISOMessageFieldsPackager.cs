@@ -18,7 +18,7 @@ namespace ISO8583Net.Packager
 
         private int m_totalFields;
 
-        private bool m_fieldParticipationValidations = false;
+        private DialectValidationMode m_fieldParticipationValidationMode = DialectValidationMode.Off;
 
         /// <summary>
         /// The name of the header packager class as specified in the XML dialect (e.g. "ISOHeaderVisaPackager").
@@ -80,13 +80,39 @@ namespace ISO8583Net.Packager
             m_fieldPackagerList[number]=fieldPackager;
         }
         /// <summary>
-        /// 
+        /// Enables (true) or disables (false) outbound field-participation validation.
+        /// Equivalent to <see cref="SetFieldParticipationValidationMode"/> with
+        /// <see cref="DialectValidationMode.On"/> / <see cref="DialectValidationMode.Off"/>.
+        /// Kept for backward compatibility.
         /// </summary>
         /// <param name="enabled"></param>
         public void EnableFieldParticipationValidations(bool enabled)
         {
-            m_fieldParticipationValidations = enabled;
+            m_fieldParticipationValidationMode =
+                enabled ? DialectValidationMode.On : DialectValidationMode.Off;
         }
+
+        /// <summary>
+        /// Sets the outbound validation mode. <see cref="DialectValidationMode.Off"/> disables
+        /// validation, <see cref="DialectValidationMode.Warn"/> logs a warning on violation without
+        /// throwing, and <see cref="DialectValidationMode.On"/> throws on the first violation.
+        /// </summary>
+        public void SetFieldParticipationValidationMode(DialectValidationMode mode)
+        {
+            m_fieldParticipationValidationMode = mode;
+        }
+
+        /// <summary>
+        /// The current outbound validation mode. Defaults to <see cref="DialectValidationMode.Off"/>.
+        /// </summary>
+        public DialectValidationMode FieldParticipationValidationMode => m_fieldParticipationValidationMode;
+
+        /// <summary>
+        /// True when outbound field-participation validation is enabled in either
+        /// <see cref="DialectValidationMode.Warn"/> or <see cref="DialectValidationMode.On"/> mode.
+        /// Defaults to false, so existing callers are unaffected until they opt in.
+        /// </summary>
+        public bool FieldParticipationValidations => m_fieldParticipationValidationMode != DialectValidationMode.Off;
 
         /// <summary>
         /// 
@@ -97,6 +123,32 @@ namespace ISO8583Net.Packager
         public override void Pack(ISOComponent isoMessageFields, byte[] packedBytes, ref int i)
         {
             ISOComponent[] isoFields = ((ISOMessageFields)(isoMessageFields)).GetFields();
+
+            // Outbound field-participation validation (mode-controlled). When the mode is
+            // Warn or On, validate MTI membership + field participation before any bytes are
+            // written. Warn logs the violation and continues; On throws to fail fast.
+            if (m_fieldParticipationValidationMode != DialectValidationMode.Off)
+            {
+                string mti = isoFields[0].value;
+                var validationBitmap = isoFields[1] as ISOFieldBitmap;
+                var result = DialectValidator.Validate(this, mti, validationBitmap);
+                if (!result.IsValid)
+                {
+                    if (m_fieldParticipationValidationMode == DialectValidationMode.Warn)
+                    {
+                        if (Logger.IsEnabled(LogLevel.Warning))
+                            Logger.LogWarning(
+                                "Dialect validation warning [{Mti}]: {Message} Missing=[{Missing}] Disallowed=[{Disallowed}]",
+                                mti, result.Message,
+                                string.Join(",", result.MissingMandatoryFields),
+                                string.Join(",", result.DisallowedFields));
+                    }
+                    else
+                    {
+                        throw new DialectValidationException(result);
+                    }
+                }
+            }
 
             m_fieldPackagerList[0].Pack(isoFields[0], packedBytes, ref i);
 

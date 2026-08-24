@@ -37,6 +37,7 @@ public sealed class Iso8583TcpServer : IIso8583Server
     public int SignOnIntervalSeconds { get; set; }
     public bool SendSignOnOnConnect { get; set; }
     public bool EnablePeriodicSignOn { get; set; }
+    public DialectValidationMode DialectValidationMode { get; set; } = DialectValidationMode.Off;
     public TlsOptions Tls { get; set; } = new();
     public Action<string>? OnLog { get; set; }
     public Action<string>? OnStatusChanged { get; set; }
@@ -59,6 +60,10 @@ public sealed class Iso8583TcpServer : IIso8583Server
             _packager = new ISOMessagePackager(new NullLogger(), dialectPath);
         }
         Log($"Dialect loaded. {_packager.GetTotalFields()} fields defined.");
+
+        // ── Apply outbound validation mode to the packager ─────────────
+        _packager.GetISOMessageFieldsPackager().SetFieldParticipationValidationMode(DialectValidationMode);
+        Log($"Dialect validation mode: {DialectValidationMode}.");
 
         // ── Log supported message types ─────────────────────────────────
         LogMessageTypes();
@@ -124,7 +129,7 @@ public sealed class Iso8583TcpServer : IIso8583Server
     public async Task SendSignOffAsync(bool disconnectAfter = false, CancellationToken ct = default)
     {
         Log("─── Manual SignOff Request (all connections) ───");
-        await _pipelineHost.BroadcastSignOnRequestAsync("803", ct);
+        await _pipelineHost.BroadcastSignOnRequestAsync("802", ct);
 
         if (disconnectAfter)
         {

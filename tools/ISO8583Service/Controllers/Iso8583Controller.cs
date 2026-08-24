@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ISO8583Net.Server;
+using ISO8583Net.Packager;
 using ISO8583Net.Server.Pipeline;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -69,7 +70,8 @@ public class Iso8583Controller : ControllerBase
                 _options.SignOnIntervalSeconds,
                 _options.SendSignOnOnConnect,
                 _options.EnablePeriodicSignOn,
-                _options.TlsEnabled
+                _options.TlsEnabled,
+                DialectValidationMode = _pipelineHost.DialectValidationMode.ToString()
             }
         });
     }
@@ -99,7 +101,7 @@ public class Iso8583Controller : ControllerBase
     }
 
     /// <summary>
-    /// POST /api/iso8583/signoff — Manually send a SignOff request (MTI 1804, F24=803)
+    /// POST /api/iso8583/signoff — Manually send a SignOff request (MTI 1804, F24=802)
     /// to all connected clients. Optionally pass ?disconnect=true to stop the server.
     /// </summary>
     [HttpPost("signoff")]
@@ -161,15 +163,23 @@ public class Iso8583Controller : ControllerBase
         if (update.EnablePeriodicSignOn.HasValue)
             _server.EnablePeriodicSignOn = update.EnablePeriodicSignOn.Value;
 
+        if (!string.IsNullOrWhiteSpace(update.DialectValidationMode))
+        {
+            var mode = DialectValidationModeParser.Parse(update.DialectValidationMode);
+            _server.DialectValidationMode = mode;
+            _pipelineHost.DialectValidationMode = mode;
+        }
+
         _logger.LogInformation(
-            "Config updated: SignOnInterval={Interval}s, PeriodicSignOn={Enabled}",
-            _server.SignOnIntervalSeconds, _server.EnablePeriodicSignOn);
+            "Config updated: SignOnInterval={Interval}s, PeriodicSignOn={Enabled}, DialectValidation={Mode}",
+            _server.SignOnIntervalSeconds, _server.EnablePeriodicSignOn, _pipelineHost.DialectValidationMode);
 
         return Ok(new
         {
             Message = "Configuration updated.",
             SignOnIntervalSeconds = _server.SignOnIntervalSeconds,
-            EnablePeriodicSignOn = _server.EnablePeriodicSignOn
+            EnablePeriodicSignOn = _server.EnablePeriodicSignOn,
+            DialectValidationMode = _pipelineHost.DialectValidationMode.ToString()
         });
     }
 
@@ -178,5 +188,8 @@ public class Iso8583Controller : ControllerBase
     {
         public int? SignOnIntervalSeconds { get; set; }
         public bool? EnablePeriodicSignOn { get; set; }
+
+        /// <summary>Outbound dialect validation mode: "Off", "Warn", or "On".</summary>
+        public string? DialectValidationMode { get; set; }
     }
 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using ISO8583Net.Packager;
 
 namespace ISO8583Net.Server;
 
@@ -36,7 +37,7 @@ public interface IIso8583Server
     Task SendEchoAsync(CancellationToken ct = default);
 
     /// <summary>
-    /// Manually send a SignOff request (MTI 1804, F24=803) to all connected clients
+    /// Manually send a SignOff request (MTI 1804, F24=802) to all connected clients
     /// and optionally disconnect them afterwards.
     /// </summary>
     Task SendSignOffAsync(bool disconnectAfter = false, CancellationToken ct = default);
@@ -52,6 +53,13 @@ public interface IIso8583Server
 
     /// <summary>Enable/disable periodic SignOn requests. When false, SignOnIntervalSeconds is ignored.</summary>
     bool EnablePeriodicSignOn { get; set; }
+
+    /// <summary>
+    /// Outbound dialect validation mode (Off/Warn/On). Off disables validation, Warn logs a
+    /// warning on violation without breaking the flow, On throws before invalid bytes are sent.
+    /// Can be changed at runtime; takes effect for messages packed after the change.
+    /// </summary>
+    DialectValidationMode DialectValidationMode { get; set; }
 
     /// <summary>TLS configuration. Set <see cref="TlsOptions.IsEnabled"/> to true for TLS.</summary>
     TlsOptions Tls { get; set; }

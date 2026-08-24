@@ -118,6 +118,17 @@ namespace ISO8583Net.Message
         /// <param name="fieldValue"></param>
         public override void Set(int fieldNumber, string fieldValue)
         {
+            // In On (enforce) mode, reject an MTI (field 0) that is not defined in the dialect
+            // before any bytes are produced. Warn mode defers to pack time, where the full
+            // validation result (MTI + fields) is logged without throwing.
+            if (fieldNumber == 0 && !string.IsNullOrEmpty(fieldValue) &&
+                m_isoMesssagePackager.GetISOMessageFieldsPackager().FieldParticipationValidationMode == DialectValidationMode.On)
+            {
+                var msgTypes = m_isoMesssagePackager.GetISOMessageFieldsPackager().GetMessageTypesPackager();
+                if (!msgTypes.Contains(fieldValue))
+                    throw new DialectValidationException(DialectValidationResult.MtiUnknown(fieldValue));
+            }
+
             if (fieldNumber >= 0 && fieldNumber <= m_totalFields) 
             {
                 m_isoMessageFields.Set(fieldNumber, fieldValue);

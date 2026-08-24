@@ -273,6 +273,7 @@ Configuration lives in `tools/ISO8583Service/appsettings.json` (copied to output
 | `SignOnIntervalSeconds` | `0` | Periodic SignOn interval; `0` disables |
 | `SendSignOnOnConnect` | `false` | Send SignOn when a client connects |
 | `EnablePeriodicSignOn` | `false` | Enable periodic `PeriodicSignOnService` loop |
+| `DialectValidationMode` | `Off` | Outbound dialect-validation strictness: `Off` (permissive), `Warn` (log warning, don't block), `On` (throw before invalid bytes). Runtime-toggleable via `PUT /api/iso8583/config` |
 | `TlsEnabled` | `false` | Enable TLS |
 | `TlsCertPath` | — | Server certificate PEM path |
 | `TlsKeyPath` | — | Server private key PEM path |

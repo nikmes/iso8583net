@@ -1,6 +1,8 @@
 # Dialect-Enforced Validation — Proposal
 
-> Status: **Proposal (not implemented)**. Companion sprint files:
+> Status: **Partially implemented** — D0 (validator core) and D1 (outbound + `1804` fix + tri-state
+> `DialectValidationMode`) are shipped; D2 (inbound) and the remainder of D3 remain open.
+> Companion sprint files:
 > [`sprint-d0-validator-core.md`](sprint-d0-validator-core.md) ·
 > [`sprint-d1-outbound-enforcement.md`](sprint-d1-outbound-enforcement.md) ·
 > [`sprint-d2-inbound-enforcement.md`](sprint-d2-inbound-enforcement.md) ·
@@ -54,8 +56,10 @@ unpacked, sent, and processed. Concretely:
   not allow for that MTI) should throw/return an error, not silently emit invalid bytes.
 - **Inbound = don't crash, respond.** A peer error must never take the pipeline down; it must be
   logged with context and answered with a dialect-defined error where possible.
-- **Strict by default, overridable.** Validation is ON by default and can be relaxed via config
-  only for explicitly acknowledged compatibility scenarios.
+- **Tri-state, runtime-toggleable.** Validation is a three-way `DialectValidationMode` — `Off`
+  (permissive, the default), `Warn` (log a warning, never throw), `On` (throw before invalid
+  bytes). The mode is seeded at startup and can be toggled live via `PUT /api/iso8583/config`
+  without a redeploy.
 
 ## 4. Validation matrix
 
@@ -88,8 +92,9 @@ Introduce a small validation API on top of the existing packager objects:
 ### 5.2 Outbound enforcement
 
 - `ISOMessageFieldsPackager.Pack` (`ISOMessageFieldsPackager.cs:97-133`) validates the MTI and
-  field participation before writing bytes (reusing `DialectValidator`). When validation is
-  enabled and fails, it throws `DialectValidationException`.
+  field participation before writing bytes (reusing `DialectValidator`). In `On` mode a failure
+  throws `DialectValidationException`; in `Warn` mode it logs a warning and proceeds; in `Off`
+  mode the check is skipped entirely.
 - `ISOMessage.Set(0, mti)` (`ISOMessage.cs:119-129`) performs an early MTI-membership check so a
   developer gets immediate feedback at the call site rather than at pack time.
 
@@ -136,10 +141,19 @@ tracked as an explicit task in Sprint D2.
 
 ## 7. Config
 
-Add `EnableDialectValidation` (default `true`) to `PipelineOptions`
-(`src/ISO8583Server/Pipeline/PipelineOptions.cs`) and expose it in
-`tools/ISO8583Service/appsettings.json`. When `false`, the behavior reverts to the current
-permissive mode (for controlled compatibility windows only).
+Validation is a tri-state `DialectValidationMode` held on the shared packager and exposed via
+`ServerOptions.DialectValidationMode` in `tools/ISO8583Service/appsettings.json`:
+
+| Mode | Default | Behavior |
+|------|---------|----------|
+| `Off` | **yes** | Permissive — no validation, unchanged legacy behavior. |
+| `Warn` | no | Log a warning naming the MTI and the missing/disallowed fields; never throw, never break any flow. |
+| `On` | no | Throw `DialectValidationException` before invalid bytes are produced. |
+
+The mode is seeded at startup and is **runtime-toggleable** through `PUT /api/iso8583/config`
+(see D3-3). `ISOMessageFieldsPackager.EnableFieldParticipationValidations(bool)` is retained for
+backward compatibility and maps to `On`/`Off`; the richer
+`SetFieldParticipationValidationMode(...)` is the new API.
 
 ## 8. Files impacted
 
@@ -157,7 +171,7 @@ permissive mode (for controlled compatibility windows only).
 | `src/ISO8583Server/Pipeline/PipelineHost.cs` | `1800` → `1804`, validate before send |
 | `src/ISO8583Server/Iso8583TcpServer.cs` | validate server-initiated sends |
 | `tools/ISO8583Service/PeriodicSignOnService.cs` | validate periodic echo |
-| `tools/ISO8583Service/appsettings.json` | `EnableDialectValidation` |
+| `tools/ISO8583Service/appsettings.json` | `DialectValidationMode` (`Off`/`Warn`/`On`) |
 | `src/ISO8583Net/ISODialects/d8-iso8583.json` | add `9xxx` error MTIs (Sprint D2) |
 | `tests/ISO8583Net.Tests/` | new validation tests + regression tests |
 

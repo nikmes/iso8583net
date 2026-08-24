@@ -49,7 +49,7 @@ internal static class Program
                 sp.GetRequiredService<Microsoft.Extensions.Options.IOptions<PipelineOptions>>().Value);
 
             // ── Pipeline handlers ──────────────────────────────────────────
-            // Catch-all (1800 → 1814 echo; unknown MTIs → passthrough)
+            // Catch-all (unknown MTIs → passthrough)
             builder.Services.AddSingleton<IMessageHandler, DefaultHandler>();
 
             // Network management (1804 → 1814; logon/logoff/key-change/echo)

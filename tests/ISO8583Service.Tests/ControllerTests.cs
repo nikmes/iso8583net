@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using ISO8583Net.Server;
+using ISO8583Net.Packager;
 using ISO8583Net.Server.Pipeline;
 using ISO8583Net.Server.Pipeline.Handlers;
 using ISO8583Service.Controllers;
@@ -110,6 +111,7 @@ public sealed class ControllerTests
         public int SignOnIntervalSeconds { get; set; }
         public bool SendSignOnOnConnect { get; set; }
         public bool EnablePeriodicSignOn { get; set; }
+        public DialectValidationMode DialectValidationMode { get; set; }
         public TlsOptions Tls { get; set; } = new();
         public Action<string>? OnLog { get; set; }
         public Action<string>? OnStatusChanged { get; set; }
