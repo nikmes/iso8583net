@@ -7,6 +7,20 @@
 are missing) is never silently dropped or absorbed by the catch-all. It produces a structured
 diagnostic and, where possible, a dialect-defined error response instead of a bare `PARSE_ERR`.
 
+> **Already shipped (commit `a4ee19c`)** — the *bitmap-less / header-error* hardening that this
+> sprint's acceptance criteria call "prior hardening work" is already in place:
+> - `ISOMessageFieldsPackager.UnPack` no longer throws `IndexOutOfRangeException` when fewer
+>   than 8 bytes follow the MTI; it logs and leaves the bitmap empty
+>   (`ISOFieldBitmap.MinimumLengthBytes`).
+> - `ParserStage` logs a full D8 header breakdown at `Warning` when `FieldInError != "000"`.
+> - `ISOMessage.Header` exposes the header for inspection.
+> - Regression test `Unpack_BitMapLess_HeaderError_DoesNotThrow` in `PipelineTests` covers the
+>   `G2B-ISO-1.00` + `Error=999` + `9800` (no bitmap) case.
+>
+> What remains in D2 is the *dialect-enforcement* layer: undefined-MTI / missing-mandatory
+> detection, an error-response path (rather than the current log-and-continue), and a
+> dialect-defined `9800` error MTI.
+
 **Status legend:** `Not started` · `In progress` · `Done`
 
 | ID | Task | File(s) | Status |
