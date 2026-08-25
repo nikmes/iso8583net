@@ -552,12 +552,12 @@
       "description": "Series of digits identifying a customer account. Configurable as n..19 or ans..19 (Virtual PAN). LLVAR (2-digit BCD length).",
       "lengthFormat": "VAR",
       "lengthLength": 2,
-      "length": 19,
+      "length": 99,
       "lengthCoding": "BIN",
       "lengthPadding": "LEFT",
-      "contentFormat": "N",
-      "contentCoding": "BCD",
-      "contentPadding": "LEFT"
+      "contentFormat": "ANS",
+      "contentCoding": "ASCII",
+      "contentPadding": "RIGHT"
     },
     {
       "$type": "simple",
