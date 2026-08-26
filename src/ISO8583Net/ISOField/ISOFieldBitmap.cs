@@ -76,68 +76,72 @@ namespace ISO8583Net.Field
         /// <param name="index"></param>
         public void Set(byte[] packedBytes, ref int index)
         {
-            bool bitmap3rd = false;
+            secondaryBitmapIsSet = false;
+            thirdBitmapIsSet = false;
 
-            bool bitmap2nd = false;
+            if (m_packager.m_isoFieldDefinition.contentCoding != ISOFieldCoding.BIN)
+            {
+                return;
+            }
 
-            if ((m_packager.m_isoFieldDefinition.contentCoding) == ISOFieldCoding.BIN && m_length<9)
+            int remaining = packedBytes.Length - index;
+            if (remaining <= 0)
+            {
+                return;
+            }
+
+            if (m_length < 9)
             {
                 // m_length is already in bytes (hex digits / 2 from constructor)
 
-                Array.Copy(packedBytes, index, m_bitmap, 0, m_length);
+                int smallBytesToRead = Math.Min(m_length, remaining);
 
-                index += m_length;
+                Array.Copy(packedBytes, index, m_bitmap, 0, smallBytesToRead);
+
+                index += smallBytesToRead;
+
+                return;
             }
-            else if (m_packager.m_isoFieldDefinition.contentCoding == ISOFieldCoding.BIN)
+
+            // Check bit 1 to determine whether a secondary bitmap is declared, and bit 65
+            // (first bit of the secondary bitmap) for a tertiary bitmap. Guard each read so a
+            // truncated frame — e.g. a 9xxx error response that echoes only the primary bitmap —
+            // degrades gracefully instead of throwing IndexOutOfRangeException.
+
+            bool bitmap2nd = (packedBytes[index] & 0x80) != 0;
+
+            bool bitmap3rd = false;
+
+            int bytesToRead;
+            if (bitmap2nd && remaining >= 16)
             {
-                // check first bit and bit 64 to determine how many bytes to read
-
-                byte mask = (byte)(128 >> (0 % 8));
-
-                bitmap2nd = (packedBytes[index] & mask) != 0;
-
-                if (bitmap2nd)
-                {
-                    // there is a 2nd bitmap so check if there is third as well
-
-                    mask = (byte)(128 >> (64 % 8));
-
-                    bitmap3rd = (packedBytes[index + 8] & mask) != 0;
-
-                    secondaryBitmapIsSet = true;
-                }
-
+                bitmap3rd = (packedBytes[index + 8] & 0x80) != 0;
 
                 if (bitmap3rd)
                 {
-                    // copy 8x3=24 bytes to initialize m_bitmap
-
-                    Array.Copy(packedBytes, index, m_bitmap, 0, 24);
-
-                    index += 24;
-
+                    bytesToRead = Math.Min(24, remaining);
                     thirdBitmapIsSet = true;
-
-                }
-                else if (bitmap2nd)
-                {
-                    // copy 8x2=16 bytes to initialize m_bitmap
-
-                    Array.Copy(packedBytes, index, m_bitmap, 0, 16);
-
-                    index += 16;
-
                 }
                 else
                 {
-                    // copy 8 bytes to initialize m_bitmap
-
-                    Array.Copy(packedBytes, index, m_bitmap, 0, 8);
-
-                    index += 8;
-
+                    bytesToRead = Math.Min(16, remaining);
+                    secondaryBitmapIsSet = true;
                 }
             }
+            else if (bitmap2nd)
+            {
+                // Bit 1 claims a secondary bitmap but fewer than 16 bytes remain. Read only
+                // the primary bitmap and leave the secondary flag unset.
+                bytesToRead = Math.Min(8, remaining);
+            }
+            else
+            {
+                bytesToRead = Math.Min(8, remaining);
+            }
+
+            Array.Copy(packedBytes, index, m_bitmap, 0, bytesToRead);
+
+            index += bytesToRead;
         }
         /// <summary>
         /// 

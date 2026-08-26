@@ -221,6 +221,15 @@ namespace ISO8583Net.Packager
 
             m_fieldPackagerList[1].UnPack(isoFields[1], packedBytes, ref index);
 
+            // A 9xxx message is a terminal format-error response: it carries only the header,
+            // MTI and the original message's primary bitmap (bit 1 may be set), with no
+            // secondary bitmap and no data fields. Unpacking the fields would read past the
+            // end of the frame, so stop here and let the dispatcher log the error.
+            if (IsFormatErrorMti(msgType))
+            {
+                return;
+            }
+
             var bitmap = isoFields[1] as ISOFieldBitmap;
             Span<int> setFields = stackalloc int[193];
             int count = bitmap.GetSetFields(setFields);
@@ -262,6 +271,26 @@ namespace ISO8583Net.Packager
                     
                 }
             }
+        }
+
+        /// <summary>
+        /// Determines whether the given message type identifier is a 9xxx format-error
+        /// response: a 4-digit numeric MTI whose first digit is 9. 9xxx messages are a
+        /// transformation of the original MTI rather than dialect-defined message types,
+        /// so they are not present in the dialect and must be treated as terminal.
+        /// </summary>
+        private static bool IsFormatErrorMti(string mti)
+        {
+            if (string.IsNullOrEmpty(mti) || mti.Length != 4 || mti[0] != '9')
+                return false;
+
+            for (int i = 1; i < 4; i++)
+            {
+                if (mti[i] < '0' || mti[i] > '9')
+                    return false;
+            }
+
+            return true;
         }
 
         /// <summary>

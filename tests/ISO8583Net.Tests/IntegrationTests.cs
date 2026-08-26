@@ -264,6 +264,57 @@ public sealed class IntegrationTests
         Assert.Equal(0L, pipeline.Stats.MessagesSent);
     }
 
+    /// <summary>
+    /// D3-4c: a received D8 "9430" format-error response that echoes the original
+    /// message's primary bitmap (bit 1 set) but carries no secondary bitmap and no
+    /// data fields must parse cleanly (no IndexOutOfRangeException) and produce no
+    /// outbound frame.
+    /// </summary>
+    [Fact]
+    public async Task Receive9430_WithBitmapOnly_NoResponseSent()
+    {
+        var options = new PipelineOptions
+        {
+            RawMessageCapacity = 8,
+            ParsedMessageCapacity = 16,
+            OutboundMessageCapacity = 8,
+            ParserConcurrency = 1,
+            DrainTimeoutSeconds = 5
+        };
+
+        var packager = CreateD8Packager();
+        var registry = CreateRegistry();
+        var host = new PipelineHost(options, registry, NullLoggerFactory.Instance);
+        host.SetPackager(packager);
+
+        // Primary bitmap echoes the original 1430 message: bit 1 (MSB of byte 0) is set,
+        // which previously made ISOFieldBitmap.Set probe for a secondary bitmap that does
+        // not exist and throw IndexOutOfRangeException.
+        byte[] primaryBitmap = new byte[] { 0xF6, 0x74, 0x25, 0xD5, 0x8E, 0xE1, 0xA1, 0x00 };
+        byte[] framed = BuildFramedFormatErrorWithBitmap("9430", "048", primaryBitmap);
+
+        using var clientStream = new MemoryStream();
+        clientStream.Write(framed, 0, framed.Length);
+        clientStream.Position = 0;
+
+        using var serverToClient = new MemoryStream();
+        using var serverStream = new SplitStream(clientStream, serverToClient);
+        using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+
+        var pipeline = host.Accept(serverStream, 1, "test:1", cts.Token);
+
+        await Task.Delay(500);
+
+        cts.Cancel();
+        await pipeline.StopAsync(TimeSpan.FromSeconds(3));
+        await pipeline.DisposeAsync();
+        host.Remove(1);
+
+        Assert.Equal(0L, serverToClient.Length);
+        Assert.Equal(0L, pipeline.Stats.MessagesSent);
+        Assert.Equal(0L, pipeline.Stats.ParseErrors);
+    }
+
     // ── Helpers ──────────────────────────────────────────────────────
 
     private static ISOMessagePackager CreateD8Packager()
@@ -288,6 +339,32 @@ public sealed class IntegrationTests
         byte[] body = new byte[header.Length + 2];
         Array.Copy(header, 0, body, 0, header.Length);
         Array.Copy(mtiBcd, 0, body, header.Length, 2);
+
+        byte[] framed = new byte[2 + body.Length];
+        framed[0] = (byte)(body.Length >> 8);
+        framed[1] = (byte)(body.Length & 0xFF);
+        Array.Copy(body, 0, framed, 2, body.Length);
+        return framed;
+    }
+
+    /// <summary>
+    /// Builds a length-prefixed D8 format-error frame with a primary bitmap but no
+    /// secondary bitmap and no data fields: 21-byte ASCII header + 2-byte BCD MTI +
+    /// the supplied primary bitmap bytes.
+    /// </summary>
+    private static byte[] BuildFramedFormatErrorWithBitmap(string mti, string fieldInError, byte[] primaryBitmap)
+    {
+        string headerText = "G2B-ISO-1.00" + "00" + "10" + fieldInError + "00"; // 21 bytes
+        byte[] header = System.Text.Encoding.ASCII.GetBytes(headerText);
+
+        byte[] mtiBcd = new byte[2];
+        mtiBcd[0] = (byte)(((mti[0] - '0') << 4) | (mti[1] - '0'));
+        mtiBcd[1] = (byte)(((mti[2] - '0') << 4) | (mti[3] - '0'));
+
+        byte[] body = new byte[header.Length + 2 + primaryBitmap.Length];
+        Array.Copy(header, 0, body, 0, header.Length);
+        Array.Copy(mtiBcd, 0, body, header.Length, 2);
+        Array.Copy(primaryBitmap, 0, body, header.Length + 2, primaryBitmap.Length);
 
         byte[] framed = new byte[2 + body.Length];
         framed[0] = (byte)(body.Length >> 8);
