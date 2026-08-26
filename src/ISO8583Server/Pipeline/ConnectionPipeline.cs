@@ -99,7 +99,7 @@ public sealed class ConnectionPipeline : IAsyncDisposable
             circuitBreaker, tracer, _cts.Token);
 
         _dispatcherTask = DispatcherStage.RunAsync(
-            _parsedChannel.Reader, _outboundChannel.Writer, handlerRegistry, Stats, dispatcherLogger,
+            _parsedChannel.Reader, _outboundChannel.Writer, handlerRegistry, packager, Stats, dispatcherLogger,
             options, tracer, _cts.Token);
 
         _logger.LogInformation("Pipeline created: conn={ConnNum}, endpoint={Endpoint}, " +

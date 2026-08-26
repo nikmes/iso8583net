@@ -782,6 +782,7 @@ public sealed class PipelineTests
         msg.Set(11, "000001");
         msg.Set(24, "801");
         byte[] packed = msg.Pack();
+        host.DialectValidationMode = DialectValidationMode.On;
 
         byte[] frame = new byte[2 + packed.Length];
         frame[0] = (byte)(packed.Length >> 8);
@@ -849,6 +850,7 @@ public sealed class PipelineTests
         msg.Set(24, "801");
         msg.Set(28, "240101");
         byte[] packed = msg.Pack();
+        host.DialectValidationMode = DialectValidationMode.On;
 
         byte[] frame = new byte[2 + packed.Length];
         frame[0] = (byte)(packed.Length >> 8);
@@ -881,7 +883,136 @@ public sealed class PipelineTests
         Assert.Equal((byte)'3', output[output.Length - 5]);
     }
 
+    [Fact]
+    public async Task Dispatcher_KnownMti_MissingMandatory_WarnMode_DispatchesInsteadOfReject()
+    {
+        var options = new PipelineOptions
+        {
+            RawMessageCapacity = 8,
+            ParsedMessageCapacity = 8,
+            OutboundMessageCapacity = 8,
+            DrainTimeoutSeconds = 5
+        };
+
+        string dialectPath = Path.GetFullPath(Path.Combine(
+            AppDomain.CurrentDomain.BaseDirectory,
+            "..", "..", "..", "..", "..",
+            "src", "ISO8583Net", "ISODialects", "d8-iso8583.json"));
+
+        var packager = new ISOMessagePackager(new NullTestLogger(), dialectPath);
+        var mti1804Handler = new NullCountingHandler("1804");
+        var registry = new HandlerRegistry(new IMessageHandler[] { mti1804Handler });
+
+        var host = new PipelineHost(options, registry, NullLoggerFactory.Instance);
+        host.SetPackager(packager);
+        using var clientStream = new MemoryStream();
+        using var serverStream = new PassthroughStream(clientStream);
+
+        // 1804 requires F7, F11, F24, F28; leaving F28 unset makes F28 the first missing
+        // mandatory field. In Warn mode the violation is logged but the message must still
+        // be dispatched to the handler (not rejected with a 9xxx response).
+        var msg = new ISOMessage(new NullTestLogger(), packager);
+        msg.Set(0, "1804");
+        msg.Set(7, "0723144609");
+        msg.Set(11, "000001");
+        msg.Set(24, "801");
+        byte[] packed = msg.Pack();
+        host.DialectValidationMode = DialectValidationMode.Warn;
+
+        byte[] frame = new byte[2 + packed.Length];
+        frame[0] = (byte)(packed.Length >> 8);
+        frame[1] = (byte)(packed.Length & 0xFF);
+        Array.Copy(packed, 0, frame, 2, packed.Length);
+
+        clientStream.Write(frame, 0, frame.Length);
+        clientStream.Position = 0;
+
+        using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+        var pipeline = host.Accept(serverStream, 1, "127.0.0.1:0", cts.Token);
+
+        await Task.Delay(800);
+        await pipeline.StopAsync(TimeSpan.FromSeconds(2));
+
+        // In Warn mode the message is dispatched (handler invoked) and no 9xxx/9804
+        // format-error frame is produced (handler returns null, so nothing is sent).
+        Assert.Equal(1, mti1804Handler.CallCount);
+        Assert.Equal(0, pipeline.Stats.MessagesSent);
+        Assert.Equal(0, pipeline.Stats.ParseErrors);
+    }
+
+    [Fact]
+    public async Task Dispatcher_KnownMti_DisallowedField_OffMode_DispatchesInsteadOfReject()
+    {
+        var options = new PipelineOptions
+        {
+            RawMessageCapacity = 8,
+            ParsedMessageCapacity = 8,
+            OutboundMessageCapacity = 8,
+            DrainTimeoutSeconds = 5
+        };
+
+        string dialectPath = Path.GetFullPath(Path.Combine(
+            AppDomain.CurrentDomain.BaseDirectory,
+            "..", "..", "..", "..", "..",
+            "src", "ISO8583Net", "ISODialects", "d8-iso8583.json"));
+
+        var packager = new ISOMessagePackager(new NullTestLogger(), dialectPath);
+        var mti1804Handler = new NullCountingHandler("1804");
+        var registry = new HandlerRegistry(new IMessageHandler[] { mti1804Handler });
+
+        var host = new PipelineHost(options, registry, NullLoggerFactory.Instance);
+        host.SetPackager(packager);
+        using var clientStream = new MemoryStream();
+        using var serverStream = new PassthroughStream(clientStream);
+
+        // F3 (Processing Code) does not participate in 1804, so including it is a
+        // disallowed field. In Off mode validation is disabled and the message must be
+        // dispatched to the handler (not rejected).
+        var msg = new ISOMessage(new NullTestLogger(), packager);
+        msg.Set(0, "1804");
+        msg.Set(3, "000000");
+        msg.Set(7, "0723144609");
+        msg.Set(11, "000001");
+        msg.Set(24, "801");
+        msg.Set(28, "240101");
+        byte[] packed = msg.Pack();
+        host.DialectValidationMode = DialectValidationMode.Off;
+
+        byte[] frame = new byte[2 + packed.Length];
+        frame[0] = (byte)(packed.Length >> 8);
+        frame[1] = (byte)(packed.Length & 0xFF);
+        Array.Copy(packed, 0, frame, 2, packed.Length);
+
+        clientStream.Write(frame, 0, frame.Length);
+        clientStream.Position = 0;
+
+        using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+        var pipeline = host.Accept(serverStream, 1, "127.0.0.1:0", cts.Token);
+
+        await Task.Delay(800);
+        await pipeline.StopAsync(TimeSpan.FromSeconds(2));
+
+        // In Off mode the message is dispatched (handler invoked) and no 9xxx/9804
+        // format-error frame is produced.
+        Assert.Equal(1, mti1804Handler.CallCount);
+        Assert.Equal(0, pipeline.Stats.MessagesSent);
+        Assert.Equal(0, pipeline.Stats.ParseErrors);
+    }
+
     // ── Helpers ──────────────────────────────────────────────────────
+
+    private sealed class NullCountingHandler : IMessageHandler
+    {
+        public int CallCount;
+        public IReadOnlySet<string> SupportedMTIs { get; }
+        public NullCountingHandler(params string[] mtis) => SupportedMTIs = new HashSet<string>(mtis);
+
+        public Task<ISOMessage?> HandleAsync(MessageContext context, CancellationToken ct)
+        {
+            Interlocked.Increment(ref CallCount);
+            return Task.FromResult<ISOMessage?>(null);
+        }
+    }
 
     private sealed class CountingHandler : IMessageHandler
     {

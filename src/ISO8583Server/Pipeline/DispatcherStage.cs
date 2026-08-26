@@ -30,6 +30,7 @@ internal static class DispatcherStage
         ChannelReader<ParsedMessage> input,
         ChannelWriter<OutboundMessage> outbound,
         Handlers.HandlerRegistry registry,
+        ISOMessagePackager packager,
         PipelineStats stats,
         ILogger logger,
         PipelineOptions options,
@@ -88,7 +89,11 @@ internal static class DispatcherStage
                 // A known MTI that fails field-level validation (missing mandatory fields or
                 // disallowed fields present) is rejected with a spec-complete "9xxx" format-error
                 // response whose header "Field in Error" carries the first offending field number.
-                if (parsed.Message.Header is ISOHeaderD8 && parsed.ValidationResult is { IsMtiKnown: true, IsValid: false } fieldError)
+                // This rejection is only active in DialectValidationMode.On; in Off/Warn the
+                // message is still dispatched (Warn has already logged the violation in ParserStage).
+                if (packager.GetISOMessageFieldsPackager().FieldParticipationValidationMode == DialectValidationMode.On
+                    && parsed.Message.Header is ISOHeaderD8
+                    && parsed.ValidationResult is { IsMtiKnown: true, IsValid: false } fieldError)
                 {
                     logger.LogWarning(
                         "Inbound MTI [{MTI}] failed field validation [{Reason}], first offending field={Field}, conn={ConnNum}",
