@@ -39,7 +39,25 @@ internal static class WriterStage
         {
             await foreach (var msg in input.ReadAllAsync(ct))
             {
-                await WriteMessageAsync(stream, msg, stats, logger, ct);
+                try
+                {
+                    await WriteMessageAsync(stream, msg, stats, logger, ct);
+                }
+                catch (OperationCanceledException)
+                {
+                    // Cancellation must propagate to the outer handler for shutdown.
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    // A single bad outbound frame (e.g. dialect validation threw while
+                    // packing) must not kill the writer loop for the connection. Log and
+                    // continue so later messages (including format-error responses) still
+                    // get sent.
+                    logger.LogError(ex,
+                        "Writer stage error sending message on conn {ConnNum}; skipping and continuing",
+                        stats.ConnectionNumber);
+                }
             }
         }
         catch (OperationCanceledException) { /* graceful shutdown */ }
