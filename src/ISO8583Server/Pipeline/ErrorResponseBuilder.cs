@@ -1,4 +1,5 @@
 using System;
+using ISO8583Net.Field;
 using ISO8583Net.Header;
 using ISO8583Net.Message;
 using Microsoft.Extensions.Logging;
@@ -11,7 +12,8 @@ namespace ISO8583Net.Server.Pipeline;
 ///
 /// These frames are deliberately composed as raw bytes rather than packed via
 /// <see cref="ISOMessage.Pack"/>, because they must reproduce the exact wire format the
-/// peer produced (a bitmap-less "9xxx" format-error response).
+/// peer produced (a "9xxx" format-error response carrying header + MTI, and for
+/// known-MTI field errors the original primary bitmap, with no data fields).
 /// </summary>
 internal static class ErrorResponseBuilder
 {
@@ -25,6 +27,9 @@ internal static class ErrorResponseBuilder
     ///
     /// Wire format (matching the observed peer transmission):
     ///   [2-byte big-endian length = 23] [21-byte D8 header, FieldInError="999"] [2-byte BCD "9800"]
+    ///
+    /// The unknown-MTI / invalid-header case has no original bitmap to echo, so this frame
+    /// remains bitmap-less.
     /// </summary>
     /// <param name="request">The rejected inbound message (used to echo source/version fidelity).</param>
     /// <param name="logger">Logger used to construct a header instance.</param>
@@ -32,7 +37,7 @@ internal static class ErrorResponseBuilder
     /// does not carry a D8 header.</returns>
     public static byte[]? BuildD8FormatErrorFrame(ISOMessage request, ILogger logger)
     {
-        return BuildD8ErrorFrame(request, "9800", HeaderInvalidFieldInError, logger);
+        return BuildD8ErrorFrame(request, "9800", HeaderInvalidFieldInError, null, logger);
     }
 
     /// <summary>
@@ -41,8 +46,8 @@ internal static class ErrorResponseBuilder
     ///
     /// Per the D8 spec (§4.3.5, §6.1.2) the response MTI is the request MTI with its first
     /// digit replaced by '9' (e.g. 1200 → 9200), and the header's <c>Field in Error</c>
-    /// carries the offending field number zero-padded to three digits (000-128). The frame is
-    /// bitmap-less.
+    /// carries the offending field number zero-padded to three digits (000-128). The frame
+    /// echoes the original message's primary bitmap (8 bytes) with no data fields.
     /// </summary>
     /// <param name="request">The rejected inbound message (used to echo source/version fidelity).</param>
     /// <param name="mti">The inbound message type identifier (e.g. "1200").</param>
@@ -58,16 +63,18 @@ internal static class ErrorResponseBuilder
 
         string errorMti = TransformToFormatErrorMti(mti);
         string fieldInError = NormalizeFieldInError(firstOffendingField);
-        return BuildD8ErrorFrame(request, errorMti, fieldInError, logger);
+        byte[]? primaryBitmap = GetPrimaryBitmap(request);
+        return BuildD8ErrorFrame(request, errorMti, fieldInError, primaryBitmap, logger);
     }
 
     /// <summary>
-    /// Composes the shared bitmap-less D8 error frame: a 21-byte D8 header (echoing the
-    /// sender's source/version and carrying <paramref name="fieldInError"/>) followed by a
-    /// 2-byte packed-BCD MTI, all prefixed with a 2-byte big-endian length.
+    /// Composes a D8 error frame: a 21-byte D8 header (echoing the sender's source/version
+    /// and carrying <paramref name="fieldInError"/>) followed by a 2-byte packed-BCD MTI and,
+    /// when <paramref name="bitmap"/> is non-null, the original primary bitmap — all prefixed
+    /// with a 2-byte big-endian length.
     /// </summary>
     private static byte[]? BuildD8ErrorFrame(
-        ISOMessage request, string errorMti, string fieldInError, ILogger logger)
+        ISOMessage request, string errorMti, string fieldInError, byte[]? bitmap, ILogger logger)
     {
         if (request.Header is not ISOHeaderD8 requestHeader)
             return null;
@@ -78,12 +85,16 @@ internal static class ErrorResponseBuilder
         header.VersionNumber = requestHeader.VersionNumber;
         header.FieldInError = fieldInError;
 
-        int bodyLength = ISOHeaderD8.HeaderLength + BcdMtiLength;
+        int bitmapLength = bitmap?.Length ?? 0;
+        int bodyLength = ISOHeaderD8.HeaderLength + BcdMtiLength + bitmapLength;
         var body = new byte[bodyLength];
 
         Array.Copy(header.HeaderData, 0, body, 0, ISOHeaderD8.HeaderLength);
 
         EncodeBcdMti(errorMti, body, ISOHeaderD8.HeaderLength);
+
+        if (bitmapLength > 0)
+            Array.Copy(bitmap, 0, body, ISOHeaderD8.HeaderLength + BcdMtiLength, bitmapLength);
 
         var frame = new byte[FrameLengthHeaderSize + bodyLength];
         frame[0] = (byte)((bodyLength >> 8) & 0xFF);
@@ -91,6 +102,20 @@ internal static class ErrorResponseBuilder
         Array.Copy(body, 0, frame, FrameLengthHeaderSize, bodyLength);
 
         return frame;
+    }
+
+    /// <summary>
+    /// Extracts the original message's primary bitmap (the first 8 bytes of field 1) for a
+    /// faithful echo in a field-error response, or null when the message carries no bitmap.
+    /// </summary>
+    private static byte[]? GetPrimaryBitmap(ISOMessage request)
+    {
+        if (request.GetField(1) is not ISOFieldBitmap bitmap)
+            return null;
+
+        byte[] full = bitmap.GetByteArray();
+        int length = Math.Min(8, full.Length);
+        return full.AsSpan(0, length).ToArray();
     }
 
     /// <summary>

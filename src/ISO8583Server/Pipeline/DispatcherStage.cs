@@ -258,6 +258,7 @@ internal static class DispatcherStage
             return;
         }
 
+        LogErrorResponseFrame(frame, parsed.ConnectionNumber, logger);
         await outbound.WriteAsync(
             OutboundMessage.FromPreFramed(frame, parsed.ConnectionNumber), ct);
     }
@@ -285,8 +286,54 @@ internal static class DispatcherStage
             return;
         }
 
+        LogErrorResponseFrame(frame, parsed.ConnectionNumber, logger);
         await outbound.WriteAsync(
             OutboundMessage.FromPreFramed(frame, parsed.ConnectionNumber), ct);
+    }
+
+    /// <summary>
+    /// Logs a pre-framed outbound D8 format-error response so it is visible in the logs
+    /// (the writer stage only pretty-prints packed <see cref="ISOMessage"/> instances, not
+    /// pre-framed error frames). Emits a hex dump plus a header breakdown.
+    /// </summary>
+    private static void LogErrorResponseFrame(byte[] frame, int connectionNumber, ILogger logger)
+    {
+        if (!logger.IsEnabled(LogLevel.Information))
+            return;
+
+        string mti;
+        string headerBreakdown;
+        try
+        {
+            var header = new ISOHeaderD8(logger);
+            header.HeaderData = frame.AsSpan(2, ISOHeaderD8.HeaderLength).ToArray();
+            headerBreakdown = header.ToString();
+            mti = DecodeBcdMti(frame, 2 + ISOHeaderD8.HeaderLength);
+        }
+        catch (Exception ex)
+        {
+            headerBreakdown = $"<header parse error: {ex.Message}>";
+            mti = "????";
+        }
+
+        logger.LogInformation(
+            "[#{ConnNum}] Sending D8 format-error response MTI={MTI}\n{HexDump}\n── Header ──\n{HeaderBreakdown}",
+            connectionNumber, mti,
+            WriterStage.FormatOutboundHexDump(frame, frame.Length, connectionNumber),
+            headerBreakdown);
+    }
+
+    /// <summary>
+    /// Decodes the 2-byte packed-BCD MTI that follows the D8 header in a pre-framed error
+    /// response, returning it as four ASCII digits.
+    /// </summary>
+    private static string DecodeBcdMti(byte[] frame, int offset)
+    {
+        int d1 = (frame[offset] >> 4) & 0x0F;
+        int d2 = frame[offset] & 0x0F;
+        int d3 = (frame[offset + 1] >> 4) & 0x0F;
+        int d4 = frame[offset + 1] & 0x0F;
+        return $"{d1}{d2}{d3}{d4}";
     }
 
     /// <summary>

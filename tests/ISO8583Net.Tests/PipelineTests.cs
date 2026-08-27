@@ -804,15 +804,24 @@ public sealed class PipelineTests
         Assert.True(pipeline.Stats.MessagesReceived >= 1);
         Assert.Equal(0, pipeline.Stats.ParseErrors);
 
-        // The response must end with a bitmap-less BCD "9804" frame (0x98 0x04) and its
-        // D8 header "Field in Error" (frame offsets 18-20) must be "028".
+        // The response must end with a BCD "9804" field-error frame whose 21-byte header +
+        // 2-byte MTI are followed by the original 8-byte primary bitmap (no data fields):
+        //   [2-byte LI=0x001F][21-byte header][2-byte BCD MTI][8-byte bitmap] = 33 bytes.
         byte[] output = clientStream.ToArray();
-        Assert.True(output.Length >= 25);
-        Assert.Equal(0x98, output[output.Length - 2]);
-        Assert.Equal(0x04, output[output.Length - 1]);
-        Assert.Equal((byte)'0', output[output.Length - 7]);
-        Assert.Equal((byte)'2', output[output.Length - 6]);
-        Assert.Equal((byte)'8', output[output.Length - 5]);
+        Assert.Equal(2 + packed.Length + 33, output.Length);
+        int responseStart = output.Length - 33;
+        Assert.Equal(0x00, output[responseStart]);      // LI high byte
+        Assert.Equal(0x1F, output[responseStart + 1]);  // LI low byte (31)
+        Assert.Equal(0x98, output[responseStart + 23]); // MTI "9804" (BCD)
+        Assert.Equal(0x04, output[responseStart + 24]);
+        // Field in Error at header positions 17-19 (frame offsets 18-20) = "028".
+        Assert.Equal((byte)'0', output[responseStart + 18]);
+        Assert.Equal((byte)'2', output[responseStart + 19]);
+        Assert.Equal((byte)'8', output[responseStart + 20]);
+        // The appended primary bitmap is a faithful echo of the original message's bitmap.
+        byte[] expectedBitmap = new byte[8];
+        Array.Copy(packed, 23, expectedBitmap, 0, 8);
+        Assert.Equal(expectedBitmap, output.AsSpan(responseStart + 25, 8).ToArray());
     }
 
     [Fact]
@@ -872,15 +881,24 @@ public sealed class PipelineTests
         Assert.True(pipeline.Stats.MessagesReceived >= 1);
         Assert.Equal(0, pipeline.Stats.ParseErrors);
 
-        // The response must end with a bitmap-less BCD "9804" frame (0x98 0x04) and its
-        // D8 header "Field in Error" (frame offsets 18-20) must be "003".
+        // The response must end with a BCD "9804" field-error frame whose 21-byte header +
+        // 2-byte MTI are followed by the original 8-byte primary bitmap (no data fields):
+        //   [2-byte LI=0x001F][21-byte header][2-byte BCD MTI][8-byte bitmap] = 33 bytes.
         byte[] output = clientStream.ToArray();
-        Assert.True(output.Length >= 25);
-        Assert.Equal(0x98, output[output.Length - 2]);
-        Assert.Equal(0x04, output[output.Length - 1]);
-        Assert.Equal((byte)'0', output[output.Length - 7]);
-        Assert.Equal((byte)'0', output[output.Length - 6]);
-        Assert.Equal((byte)'3', output[output.Length - 5]);
+        Assert.Equal(2 + packed.Length + 33, output.Length);
+        int responseStart = output.Length - 33;
+        Assert.Equal(0x00, output[responseStart]);      // LI high byte
+        Assert.Equal(0x1F, output[responseStart + 1]);  // LI low byte (31)
+        Assert.Equal(0x98, output[responseStart + 23]); // MTI "9804" (BCD)
+        Assert.Equal(0x04, output[responseStart + 24]);
+        // Field in Error at header positions 17-19 (frame offsets 18-20) = "003".
+        Assert.Equal((byte)'0', output[responseStart + 18]);
+        Assert.Equal((byte)'0', output[responseStart + 19]);
+        Assert.Equal((byte)'3', output[responseStart + 20]);
+        // The appended primary bitmap is a faithful echo of the original message's bitmap.
+        byte[] expectedBitmap = new byte[8];
+        Array.Copy(packed, 23, expectedBitmap, 0, 8);
+        Assert.Equal(expectedBitmap, output.AsSpan(responseStart + 25, 8).ToArray());
     }
 
     [Fact]

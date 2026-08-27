@@ -96,7 +96,7 @@ internal static class WriterStage
         stats.IncrementMessagesSent();
     }
 
-    private static string FormatOutboundHexDump(byte[] framed, int frameLength, int connNum)
+    internal static string FormatOutboundHexDump(byte[] framed, int frameLength, int connNum)
     {
         var sb = new StringBuilder(4096);
         sb.AppendLine($"[#{connNum}] ── Hex Dump ({frameLength} bytes) ──");
