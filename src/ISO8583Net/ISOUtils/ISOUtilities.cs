@@ -1,4 +1,4 @@
-﻿using ISO8583Net.Types;
+using ISO8583Net.Types;
 using System;
 using System.Buffers;
 using System.Collections.Generic;
@@ -235,8 +235,9 @@ namespace ISO8583Net.Utilities
         public static void Int2Bytes(int value, byte[] packedBytes, ref int index, int numHexDigits)
         {
             int byteCount = numHexDigits / 2;
+            // ISO 8583 BIN length prefixes are big-endian (most significant byte first).
             for (int i = 0; i < byteCount; i++)
-                packedBytes[index + i] = (byte)(value >> (8 * i));
+                packedBytes[index + i] = (byte)(value >> (8 * (byteCount - 1 - i)));
             index += byteCount;
         }
         /// <summary>
