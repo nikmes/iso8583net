@@ -482,8 +482,11 @@
       "f040": "C",
       "f041": "C",
       "f042": "C",
+      "f048": "C",
       "f049": "M",
       "f051": "C",
+      "f055": "C",
+      "f056": "M",
       "f102": "C",
       "f103": "C"
     },
@@ -554,9 +557,9 @@
       "length": 99,
       "lengthCoding": "BIN",
       "lengthPadding": "LEFT",
-      "contentFormat": "ANS",
-      "contentCoding": "ASCII",
-      "contentPadding": "RIGHT"
+      "contentFormat": "N",
+      "contentCoding": "BCD",
+      "contentPadding": "LEFT"
     },
     {
       "$type": "simple",
