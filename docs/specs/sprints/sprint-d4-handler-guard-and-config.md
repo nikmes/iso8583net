@@ -11,18 +11,25 @@ what the dialect defines.
 
 ## Findings from D2R + D3 (review, 2026-08-24)
 
+> These are the pre-D4 findings that shaped the sprint. All D4 tasks below are now `Done`;
+> where the final implementation differs from a finding, the updated bullets below describe
+> the shipped behavior.
+
 These clarify how D4 interacts with what the last two sprints already shipped:
 
-- **Inbound enforcement is always-on and independent of `DialectValidationMode`.**
-  `ISOMessage.UnPack` computes `ValidationResult` unconditionally (`ISOMessage.cs:280-285`);
-  `DispatcherStage` then rejects unknown MTIs (`9800`) and field-level failures (`9xxx`) *before*
-  handler lookup. The `Off`/`Warn`/`On` switch governs **outbound** validation only
-  (`ISOMessageFieldsPackager.Pack` and the MTI guard in `ISOMessage.Set`). Do **not** re-add a
-  mode gate to the inbound path — it must stay always-on so peers always get a format-error reply.
-- **The D8 inbound guard already satisfies most of D4-2.** Because the unknown-MTI / field-error
-  branches fire before `registry.GetHandlers(mti)`, the `"*"` catch-all never sees an undefined MTI
-  for D8-header messages. The remaining gap is the **non-D8 path**: those branches are gated on
-  `Header is ISOHeaderD8`, so a VISA-dialect undefined MTI would still reach the catch-all.
+- **Inbound enforcement has two layers with different gating.** `ISOMessage.UnPack` computes
+  `ValidationResult` unconditionally (`ISOMessage.cs:280-285`). `DispatcherStage` then rejects
+  unknown MTIs (`9800`/`999`) **always**, but field-level failures (`9xxx`) are rejected **only
+  when `DialectValidationMode=On`** — in `Off`/`Warn` the parser logs the violation and the
+  message is still dispatched (`DispatcherStage.cs:94-96`). The `Off`/`Warn`/`On` switch also
+  governs **outbound** validation (`ISOMessageFieldsPackager.Pack` and the MTI guard in
+  `ISOMessage.Set`). Do **not** remove the mode gate from the unknown-MTI path — that one must
+  stay always-on so peers always get a `9800` reply.
+- **D4-2 closes the remaining catch-all gap.** For D8-header messages the unknown-MTI branch
+  fires before `registry.GetHandlers(mti)`, so the `"*"` catch-all never sees an undefined MTI.
+  For non-D8 dialects, `HandlerRegistry.GetHandlers` now consults the catch-all only for
+  dialect-defined MTIs (plus the null/empty-MTI case) via `ValidateAgainstDialect`, so undefined
+  MTIs yield no handlers across all dialects.
 - **`HandlerRegistry` has no dialect access today.** Its constructor only takes
   `IEnumerable<IMessageHandler>` (`HandlerRegistry.cs:20`), so D4-1 needs the packager (or the set
   of valid MTIs from `GetMessageTypesPackager()`) injected.
@@ -36,7 +43,7 @@ These clarify how D4 interacts with what the last two sprints already shipped:
 | D4-3 | Add runtime-toggleable `DialectValidationMode` (`Off`/`Warn`/`On`, default `Off`) to `ServerOptions` + `appsettings.json`; thread into the shared packager; expose via `PUT /api/iso8583/config` | `src/ISO8583Server/*`, `tools/ISO8583Service/*` | Done |
 | D4-4 | Update docs: `AGENTS.md` (architecture + handler framework sections), `docs/handler-development-guide.md`, `tools/ISO8583Service/README.md` — document that only dialect-defined MTIs/fields may be used | `AGENTS.md`, `docs/handler-development-guide.md`, `tools/ISO8583Service/README.md` | Done |
 | D4-5 | Add startup self-check: log the dialect's supported MTIs (already exists in `Iso8583TcpServer.LogMessageTypes`) plus a validation summary of registered handler MTIs | `src/ISO8583Server/Iso8583TcpServer.cs` | Done |
-| D4-6 | Full regression: 58 core tests + 3 service tests pass; CI green | — | Done |
+| D4-6 | Full regression: 62 core tests + 3 service tests pass; CI green | — | Done |
 
 ## Acceptance criteria
 

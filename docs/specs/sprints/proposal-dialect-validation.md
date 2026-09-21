@@ -1,8 +1,8 @@
 # Dialect-Enforced Validation — Proposal
 
-> Status: **Partially implemented** — D0 (validator core), D1 (outbound + `1804` fix + tri-state
+> Status: **Implemented** — D0 (validator core), D1 (outbound + `1804` fix + tri-state
 > `DialectValidationMode`), D2 (inbound enforcement), D2R (spec-complete `9xxx` format-error
-> responses), and D3 (`9xxx` receive side) are shipped; D4 (handler guard, config & docs) remains open.
+> responses), D3 (`9xxx` receive side), and D4 (handler guard, config & docs) are all shipped.
 > Companion sprint files:
 > [`sprint-d0-validator-core.md`](sprint-d0-validator-core.md) ·
 > [`sprint-d1-outbound-enforcement.md`](sprint-d1-outbound-enforcement.md) ·
@@ -72,7 +72,7 @@ unpacked, sent, and processed. Concretely:
 | Outbound  | Field participation | dead flag | reject missing mandatory + disallowed fields at `Pack` |
 | Inbound   | MTI membership | none | `UnPack` reports unknown MTI; `ParserStage` emits error, never silently drops |
 | Inbound   | Field participation | partial (field-packager existence only) | validate mandatory fields against the MTI |
-| Routing   | Handler MTI set | any string allowed, `"*"` absorbs | registration validates against dialect; `"*"` only fires for dialect-defined MTIs without a specific handler |
+| Routing   | Handler MTI set | any string allowed, `"*"` absorbs | registration validates against dialect; `"*"` fires alongside specific handlers but only for dialect-defined MTIs |
 | Service   | Server-initiated sends | hardcoded `1800` | use dialect-valid `1804`, validate before send |
 
 ## 5. Mechanism
@@ -98,8 +98,9 @@ Introduce a small validation API on top of the existing packager objects:
   field participation before writing bytes (reusing `DialectValidator`). In `On` mode a failure
   throws `DialectValidationException`; in `Warn` mode it logs a warning and proceeds; in `Off`
   mode the check is skipped entirely.
-- `ISOMessage.Set(0, mti)` (`ISOMessage.cs:119-129`) performs an early MTI-membership check so a
-  developer gets immediate feedback at the call site rather than at pack time.
+- `ISOMessage.Set(0, mti)` performs an early MTI-membership check so a developer gets immediate
+  feedback at the call site rather than at pack time. **This check only runs in `On` mode**; in
+  `Off`/`Warn` the membership check is deferred to pack time.
 
 ### 5.3 Inbound enforcement
 
@@ -113,9 +114,9 @@ Introduce a small validation API on top of the existing packager objects:
 
 - `HandlerRegistry` (`HandlerRegistry.cs:20-41`) validates each `SupportedMTIs` value (except
   `"*"`) against the dialect at construction; an undefined MTI is a startup error.
-- The `"*"` catch-all is re-scoped: it fires only for **dialect-defined** MTIs that have no
-  specific handler, never for undefined MTIs. Undefined MTIs are rejected at the parse/dispatch
-  boundary before any handler runs.
+- The `"*"` catch-all is re-scoped: it fires only for **dialect-defined** MTIs (alongside
+  any specific handler for that MTI), never for undefined MTIs. Undefined MTIs are rejected at
+  the parse/dispatch boundary before any handler runs.
 
 ### 5.5 Service-initiated sends
 
@@ -133,11 +134,14 @@ Two consequences for this work:
 
 1. To *send* such an error response, the service uses a **raw error-frame builder**
    (`ErrorResponseBuilder`) that emits `header + MTI` with no bitmap (the bitmap-less inbound
-   path already tolerates this shape).
+   path already tolerates this shape). This unknown-MTI/`9800` path is **always on**,
+   independent of `DialectValidationMode`.
 2. For field-level inbound errors (missing mandatory or disallowed field), the response is a
    spec-defined `9xxx` transformation: the first digit of the inbound MTI is replaced by `9`
    (e.g. `1200` → `9200`, `1804` → `9804`), and the header `Field in Error` carries the first
    offending field number (`000`–`128`). This is **not** `F39=902` and does not require new MTIs.
+   Field-level `9xxx` responses are emitted **only when `DialectValidationMode=On`**; in
+   `Off`/`Warn` the violation is logged but the message is still dispatched.
 
 **Decision (final, implemented in Sprint D2R):** `9xxx` format-error responses are composed as
 **raw bitmap-less frames** by `ErrorResponseBuilder`, never packed through the field packager and

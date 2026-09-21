@@ -32,8 +32,11 @@ All commands run from the repository root (`/home/ecommbx/iso8583net`).
 # Build the entire solution
 dotnet build iso8583net.sln
 
-# Run all xUnit tests (23 tests as of this writing)
+# Run all core xUnit tests (62 tests as of this writing)
 dotnet test tests/ISO8583Net.Tests/ISO8583Tests.csproj
+
+# Run the service xUnit tests (3 tests as of this writing)
+dotnet test tests/ISO8583Service.Tests/ISO8583Service.Tests.csproj
 
 # Run a filtered subset
 dotnet test tests/ISO8583Net.Tests/ISO8583Tests.csproj --filter "FullyQualifiedName~PipelineTests" --verbosity normal
@@ -54,7 +57,8 @@ dotnet publish tools/ISO8583Service/ISO8583Service.csproj \
 ```
 
 CI (`.github/workflows/build.yml`) runs on `windows-latest` with .NET 10.0.x:
-`dotnet restore` → `dotnet build --configuration Release --no-restore` → `dotnet test --configuration Release --no-build`.
+`dotnet restore iso8583net.sln` → `dotnet build iso8583net.sln --configuration Release --no-restore` →
+`dotnet test tests/ISO8583Net.Tests/ISO8583Tests.csproj --configuration Release --no-build`.
 
 ---
 
@@ -244,7 +248,7 @@ Built-in service handlers (`tools/ISO8583Service/Handlers/`) and their MTIs:
 
 `BaseRequestHandler.BuildResponse` creates a clean response via `request.CreateCleanResponse()` and copies: F2, F3, F4, F7, F11, F12, F22, F32, F37, F41, F42, F49. Override `BuildResponse` if you need additional fields.
 
-`BaseAdviceHandler.BuildAcknowledgement` **mutates the request in place**, setting the response MTI and F39 = `400`.
+`BaseAdviceHandler.BuildAcknowledgement` builds a **clean response** via `request.CreateCleanResponse()`, copies only the fields that participate in the response MTI's dialect definition, sets the response MTI and F39 = `400`.
 
 Handlers receive `MessageContext` with:
 
@@ -268,7 +272,7 @@ Configuration lives in `tools/ISO8583Service/appsettings.json` (copied to output
 
 | Setting | Default | Description |
 |---------|---------|-------------|
-| `Port` | `9090` | ISO 8583 TCP port |
+| `Port` | `9090` (code default; `appsettings.json` sets `9443`) | ISO 8583 TCP port |
 | `DialectPath` | `null` | Path to dialect JSON; `null` or empty uses embedded VISA dialect |
 | `SignOnIntervalSeconds` | `0` | Periodic SignOn interval; `0` disables |
 | `SendSignOnOnConnect` | `false` | Send SignOn when a client connects |
@@ -358,16 +362,25 @@ Service project:
 ## Testing Strategy
 
 - Framework: **xUnit**.
-- Test project: `tests/ISO8583Net.Tests/ISO8583Tests.csproj`.
-- Test files:
+- Test projects:
+  - `tests/ISO8583Net.Tests/ISO8583Tests.csproj` — core library + pipeline (62 tests).
+  - `tests/ISO8583Service.Tests/ISO8583Service.Tests.csproj` — REST controller (3 tests).
+- Core test files:
   - `BitmapTests.cs`
   - `UtilTests.cs`
+  - `DialectLoaderTests.cs`
+  - `DialectValidatorTests.cs`
+  - `DialectEnforcementTests.cs`
+  - `DialectValidationModeTests.cs`
+  - `HandlerRegistryValidationTests.cs`
   - `PipelineTests.cs`
   - `IntegrationTests.cs`
 - Integration tests use in-memory streams (`PassthroughStream`, `SplitStream`) to simulate bidirectional sockets without real TCP.
 - Tests construct `PipelineHost` directly with a `HandlerRegistry` and `NullLoggerFactory`.
 - A custom `NullTestLogger` / `NullTestLogger<T>` is defined in the test files.
-- Verified: **23 tests pass** with `dotnet test tests/ISO8583Net.Tests/ISO8583Tests.csproj`.
+- Verified: **62 core tests + 3 service tests pass** with
+  `dotnet test tests/ISO8583Net.Tests/ISO8583Tests.csproj` and
+  `dotnet test tests/ISO8583Service.Tests/ISO8583Service.Tests.csproj`.
 
 ---
 

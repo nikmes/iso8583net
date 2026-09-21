@@ -68,13 +68,14 @@ All settings in `appsettings.json`:
     "Port": 9443,
     "DialectPath": "Dialects/d8-iso8583.json",
     "SignOnIntervalSeconds": 30,
-    "SendSignOnOnConnect": true,
-    "EnablePeriodicSignOn": true,
+    "SendSignOnOnConnect": false,
+    "EnablePeriodicSignOn": false,
+    "DialectValidationMode": "Off",
     "TlsEnabled": true,
     "TlsCertPath": "/etc/d8dh/certs/server.crt",
     "TlsKeyPath": "/etc/d8dh/certs/server.key",
     "TlsCaCertPath": "/etc/d8dh/certs/ca.pem",
-    "TlsRequireClientCert": true
+    "TlsRequireClientCert": false
   }
 }
 ```
@@ -86,6 +87,7 @@ All settings in `appsettings.json`:
 | `SignOnIntervalSeconds` | `0` | Interval between periodic SignOns. `0` = disabled |
 | `SendSignOnOnConnect` | `false` | Send SignOn immediately when client connects |
 | `EnablePeriodicSignOn` | `false` | Enable periodic SignOn loop |
+| `DialectValidationMode` | `Off` | Outbound dialect validation: `Off` (permissive), `Warn` (log, don't block), `On` (throw before invalid bytes). Toggleable at runtime via `PUT /config` |
 | `TlsEnabled` | `false` | Enable TLS encryption |
 | `TlsCertPath` | — | Path to server certificate (`.crt`) |
 | `TlsKeyPath` | — | Path to server private key (`.key`) |
@@ -94,12 +96,13 @@ All settings in `appsettings.json`:
 
 ### Logging
 
-Configured via Serilog, with console and rolling file sinks:
+Serilog is configured in `Program.cs` (the `appsettings.json` `Serilog` section
+is not read by the host). Console and rolling file sinks:
 
 ```json
 {
   "Serilog": {
-    "MinimumLevel": "Information",
+    "MinimumLevel": "Debug",
     "WriteTo": [
       { "Name": "Console" },
       {
@@ -115,6 +118,8 @@ Configured via Serilog, with console and rolling file sinks:
 }
 ```
 
+(The JSON above mirrors what `Program.cs` sets in code.)
+
 ## REST API
 
 Base URL: `http://localhost:5000/api/iso8583`
@@ -123,9 +128,9 @@ Base URL: `http://localhost:5000/api/iso8583`
 |--------|----------|-------------|
 | `GET` | `/status` | Server status, connected clients, current config |
 | `POST` | `/signon` | Send SignOn (MTI 1804, F24=801) to all clients |
-| `POST` | `/signoff?disconnect=true` | Send SignOff (MTI 1804, F24=803). `disconnect=true` stops the server |
+| `POST` | `/signoff?disconnect=true` | Send SignOff (MTI 1804, F24=802). `disconnect=true` stops the server |
 | `POST` | `/echo` | Send Echo (MTI 1804, F24=831) to all clients |
-| `PUT` | `/config` | Update `SignOnIntervalSeconds` and `EnablePeriodicSignOn` at runtime |
+| `PUT` | `/config` | Update `SignOnIntervalSeconds`, `EnablePeriodicSignOn`, and `DialectValidationMode` at runtime |
 
 ### Example Responses
 
@@ -134,6 +139,7 @@ Base URL: `http://localhost:5000/api/iso8583`
 {
   "isRunning": true,
   "connectionCount": 3,
+  "handlerCount": 8,
   "connectedClients": [
     {
       "connectionNumber": 1,
@@ -141,13 +147,24 @@ Base URL: `http://localhost:5000/api/iso8583`
       "connectedAt": "2026-07-17T06:00:00.0000000Z"
     }
   ],
+  "pipelineStats": {
+    "totalConnections": 3,
+    "totalBytesRead": 412340,
+    "totalMessagesRead": 15000,
+    "totalBytesWritten": 398120,
+    "totalMessagesWritten": 15000,
+    "totalParseErrors": 2,
+    "inFlight": 4,
+    "handlerErrors": 0
+  },
   "config": {
     "port": 9443,
     "dialectPath": "Dialects/d8-iso8583.json",
     "signOnIntervalSeconds": 30,
-    "sendSignOnOnConnect": true,
-    "enablePeriodicSignOn": true,
-    "tlsEnabled": true
+    "sendSignOnOnConnect": false,
+    "enablePeriodicSignOn": false,
+    "tlsEnabled": true,
+    "dialectValidationMode": "Off"
   }
 }
 ```
@@ -165,14 +182,16 @@ Base URL: `http://localhost:5000/api/iso8583`
 // Request body
 {
   "signOnIntervalSeconds": 60,
-  "enablePeriodicSignOn": true
+  "enablePeriodicSignOn": true,
+  "dialectValidationMode": "Warn"
 }
 
 // Response
 {
   "message": "Configuration updated.",
   "signOnIntervalSeconds": 60,
-  "enablePeriodicSignOn": true
+  "enablePeriodicSignOn": true,
+  "dialectValidationMode": "Warn"
 }
 ```
 
@@ -243,30 +262,26 @@ graph TD
 
 ## Health Checks
 
-The service exposes a health endpoint at `GET /health`:
+The service exposes a health endpoint at `GET /health`. The default ASP.NET Core
+health response is **plain text**: `Healthy`, `Degraded`, or `Unhealthy`.
+Detailed metrics are exposed by `GET /api/iso8583/status` instead.
 
-```json
-{
-  "status": "Healthy",
-  "description": "All systems operational",
-  "data": {
-    "ConnectionCount": 3,
-    "IsRunning": true,
-    "HandlerCount": 5,
-    "TotalMessagesReceived": 15000,
-    "TotalMessagesSent": 15000,
-    "TotalParseErrors": 0,
-    "MaxWriteQueueLength": 4,
-    "MaxInFlight": 12
-  }
-}
+```text
+GET /health  →  Degraded
 ```
+
+The `pipeline` check computes its status from these thresholds:
 
 | Status | Trigger |
 |--------|---------|
-| `Healthy` | Server running, no backpressure |
+| `Healthy` | Server running, at least one connection, write queue ≤ 200 |
 | `Degraded` | No connections OR write queue > 200 |
 | `Unhealthy` | Server not running |
+
+The same check also populates diagnostic data (connection count, handler count,
+messages received/sent, parse errors, max write queue, max in-flight) that is
+available to health-report consumers; the REST status endpoint
+`GET /api/iso8583/status` returns the equivalent metrics as JSON.
 
 ## Custom Message Handlers
 
@@ -282,7 +297,7 @@ using ISO8583Net.Server.Pipeline.Messages;
 public sealed class AuthorizationHandler : IMessageHandler
 {
     public IReadOnlySet<string> SupportedMTIs { get; } =
-        new HashSet<string> { "0100", "0120" };
+        new HashSet<string> { "1100" };
 
     public async Task<ISOMessage?> HandleAsync(MessageContext context, CancellationToken ct)
     {
@@ -292,9 +307,9 @@ public sealed class AuthorizationHandler : IMessageHandler
 
         // ... business logic ...
 
-        var response = context.Request; // copy fields from request
-        response.Set(0, "0110");        // set response MTI
-        response.Set(39, "00");         // approval
+        var response = request.CreateCleanResponse(); // don't mutate the request
+        response.Set(0, "1110");        // set response MTI
+        response.Set(39, "000");        // approval
         return response;
     }
 }
@@ -322,7 +337,7 @@ Based on BenchmarkDotNet measurements (Sprint 5):
 | `ParsedMessageCapacity` | **512** | Twice raw capacity — parsed msgs are smaller |
 | `OutboundMessageCapacity` | **256** | Matches raw; backpressure via `Wait` mode |
 | `DrainTimeoutSeconds` | **30** | Default; reduce for fast shutdown requirements |
-| `MaxParseErrorsBeforePause` | **10** | Circuit breaker: pause reader after 10 consecutive parse errors |
+| `MaxParseErrorsBeforePause` | **10** (shipped config: `0` = disabled) | Circuit breaker: pause reader after N consecutive parse errors |
 | `ParserCooldownSeconds` | **5** | Cooldown period before reader resumes |
 
 ### Measured Performance (Pipeline SEDA)

@@ -19,6 +19,8 @@ Proposal and sprint plan for bounding developers/users to what is actually defin
 | D3 | `9xxx` format-error responses: receive side | [sprint-d3-9xxx-receive-side.md](sprint-d3-9xxx-receive-side.md) | Done |
 | D4 | Handler guard, config & docs | [sprint-d4-handler-guard-and-config.md](sprint-d4-handler-guard-and-config.md) | Done |
 
+Current regression (2026-09-07): **62 core tests + 3 service tests pass**.
+
 ## Already shipped (overlaps with these sprints)
 
 Committed in `a4ee19c`; not sprint tasks themselves, but they overlap with D1/D2:

@@ -19,8 +19,8 @@ namespace ISO8583Net.Server.Pipeline.Handlers;
 /// - 831: Echo Test (keep-alive/heartbeat)
 ///
 /// Responses are MTI 1814. F39 is set based on handler result.
-/// The existing DefaultHandler already echoes 1800→1814; this handler
-/// provides richer network management lifecycle support.
+/// Network management (including echo) is handled here; the
+/// DefaultHandler catch-all is a pure no-op passthrough.
 /// </summary>
 public class NetworkManagementHandler : IMessageHandler
 {

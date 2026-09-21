@@ -75,7 +75,7 @@ classDiagram
     }
     class DefaultHandler {
         +SupportedMTIs ["*"]
-        "catch-all: 1800 echo, passthrough"
+        "catch-all: pure passthrough (no response)"
     }
     class AuthorizationHandler {
         RequestMTI="1100" ResponseMTI="1110"
@@ -150,10 +150,10 @@ public class MyAuthorizationHandler : BaseRequestHandler
 
         // Your business logic here
         if (!await _cardDb.IsValidAsync(pan, ct))
-            return ProcessResult.Declined("100");  // do not honor
+            return ProcessResult.Declined();  // do not honor (F39="100")
 
         if (decimal.Parse(amount!) > await _cardDb.GetLimitAsync(pan, ct))
-            return ProcessResult.Declined("116");  // insufficient funds
+            return new ProcessResult("116");  // insufficient funds
 
         var approvalCode = Guid.NewGuid().ToString("N")[..6].ToUpper();
         return ProcessResult.Approved(approvalCode);
@@ -190,20 +190,24 @@ No socket code, no message framing — just business logic.
 | I receive a store-and-forward notification, just need to log it and ack | `BaseAdviceHandler` | `OnAcknowledgedAsync()` |
 | I need to handle logon/logoff/key-change/echo | `NetworkManagementHandler` | `HandleLogonAsync()` etc. |
 | I need full control (no auto-MTI, no auto-fields, raw ISOMessage manipulation) | `IMessageHandler` directly | `HandleAsync()` |
-| I'm a catch-all for unknown MTIs | `DefaultHandler` — already exists | (none, already registered) |
+| I'm a catch-all that observes every dialect-defined MTI (runs alongside specific handlers) | `DefaultHandler` — already exists | (none, already registered) |
 
 ### F39 Action Codes (Response Code)
 
-| F39 | Meaning | When to use |
-|-----|---------|-------------|
-| `000` | Approved | Transaction successful |
-| `085` | Not declined | Advice accepted, no issues |
-| `100` | Do not honor | Card blocked, invalid, stolen |
-| `116` | Insufficient funds | Balance too low for amount |
-| `400` | Accepted | Advice acknowledged (auto-set by BaseAdviceHandler) |
-| `902` | Invalid transaction | Parse error, bad format |
-| `906` | Not supported | Feature not implemented |
-| `909` | System malfunction | Internal error |
+Codes emitted by the built-in base classes:
+
+| F39 | Meaning | Emitted by |
+|-----|---------|------------|
+| `000` | Approved | `ProcessResult.Approved()`, `NetworkManagementHandler` logon/logoff/echo defaults |
+| `100` | Do not honor | `ProcessResult.Declined()` |
+| `400` | Accepted | `BaseAdviceHandler` acknowledgements (always) |
+| `902` | Invalid transaction / format error | `ProcessResult.FormatError()`, `BaseRequestHandler` on exception, `NetworkManagementHandler` unknown F24 |
+| `906` | Not supported | `NetworkManagementHandler.HandleKeyChangeAsync` default |
+| `909` | System malfunction | `NetworkManagementHandler` on exception |
+
+Any other action code (e.g. `116` insufficient funds, `159` suspected fraud)
+is handler business logic — return `new ProcessResult("116")` and F39 will be
+`116`. Note `ProcessResult.Declined(value)` sets F38 to `value`, not F39.
 
 ---
 
@@ -353,6 +357,8 @@ Handles MTI **1804→1814**. Dispatches to virtual methods based on F24 (Functio
 | `802` | `HandleLogoffAsync()` | returns `"000"` | Session cleanup, audit log |
 | `811` | `HandleKeyChangeAsync()` | returns `"906"` (unsupported) | Crypto key rotation (ZMK, ZPK, TMK) |
 | `831` | `HandleEchoAsync()` | returns `"000"` | Keep-alive heartbeat checks |
+| anything else | (none) | returns `"902"` | — |
+| (exception thrown) | (none) | returns `"909"` | — |
 
 ### Example: session-based logon
 
@@ -395,6 +401,9 @@ no auto F39. You receive the raw `MessageContext` and decide everything.
 ```csharp
 public class CustomBatchHandler : IMessageHandler
 {
+    // NOTE: every MTI listed here must be defined in the loaded dialect, or
+    // startup validation (PipelineHost.ValidateHandlers) will fail. 0320/0420
+    // are examples only — add them to the dialect JSON first.
     public IReadOnlySet<string> SupportedMTIs { get; }
         = new HashSet<string> { "0320", "0420" };
 
@@ -423,21 +432,26 @@ Return `null` to skip sending a response entirely.
 
 ## The DefaultHandler (Catch-All)
 
-Registered with MTI `"*"` — it receives **every** message as a fallback.
+Registered with MTI `"*"` — it receives **every** dialect-defined message as a
+fallback.
 
 ### Behavior
 
 | MTI | Action |
 |-----|--------|
-| `1800` | Echo: sets MTI→1814, F39="000", returns response |
+| `null` / absent (header-only or corrupt message) | Logs at Warning, returns `null` (no response) |
 | Everything else | Logs at Trace level, returns `null` (no response) |
+
+`DefaultHandler` is a pure passthrough: it never builds a response. Network
+management (MTI 1804, including echo) is handled by `NetworkManagementHandler`,
+not by the catch-all. Legacy 1800 echo behavior was removed in Sprint D1.
 
 ### Important: catch-all runs alongside specific handlers
 
 When you register `AuthorizationHandler` for MTI "1100", both your handler AND
-`DefaultHandler` fire for every 1100 message. DefaultHandler returns `null` for
-non-1800 MTIs, so it's a harmless no-op. The dispatcher sends whichever response
-is non-null (your handler's wins).
+`DefaultHandler` fire for every 1100 message. DefaultHandler returns `null`, so
+it's a harmless no-op. The dispatcher sends whichever response is non-null
+(your handler's wins).
 
 To disable the catch-all, simply don't register `DefaultHandler` in DI.
 
@@ -480,7 +494,8 @@ builder.Services.AddSingleton<IMessageHandler, ReversalAdviceHandler>();      //
 
 At startup, `Iso8583TcpServer` loads the dialect and calls `PipelineHost.ValidateHandlers()`,
 which validates every registered handler's `SupportedMTIs` against the dialect's defined message
-types and **throws** on the first violation, before any connection is accepted:
+types and **throws an `InvalidOperationException` listing all offending MTIs** before any
+connection is accepted:
 
 - An MTI not defined in the dialect (e.g. `1800` in the D8 dialect, which defines `1804`).
 - Any terminal `9xxx` format-error MTI (`9800`, `9200`, …) — these are generated by the
@@ -529,13 +544,18 @@ public sealed class MessageContext
     public DateTime ReceivedAt { get; }
 
     /// <summary>Send a response back to the client.</summary>
-    public ValueTask SendResponseAsync(ISOMessage response, CancellationToken ct);
+    public ValueTask SendResponseAsync(ISOMessage response, CancellationToken ct = default);
+
+    /// <summary>Send raw pre-framed bytes (2-byte length prefix already included).</summary>
+    public ValueTask SendRawResponseAsync(byte[] preFramed, CancellationToken ct = default);
 }
 ```
 
 Most handlers don't call `SendResponseAsync` directly — the base classes do that.
 But it's available if you implement `IMessageHandler` directly or need to send
-multiple responses for a single request.
+multiple responses for a single request. `SendRawResponseAsync` is for
+pre-framed wire bytes (used by the dispatcher's format-error responses); normal
+handlers should use `SendResponseAsync` with an `ISOMessage`.
 
 ---
 
@@ -595,105 +615,144 @@ _logger.LogInformation("Auth decision: PAN={Pan} F39={Action} Approval={AppCode}
     pan, actionCode, approvalCode);
 ```
 
-### Sinks configured in appsettings.json
+### Sinks configured in Program.cs
+
+Serilog is configured in `tools/ISO8583Service/Program.cs` (the
+`appsettings.json` `Serilog` section is not read by the host):
 
 | Sink | Path |
 |------|------|
 | Console | stdout (Docker/terminal) |
-| File | `logs/iso8583-service-{date}.log`, 7-day retention |
+| File | `logs/iso8583-service-.log` (daily rolling), 7-day retention |
 
 Output format: `HH:mm:ss.fff [INF] Auth decision: PAN=... F39=000 ...`
 
-To add more sinks (Seq, Elasticsearch, Datadog), add to the `Serilog` section
-in `appsettings.json` and to the `UseSerilog()` configuration in `Program.cs`.
+To add more sinks (Seq, Elasticsearch, Datadog), extend the
+`LoggerConfiguration` in `Program.cs`.
 
 ---
 
 ## Health Checks & Monitoring
 
-`GET http://localhost:5000/health` returns:
+`GET http://localhost:5000/health` returns a **plain-text** status
+(`Healthy`, `Degraded`, or `Unhealthy`) from the default ASP.NET Core health
+check writer:
 
-```json
-{
-  "status": "Healthy",
-  "results": {
-    "pipeline": {
-      "status": "Healthy",
-      "description": "All systems operational",
-      "data": {
-        "ConnectionCount": 3,
-        "IsRunning": true,
-        "HandlerCount": 4,
-        "TotalMessagesReceived": 12500,
-        "TotalMessagesSent": 12498,
-        "TotalParseErrors": 2,
-        "MaxWriteQueueLength": 15,
-        "MaxInFlight": 8
-      }
-    }
-  }
-}
+```text
+GET /health  →  Degraded
 ```
+
+The `pipeline` check also computes diagnostic data (connection count, handler
+count, messages received/sent, parse errors, max write queue, max in-flight);
+the equivalent metrics are returned as JSON by
+`GET /api/iso8583/status`.
 
 ### Status thresholds
 
 | Status | Condition |
 |--------|-----------|
-| **Healthy** | Server running, write queue < 200 |
+| **Healthy** | Server running, at least one connection, write queue ≤ 200 |
 | **Degraded** | No connections OR write queue > 200 |
 | **Unhealthy** | Server not running |
-
-REST API status is also at `GET /iso8583/status` (legacy endpoint).
 
 ---
 
 ## Testing Handlers
 
-Handlers are plain classes — unit-test them without any TCP infrastructure.
+Handlers are plain classes, but `MessageContext` is created by the dispatcher
+(its constructor is internal), so the practical way to test a handler is to run
+a full in-memory pipeline — no real TCP needed. The test project does exactly
+this with `MemoryStream` + `SplitStream`/`PassthroughStream`; see
+`tests/ISO8583Net.Tests/IntegrationTests.cs` for the complete pattern.
+
+A compact pipeline test looks like:
 
 ```csharp
 [Fact]
 public async Task AuthorizationHandler_DeclinesBlockedCard()
 {
-    // Arrange
+    // Arrange — stub the handler's dependency and register it
     var cardDb = new Mock<ICardDatabase>();
     cardDb.Setup(x => x.IsValidAsync("BLOCKED_PAN", It.IsAny<CancellationToken>()))
            .ReturnsAsync(false);
 
-    var handler = new MyAuthorizationHandler(
-        cardDb.Object,
-        NullLogger<MyAuthorizationHandler>.Instance);
+    var registry = new HandlerRegistry(new IMessageHandler[]
+    {
+        new MyAuthorizationHandler(cardDb.Object,
+            NullLogger<MyAuthorizationHandler>.Instance)
+    });
 
-    var request = CreateIsoMessage(pan: "BLOCKED_PAN", amount: "1000");
-    var ctx = CreateMessageContext(request);
+    var packager = new ISOMessagePackager(
+        NullLogger.Instance, "Dialects/d8-iso8583.json");
+    var host = new PipelineHost(
+        new PipelineOptions { DrainTimeoutSeconds = 5 },
+        registry, NullLoggerFactory.Instance);
+    host.SetPackager(packager);
+    host.ValidateHandlers();   // mirrors service startup
 
-    // Act
-    var response = await handler.HandleAsync(ctx, CancellationToken.None);
+    byte[] framed = BuildFramedRequest(packager, pan: "BLOCKED_PAN");
 
-    // Assert
-    Assert.NotNull(response);
+    using var clientStream = new MemoryStream(framed);
+    using var serverToClient = new MemoryStream();
+    using var serverStream = new SplitStream(clientStream, serverToClient);
+    using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+
+    var pipeline = host.Accept(serverStream, 1, "test:1", cts.Token);
+
+    // Act — wait for the response to be written back
+    var sw = Stopwatch.StartNew();
+    while (pipeline.Stats.MessagesSent < 1 && sw.ElapsedMilliseconds < 5000)
+        await Task.Delay(10);
+
+    // Assert — unpack the frame the pipeline wrote to serverToClient
+    Assert.True(pipeline.Stats.MessagesSent >= 1);
+    var frameLen = (serverToClient.GetBuffer()[0] << 8) | serverToClient.GetBuffer()[1];
+    var response = new ISOMessage(NullLogger.Instance, packager);
+    response.UnPack(serverToClient.GetBuffer().AsSpan(2, frameLen).ToArray());
     Assert.Equal("1110", response.GetFieldValue(0));  // correct response MTI
     Assert.Equal("100", response.GetFieldValue(39));  // declined
+
+    cts.Cancel();
+    await pipeline.StopAsync(TimeSpan.FromSeconds(5));
+    await pipeline.DisposeAsync();
 }
 ```
 
-Helper to create a minimal ISOMessage for testing:
+Helper to build a minimal framed D8 request for testing:
 
 ```csharp
-private static ISOMessage CreateIsoMessage(string pan, string amount)
+private static byte[] BuildFramedRequest(ISOMessagePackager packager, string pan)
 {
-    var msg = new ISOMessage(/* your dialect/template setup */);
+    var msg = new ISOMessage(NullLogger.Instance, packager);
     msg.Set(0, "1100");
     msg.Set(2, pan);
     msg.Set(3, "000000");
-    msg.Set(4, amount.PadLeft(12, '0'));
-    msg.Set(7, DateTime.Now.ToString("MMddHHmmss"));
+    msg.Set(4, "000000001000");          // amount 10.00
+    msg.Set(7, DateTime.UtcNow.ToString("MMddHHmmss"));
     msg.Set(11, "000123");
+    msg.Set(12, DateTime.UtcNow.ToString("HHmmss"));
+    msg.Set(19, "784");                    // Acquiring Institution Country Code
+    msg.Set(22, "051");
+    msg.Set(24, "801");
+    msg.Set(26, "0000");
+    msg.Set(28, DateTime.UtcNow.ToString("yyMMdd"));
+    msg.Set(32, "123456");
     msg.Set(37, "123456789012");
     msg.Set(41, "TERM0001");
-    return msg;
+    msg.Set(42, "MERCHANT123");
+    msg.Set(49, "784");
+
+    byte[] packed = msg.Pack();
+    byte[] framed = new byte[2 + packed.Length];
+    framed[0] = (byte)(packed.Length >> 8);
+    framed[1] = (byte)(packed.Length & 0xFF);
+    Array.Copy(packed, 0, framed, 2, packed.Length);
+    return framed;
 }
 ```
+
+`SplitStream` / `PassthroughStream` are small in-memory duplex streams defined in
+the test project that simulate a bidirectional socket.
 
 ---
 
@@ -745,13 +804,13 @@ public class ProductionAuthorizationHandler : BaseRequestHandler
         if (card is null)
         {
             await _audit.LogAsync(stan, "AUTH", "DECLINED", "UNKNOWN_CARD");
-            return ProcessResult.Declined("100");  // do not honor
+            return ProcessResult.Declined();  // do not honor
         }
 
         if (card.IsBlocked)
         {
             await _audit.LogAsync(stan, "AUTH", "DECLINED", "BLOCKED_CARD");
-            return ProcessResult.Declined("100");  // do not honor
+            return ProcessResult.Declined();  // do not honor
         }
 
         // 3. Fraud check
@@ -760,7 +819,7 @@ public class ProductionAuthorizationHandler : BaseRequestHandler
         if (fraudScore > 80)
         {
             await _audit.LogAsync(stan, "AUTH", "DECLINED", $"FRAUD:{fraudScore}");
-            return ProcessResult.Declined("159");  // suspected fraud
+            return new ProcessResult("159");  // suspected fraud
         }
 
         // 4. Balance check
@@ -768,7 +827,7 @@ public class ProductionAuthorizationHandler : BaseRequestHandler
         if (amt > card.AvailableBalance)
         {
             await _audit.LogAsync(stan, "AUTH", "DECLINED", "INSUFFICIENT_FUNDS");
-            return ProcessResult.Declined("116");  // insufficient funds
+            return new ProcessResult("116");  // insufficient funds
         }
 
         // 5. Approval

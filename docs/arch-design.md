@@ -1,10 +1,14 @@
-# ISO8583Service — High-Performance Architecture Proposal
+# ISO8583Service — SEDA Pipeline Architecture
+
+> Status: **Implemented.** The architecture described below is what
+> `src/ISO8583Server` ships today. The problem statement and migration phases
+> are retained for historical context only.
 
 ## Problem Statement
 
-The current `Iso8583TcpServer` processes each client connection in a single
-sequential loop: **read → parse → auto-respond → read next**. This creates
-several bottlenecks:
+Before the pipeline refactor, `Iso8583TcpServer` processed each client
+connection in a single sequential loop: **read → parse → auto-respond → read
+next**. This created several bottlenecks:
 
 | Bottleneck | Impact |
 |---|---|
@@ -73,7 +77,7 @@ flowchart LR
 public interface IMessageHandler
 {
     /// <summary>
-    /// MTIs this handler processes (e.g. ["1800", "1814"]).
+    /// MTIs this handler processes (e.g. ["1804", "1814"]).
     /// Use ["*"] for a catch-all handler.
     /// </summary>
     IReadOnlySet<string> SupportedMTIs { get; }
@@ -93,20 +97,21 @@ public sealed class MessageContext
     public DateTime ReceivedAt { get; init; }
 
     /// <summary>Send a response back to this client.</summary>
-    public ValueTask SendResponseAsync(ISOMessage response, CancellationToken ct);
+    public ValueTask SendResponseAsync(ISOMessage response, CancellationToken ct = default);
 
-    /// <summary>Send a raw byte response (pre-packed).</summary>
-    public ValueTask SendRawResponseAsync(byte[] framedMessage, CancellationToken ct);
+    /// <summary>Send a raw byte response (pre-framed, length prefix included).</summary>
+    public ValueTask SendRawResponseAsync(byte[] preFramed, CancellationToken ct = default);
 }
 ```
 
 Handlers are registered via DI:
 
 ```csharp
-// Program.cs
-builder.Services.AddSingleton<IMessageHandler, AuthorizationHandler>();  // MTI 0100
-builder.Services.AddSingleton<IMessageHandler, ReversalHandler>();       // MTI 0400
-builder.Services.AddSingleton<IMessageHandler, NetworkHandler>();        // MTI 1800
+// Program.cs — D8 G2B dialect MTIs
+builder.Services.AddSingleton<IMessageHandler, AuthorizationHandler>();  // MTI 1100
+builder.Services.AddSingleton<IMessageHandler, FinancialHandler>();      // MTI 1200
+builder.Services.AddSingleton<IMessageHandler, ReversalHandler>();       // MTI 1400
+builder.Services.AddSingleton<IMessageHandler, NetworkManagementHandler>(); // MTI 1804
 ```
 
 - Each handler runs independently — 100 messages can be in-flight simultaneously
@@ -175,16 +180,26 @@ Timeout configurable (e.g., 30 seconds), after which pending work is discarded.
 A singleton `PipelineHost` manages all connections:
 
 ```csharp
-public sealed class PipelineHost : IAsyncDisposable
+public sealed class PipelineHost
 {
+    // Set the loaded dialect packager (called by Iso8583TcpServer.StartAsync)
+    public void SetPackager(ISOMessagePackager packager);
+
+    // Fail fast if any registered handler declares an MTI outside the dialect
+    public void ValidateHandlers();
+
     // Start a pipeline for a new connection
-    public PipelineHandle Accept(TcpClient client, int connNum, CancellationToken ct);
+    public ConnectionPipeline Accept(Stream stream, int connectionNumber,
+        string remoteEndpoint, CancellationToken ct);
+
+    // Outbound dialect validation mode (Off/Warn/On), runtime-toggleable
+    public DialectValidationMode DialectValidationMode { get; set; }
 
     // Active connections for monitoring
     public IReadOnlyList<PipelineStats> GetStats();
 
     // Graceful shutdown
-    public Task StopAllAsync(TimeSpan drainTimeout);
+    public Task StopAllAsync(CancellationToken ct = default);
 }
 
 public sealed class PipelineStats
@@ -192,10 +207,16 @@ public sealed class PipelineStats
     public int ConnectionNumber { get; init; }
     public string RemoteEndpoint { get; init; }
     public DateTime ConnectedAt { get; init; }
-    public int MessagesReceived { get; init; }
-    public int MessagesSent { get; init; }
-    public int InFlight { get; init; }       // messages being processed
-    public int WriteQueueLength { get; init; }
+    public long MessagesReceived { get; }
+    public long MessagesSent { get; }
+    public long ParseErrors { get; }
+    public long HandlerErrors { get; }
+    public long BytesReceived { get; }
+    public long BytesSent { get; }
+    public int InFlight { get; set; }          // messages being processed
+    public int WriteQueueLength { get; set; }
+    public int MaxInFlight { get; set; }
+    public int MaxWriteQueueLength { get; set; }
 }
 ```
 
@@ -208,7 +229,20 @@ public sealed class PipelineStats
   "Iso8583Server": {
     "Port": 9443,
     "DialectPath": "Dialects/d8-iso8583.json",
+    "SignOnIntervalSeconds": 30,
+    "SendSignOnOnConnect": false,
+    "EnablePeriodicSignOn": false,
+    "DialectValidationMode": "Off",
 
+    // TLS
+    "TlsEnabled": true,
+    "TlsCertPath": "/etc/d8dh/certs/server.crt",
+    "TlsKeyPath": "/etc/d8dh/certs/server.key",
+    "TlsCaCertPath": "/etc/d8dh/certs/ca.pem",
+    "TlsRequireClientCert": false
+  },
+
+  "Iso8583Pipeline": {
     // Pipeline tuning
     "ParserConcurrency": 2,
     "RawMessageCapacity": 256,
@@ -218,40 +252,33 @@ public sealed class PipelineStats
     // Shutdown
     "DrainTimeoutSeconds": 30,
 
-    // Periodic SignOn
-    "SignOnIntervalSeconds": 30,
-    "SendSignOnOnConnect": true,
-    "EnablePeriodicSignOn": true,
-
-    // TLS
-    "TlsEnabled": true,
-    "TlsCertPath": "/etc/certs/server.crt",
-    "TlsKeyPath": "/etc/certs/server.key",
-    "TlsCaCertPath": "/etc/certs/ca.pem",
-    "TlsRequireClientCert": true
+    // Parser circuit breaker
+    "MaxParseErrorsBeforePause": 0,
+    "ParserCooldownSeconds": 5
   }
 }
 ```
 
+Note the pipeline settings live in their own `Iso8583Pipeline` section
+(`PipelineOptions`), separate from the `Iso8583Server` section (`ServerOptions`).
+
 ---
 
-## Migration Path
+## Migration Status
 
-### Phase 1 — Refactor Iso8583TcpServer internals
-- Keep `IIso8583Server` interface, keep REST API unchanged
-- Replace `HandleClientAsync` internals with pipeline stages
-- Add `IMessageHandler` registration via DI
-- Existing `OnMessageParsed` callback becomes a default catch-all handler
+Phases 1 and 2 shipped; Phase 3 is still future work:
 
-### Phase 2 — Optimize
-- Tune channel capacities based on benchmarks
-- Add parser concurrency (multiple `ValueTask` consumers on same channel)
-- Add `PipelineStats` for monitoring in `/status` endpoint
-
-### Phase 3 — Advanced
-- `ReadOnlySequence<byte>` zero-copy parsing (PipeReader)
-- `IBufferWriter<byte>` zero-copy packing
-- TLS offload to separate tasks if needed
+- **Phase 1 — Refactor `Iso8583TcpServer` internals** ✅
+  `Iso8583TcpServer` now delegates to `PipelineHost`; `IMessageHandler` is
+  registered via DI; the `OnMessageParsed` callback is retained for legacy
+  callers and `DefaultHandler` is the catch-all.
+- **Phase 2 — Optimize** ✅
+  Channel capacities and parser concurrency are tunable via `PipelineOptions`;
+  `PipelineStats` is exposed in `GET /api/iso8583/status` and `GET /health`.
+- **Phase 3 — Advanced** (not yet started)
+  `ReadOnlySequence<byte>` zero-copy parsing (PipeReader) and
+  `IBufferWriter<byte>` zero-copy packing remain future work; the current
+  pipeline uses `ArrayPool<byte>`-backed `RawMessage` buffers.
 
 ---
 
@@ -280,12 +307,12 @@ All benchmarks on Intel Core i9-14900K, .NET 10, Release build, in-memory SplitS
 
 ---
 
-## File Layout (new)
+## File Layout
 
 ```
 src/
-├── ISO8583Net/              (core library — unchanged)
-├── ISO8583Server/           (TCP server library)
+├── ISO8583Net/                  (core library)
+├── ISO8583Server/               (TCP server library)
 │   ├── Pipeline/
 │   │   ├── PipelineHost.cs          (manages all connection pipelines)
 │   │   ├── ConnectionPipeline.cs    (per-connection 5-stage pipeline)
@@ -293,28 +320,41 @@ src/
 │   │   ├── ParserStage.cs           (RawMessage → ParsedMessage channel)
 │   │   ├── DispatcherStage.cs       (ParsedMessage → handlers)
 │   │   ├── WriterStage.cs           (OutboundMessage channel → socket)
-│   │   └── PipelineStats.cs
-│   ├── Messages/
-│   │   ├── RawMessage.cs
-│   │   ├── ParsedMessage.cs
-│   │   ├── OutboundMessage.cs
-│   │   └── MessageContext.cs
-│   ├── Handlers/
-│   │   ├── IMessageHandler.cs
-│   │   └── DefaultHandler.cs        (catch-all, replicates current behavior)
-│   ├── IIso8583Server.cs            (updated)
-│   ├── Iso8583TcpServer.cs          (refactored to use PipelineHost)
-│   └── TlsOptions.cs                (unchanged)
+│   │   ├── ErrorResponseBuilder.cs  (raw D8 9xxx/9800 format-error frames)
+│   │   ├── PipelineOptions.cs
+│   │   ├── PipelineStats.cs
+│   │   ├── Handlers/
+│   │   │   ├── IMessageHandler.cs
+│   │   │   ├── BaseRequestHandler.cs
+│   │   │   ├── BaseAdviceHandler.cs
+│   │   │   ├── NetworkManagementHandler.cs
+│   │   │   ├── DefaultHandler.cs        (catch-all)
+│   │   │   └── HandlerRegistry.cs
+│   │   └── Messages/
+│   │       ├── RawMessage.cs
+│   │       ├── ParsedMessage.cs
+│   │       ├── OutboundMessage.cs
+│   │       ├── MessageContext.cs
+│   │       └── IMessageTracer.cs
+│   ├── IIso8583Server.cs
+│   ├── Iso8583TcpServer.cs          (uses PipelineHost)
+│   ├── PeriodicSignOnService.cs
+│   └── TlsOptions.cs
 tools/
 └── ISO8583Service/
     ├── Program.cs                   (register handlers in DI)
-    ├── Iso8583HostedService.cs      (unchanged)
-    ├── Iso8583Controller.cs         (add stats to /status)
-    ├── Handlers/                    (user-defined handlers)
-    │   ├── AuthorizationHandler.cs
-    │   ├── NetworkHandler.cs
-    │   └── ReconciliationHandler.cs
-    └── appsettings.json             (updated with pipeline config)
+    ├── Iso8583HostedService.cs      (IHostedService wrapper + ServerOptions)
+    ├── Controllers/Iso8583Controller.cs  (REST API + stats)
+    ├── Handlers/                    (D8 G2B handlers)
+    │   ├── AuthorizationHandler.cs       (1100→1110)
+    │   ├── AuthorizationAdviceHandler.cs (1120→1130)
+    │   ├── FinancialHandler.cs           (1200→1210)
+    │   ├── FinancialAdviceHandler.cs     (1220→1230)
+    │   ├── ReversalHandler.cs            (1400→1410)
+    │   └── ReversalAdviceHandler.cs      (1420→1430)
+    ├── HealthChecks/PipelineHealthCheck.cs
+    ├── Tracing/                     (FileMessageTracer, EfMessageTracer, DbContext)
+    └── appsettings.json             (Iso8583Server + Iso8583Pipeline sections)
 ```
 
 ---
@@ -332,5 +372,5 @@ where:
 - **Backpressure is explicit** via bounded channels
 - **The REST API remains unchanged** — same endpoints, same `IIso8583Server` contract
 
-The migration is incremental: Phase 1 refactors internals without breaking the
-public API; Phase 2 tunes for performance; Phase 3 goes zero-copy.
+Phases 1 and 2 are shipped; Phase 3 (zero-copy `PipeReader`/`IBufferWriter`)
+remains future work.

@@ -3,7 +3,9 @@
 > Based on [arch-design.md](arch-design.md) — SEDA pipeline architecture.
 
 Each sprint delivers a working, testable increment. Sprint 0 is prep/groundwork;
-Sprints 1–4 build the pipeline; Sprint 5 optimizes; Sprint 6 hardens.
+Sprints 1–4 build the pipeline; Sprint 5 optimizes; Sprint 6 hardens; Sprint 7 adds the
+D8 G2B handler framework. Sprints D0–D4 (dialect-enforced validation) are tracked in
+[`docs/specs/sprints/README.md`](specs/sprints/README.md).
 
 ---
 
@@ -70,7 +72,7 @@ Handlers run in parallel; responses flow back through the writer channel.
 |----|------|---------|--------|
 | S3-1 | Implement `DispatcherStage` — reads `ParsedMessage`, looks up handlers by MTI, fires `HandleAsync` as fire-and-forget tasks | `DispatcherStage.cs` | ✅ |
 | S3-2 | Implement handler registry — collects all `IMessageHandler` from DI, builds MTI → handler map (supports `"*"` catch-all) | `HandlerRegistry.cs` | ✅ |
-| S3-3 | Implement `DefaultHandler` — replicates current auto-respond behavior (1800 → 1814 with F39=000) | `DefaultHandler.cs` | ✅ |
+| S3-3 | Implement `DefaultHandler` — catch-all (originally replicated 1800 → 1814 echo; simplified to a pure no-op passthrough in Sprint D1) | `DefaultHandler.cs` | ✅ |
 | S3-4 | `MessageContext.SendResponseAsync` pushes to writer channel (via captured `ChannelWriter`) | `MessageContext.cs` | ✅ |
 | S3-5 | Register `DefaultHandler` in DI as catch-all, register `HandlerRegistry`, `PipelineHost` | `Program.cs` | ✅ |
 | S3-6 | Update `GET /status` to include `PipelineStats` (in-flight count, queue lengths, messages sent/received) | `Iso8583Controller.cs` | ✅ |
@@ -164,7 +166,7 @@ IMessageHandler (interface)
 │   ├── FinancialAdviceHandler     1220→1230
 │   └── ReversalAdviceHandler      1420→1430
 ├── NetworkManagementHandler           ← handles 1804→1814 (F24 dispatch)
-└── DefaultHandler ("*" catch-all)     ← legacy 1800→1814 echo, passthrough
+└── DefaultHandler ("*" catch-all)     ← pure no-op passthrough (no response)
 ```
 
 ### Key Design Decisions
@@ -177,7 +179,7 @@ IMessageHandler (interface)
 - **Virtual methods**: all business logic in overridable virtuals — users
   override, not implement interfaces
 - **Catch-all still fires**: DefaultHandler (`*`) runs alongside specific
-  handlers but returns null for handled MTIs (no-op overhead)
+  handlers but always returns null (no-op overhead)
 
 ---
 
@@ -194,7 +196,18 @@ IMessageHandler (interface)
 | 5 | Tuning & Benchmarks | 7 | 7 | ✅ |
 | 6 | Hardening & Polish | 9 | 9 | ✅ |
 | 7 | Handler Framework (D8 G2B) | 9 | 9 | ✅ |
-| **Total** | | **67** | **67** | **100%** |
+| D0 | Dialect Validator Core | 8 | 8 | ✅ |
+| D1 | Outbound Enforcement + 1800 Fix | 11 | 11 | ✅ |
+| D2 | Inbound Enforcement + Errors | 8 | 8 | ✅ |
+| D2R | Spec-complete 9xxx Format Errors | 6 | 6 | ✅ |
+| D3 | 9xxx Receive Side | 5 | 5 | ✅ |
+| D4 | Handler Guard, Config & Docs | 6 | 6 | ✅ |
+| **Total** | | **111** | **111** | **100%** |
+
+Sprints D0–D4 are tracked in
+[`docs/specs/sprints/README.md`](specs/sprints/README.md).
+
+Current regression (2026-09-07): **62 core tests + 3 service tests pass**.
 
 
 ### Dependency Order

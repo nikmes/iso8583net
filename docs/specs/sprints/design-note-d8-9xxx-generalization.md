@@ -34,19 +34,20 @@ portable to any dialect that shares the same MTI/field semantics.
 
 The `9xxx` response path is coupled to the D8 header in three places:
 
-1. **Every dispatcher branch gates on the header type** — `src/ISO8583Server/Pipeline/DispatcherStage.cs:53,79,91`
+1. **Every dispatcher branch gates on the header type** — `src/ISO8583Server/Pipeline/DispatcherStage.cs:54,80,94`
    all start with `parsed.Message.Header is ISOHeaderD8`.
 2. **The frame builder is D8-only** — `ErrorResponseBuilder.BuildD8ErrorFrame`
-   (`src/ISO8583Server/Pipeline/ErrorResponseBuilder.cs:69`) hardcodes
+   (`src/ISO8583Server/Pipeline/ErrorResponseBuilder.cs:76`) hardcodes
    `ISOHeaderD8.HeaderLength = 21`, the 21-byte ASCII header layout, the 2-byte packed-BCD MTI,
-   and the 2-byte big-endian length prefix.
+   the 2-byte big-endian length prefix, and (for field errors) echoes the original message's
+   primary bitmap.
 3. **`Field in Error` is a D8 header concept** — positions 17–19 in
-   `src/ISO8583Net/ISOHeader/ISOHeaderD8.cs:60`. `ISOHeaderVisa` has no such field, uses a
+   `src/ISO8583Net/ISOHeader/ISOHeaderD8.cs:61`. `ISOHeaderVisa` has no such field, uses a
    different 22-byte header, and has different error semantics.
 
 The actual transformation rule ("first MTI digit → `9`") is written generically
-(`IsFormatErrorMti` — `DispatcherStage.cs:232`; `TransformToFormatErrorMti` —
-`ErrorResponseBuilder.cs:101`) but only ever fires under the `is ISOHeaderD8` guard, and the
+(`IsFormatErrorMti` — `DispatcherStage.cs:237`; `TransformToFormatErrorMti` —
+`ErrorResponseBuilder.cs:126`) but only ever fires under the `is ISOHeaderD8` guard, and the
 bytes it emits are D8's.
 
 ## Reuse verdict
